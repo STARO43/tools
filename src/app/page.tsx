@@ -453,10 +453,9 @@ export default function Page() {
 
         <section className="hero">
           <h1 className="hero__title">
-            Текст из картинки — <em>безопасно</em>
+        Фото, скриншот, пидиэф в <em>текст</em>
           </h1>
           <p className="hero__subtitle">
-           Фото, скриншот, документ
           </p>
         </section>
 
@@ -481,7 +480,7 @@ export default function Page() {
               <IconImage />
             </span>
             <span className="zone__title">
-              {dragOver ? "Я поймаю!" : "Сюда!"}
+              {dragOver ? "Я поймаю!" : ""}
             </span>
             <span className="zone__hint">
               <kbd>Ctrl</kbd>+<kbd>V</kbd>
