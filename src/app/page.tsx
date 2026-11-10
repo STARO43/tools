@@ -447,7 +447,7 @@ export default function Page() {
             <IconDroplet />
           </div>
           <div className="brand__name">
-            Скан<em>ериньо</em>
+            Сканер<em>иньо</em>
           </div>
         </header>
 
