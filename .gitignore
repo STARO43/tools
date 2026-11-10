@@ -66,3 +66,5 @@ download/
 upload/
 *.pid
 .agent-ctx/
+# Генерируемый артефакт (scripts/build-worker.sh)
+public/ocr.worker.js

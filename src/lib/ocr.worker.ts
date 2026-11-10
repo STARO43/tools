@@ -7,8 +7,16 @@
  * (через session.onSessionFallback фиксируем деградацию).
  */
 
+import * as ort from "onnxruntime-web";
 import { PaddleOcrService, isWebGpuAvailable } from "ppu-paddle-ocr/web";
 import type { ModelId, WorkerRequest, WorkerResponse } from "@/lib/models";
+
+/*
+ * Воркер пре-компилируется отдельно (scripts/build-worker.sh → public/ocr.worker.js),
+ * поэтому wasm-файлы onnxruntime-web рядом с бандлом отсутствуют — указываем
+ * CDN-префикс (версия синхронизирована с package.json, CORS включён).
+ */
+ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.1/dist/";
 
 let service: PaddleOcrService | null = null;
 let activeModelId: ModelId | null = null;

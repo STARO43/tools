@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "Бесплатный OCR в стиле Linux-терминала: русский и 40+ языков через PP-OCRv5 (ppu-paddle-ocr), WebGPU с фолбэком WASM. Изображения не покидают ваш браузер.",
   keywords: ["OCR", "распознавание текста", "PaddleOCR", "PP-OCRv5", "WebGPU", "браузер", "русский"],
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/favicon.svg` },
 };
 
 export const viewport: Viewport = {

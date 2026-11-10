@@ -1,0 +1,63 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Установка зависимостей
+        run: bun install --frozen-lockfile
+
+      - name: Сборка OCR worker (пре-компиляция в public/)
+        run: bun run build:worker
+
+      # Pages — статический хостинг: серверных API-роутов быть не должно.
+      # Релей /api/model-proxy нужен только при self-hosting, на Pages
+      # модели качаются напрямую с HuggingFace (там включён CORS).
+      - name: Удаление серверных API-роутов
+        run: rm -rf src/app/api
+
+      - name: Статическая сборка
+        env:
+          NEXT_OUTPUT: export
+          # сайт живёт по https://<user>.github.io/<имя-репозитория>/
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_STATIC: "1"
+        run: bun run build
+
+      # без этого файла Jekyll игнорирует каталоги с подчёркиванием (_next/)
+      - name: Отключение Jekyll
+        run: touch out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

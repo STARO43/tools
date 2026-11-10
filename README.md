@@ -27,17 +27,29 @@ bun run build
 bun run start
 ```
 
+## Публикация на GitHub Pages
+
+Сайт полностью статический — серверный код не нужен. Workflow
+`.github/workflows/deploy.yml` собирает экспорт и деплоит автоматически:
+
+1. В настройках репозитория: **Settings → Pages → Build and deployment → Source: GitHub Actions**
+2. Сделайте `git push` в `main` (или запустите workflow вручную: **Actions → Deploy to GitHub Pages → Run workflow**)
+3. Сайт появится по адресу `https://<user>.github.io/<репозиторий>/`
+
+В режиме Pages модели скачиваются напрямую с HuggingFace (серверный релей
+`/api/model-proxy` остаётся только для self-hosting).
+
 ## Структура
 
 ```
 src/
 ├── app/
 │   ├── page.tsx              # UI терминала (клиентский компонент)
-│   ├── ocr.worker.ts         # Web Worker: загрузка ONNX + инференс
 │   └── api/model-proxy/      # same-origin релей для скачивания моделей (белый список URL)
 ├── lib/
 │   ├── models.ts             # каталог моделей (языки, размеры, URL весов)
-│   └── model-cache.ts        # загрузка с прогрессом + кэш IndexedDB
+│   ├── model-cache.ts        # загрузка с прогрессом + кэш IndexedDB
+│   └── ocr.worker.ts         # Web Worker: загрузка ONNX + инференс
 └── components/ui/            # shadcn/ui
 ```
 

@@ -177,7 +177,11 @@ export default function Page() {
   /* ── worker ── */
   const getWorker = useCallback((): Worker => {
     if (!workerRef.current) {
-      const w = new Worker(new URL("./ocr.worker.ts", import.meta.url), { type: "module" });
+      // воркер пре-компилируется scripts/build-worker.sh в public/ocr.worker.js
+      // (Turbopack не умеет собирать new Worker(new URL(...), import.meta.url))
+      const w = new Worker(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/ocr.worker.js`, {
+        type: "module",
+      });
       w.onmessage = (e: MessageEvent<WorkerResponse>) => {
         const resolver = pendingRef.current.get(e.data.id);
         pendingRef.current.delete(e.data.id);
@@ -378,9 +382,10 @@ export default function Page() {
 
   /* ── тестовый образ ── */
   const loadSample = useCallback(async () => {
+    const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
     pushLine("cmd", "wget /sample/report-ru.png -O - | ./ocr -");
     try {
-      const resp = await fetch("/sample/report-ru.png");
+      const resp = await fetch(`${base}/sample/report-ru.png`);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const blob = await resp.blob();
       await handleFile(blob, "report-ru.png");

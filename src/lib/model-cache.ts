@@ -73,6 +73,9 @@ export async function hasCachedModels(id: ModelId): Promise<boolean> {
   }
 }
 
+/** Статический экспорт (GitHub Pages): same-origin релея /api не существует. */
+const STATIC_EXPORT = process.env.NEXT_PUBLIC_STATIC === "1";
+
 /** Поточная загрузка файла с прогрессом; фолбэк на same-origin прокси. */
 async function fetchWithProgress(
   url: string,
@@ -82,6 +85,11 @@ async function fetchWithProgress(
   try {
     resp = await fetch(url, { mode: "cors" });
   } catch {
+    if (STATIC_EXPORT) {
+      throw new Error(
+        `Не удалось загрузить ${url.split("/").pop()}: прямой доступ заблокирован (сеть/CORS)`,
+      );
+    }
     // CORS/сеть — пробуем через наш релей
     resp = await fetch(`/api/model-proxy?url=${encodeURIComponent(url)}`);
   }
