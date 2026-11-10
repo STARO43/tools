@@ -547,14 +547,7 @@ export default function Page() {
             ))}
           </div>
 
-          {!image && !busy && (
-            <div className="actions">
-              <button type="button" className="btn btn--ghost" onClick={loadSample}>
-                Попробовать на примере
-              </button>
-            </div>
-          )}
-
+         
           {error && (
             <p className="error" role="alert">
               {error}
