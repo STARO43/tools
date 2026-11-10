@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
 // Cross-origin isolation нужна onnxruntime-web и OpenCV-wasm для SharedArrayBuffer
@@ -9,6 +10,28 @@ const isolationHeaders = {
   'Cross-Origin-Embedder-Policy': 'require-corp',
 };
 
+// onnxruntime-web не экспортирует свои .wasm/.mjs файлы в поле "exports",
+// поэтому прямой импорт 'onnxruntime-web/dist/*.wasm?url' в dev-режиме падает.
+// Плагин ведёт такой импорт к реальному файлу в node_modules (query ?url
+// сохраняется): src/ocr.js благодаря этому раздаёт WASM-бинарники ORT из
+// локального бандла, а не с cdn.jsdelivr.net (jsdelivr недоступен в части
+// сетей — получался 404 и «модель не качается»).
+const ortDist = fileURLToPath(
+  new URL('./node_modules/onnxruntime-web/dist/', import.meta.url),
+);
+
+const ortWasmLocal = {
+  name: 'ort-wasm-local',
+  enforce: 'pre',
+  resolveId(source) {
+    const match = source.match(
+      /^onnxruntime-web\/dist\/(ort-wasm-simd-threaded\.jsep\.(?:wasm|mjs))(\?.*)?$/,
+    );
+    if (match) return `${ortDist}${match[1]}${match[2] ?? ''}`;
+    return null;
+  },
+};
+
 export default defineConfig({
   server: {
     headers: isolationHeaders,
@@ -16,6 +39,7 @@ export default defineConfig({
   preview: {
     headers: isolationHeaders,
   },
+  plugins: [ortWasmLocal],
   build: {
     target: 'es2022',
   },

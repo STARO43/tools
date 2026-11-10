@@ -1,6 +1,10 @@
 // ============================================================================
 // Логика страницы: drag&drop, изображения, PDF (pdfjs-dist), прогресс, вывод.
 // API распознавания спрятано в ./ocr.js, постобработка текста — в ./postprocess.js.
+//
+// Файлы можно выбирать СРАЗУ, не дожидаясь модели: они встают в очередь и
+// обрабатываются, как только модель готова. Если модель скачать не удалось —
+// показываем причину и кнопку «Повторить», очередь сохраняется.
 // ============================================================================
 
 import * as pdfjsLib from 'pdfjs-dist';
@@ -29,6 +33,7 @@ const els = {
   modelStatus: $('modelStatus'),
   modelBar: $('modelBar'),
   gpuNotice: $('gpuNotice'),
+  retryBtn: $('retryBtn'),
   dropZone: $('dropZone'),
   fileInput: $('fileInput'),
   progressCard: $('progressCard'),
@@ -44,6 +49,7 @@ const els = {
 
 let modelReady = false;
 let busy = false;
+const queuedFiles = []; // файлы, выбранные до готовности модели
 
 // Готовый текст накапливается по файлам; <pre> всегда заполняется через
 // textContent — никакого HTML-инъекции из содержимого документов.
@@ -54,14 +60,11 @@ const metas = [];
 // Вспомогательные функции UI
 // ---------------------------------------------------------------------------
 function showFatalError(message) {
-  els.modelBar.hidden = true;
-  els.modelStatus.textContent = 'Не удалось инициализировать OCR';
   els.errorCard.hidden = false;
   els.errorCard.innerHTML = '';
   const p = document.createElement('p');
   p.textContent = message;
   els.errorCard.append(p);
-  els.dropZone.classList.add('disabled');
 }
 
 function showFileError(message) {
@@ -69,6 +72,10 @@ function showFileError(message) {
   const p = document.createElement('p');
   p.textContent = message;
   els.errorCard.append(p);
+}
+
+function mb(bytes) {
+  return (bytes / 1_048_576).toFixed(1);
 }
 
 function setBar(el, ratio /* 0..1 или null = неопределённый */) {
@@ -83,9 +90,9 @@ function setBar(el, ratio /* 0..1 или null = неопределённый */)
 
 function setBusy(state) {
   busy = state;
-  els.dropZone.classList.toggle('disabled', state || !modelReady);
+  els.dropZone.classList.toggle('disabled', state);
   els.progressCard.hidden = !state;
-  if (!state) {
+  if (!state && queuedFiles.length === 0) {
     els.fileStatus.textContent = '';
     setBar(els.fileBar, 0);
   }
@@ -105,57 +112,94 @@ function providerBadge(text, ok) {
 }
 
 // ---------------------------------------------------------------------------
-// Инициализация модели (при старте страницы)
+// Инициализация модели. Вызывается при старте и по кнопке «Повторить».
 // ---------------------------------------------------------------------------
-initOcr({
-  onStage: ({ stage }) => {
-    if (stage === 'probe') {
-      els.modelStatus.textContent = 'Проверяем поддержку WebGPU…';
-    } else if (stage === 'download') {
-      els.modelStatus.textContent =
-        'Скачиваем модель PP-OCRv5 (кириллица, ≈15 МБ). Это нужно только при первом запуске — дальше браузер возьмёт её из кеша.';
-      setBar(els.modelBar, null); // неопределённый прогресс: у SDK нет колбэка скачивания
-    } else if (stage === 'ready') {
-      els.modelBar.hidden = true;
+function handleModelStage(s) {
+  if (s.stage === 'probe') {
+    els.modelStatus.textContent = 'Проверяем поддержку WebGPU…';
+  } else if (s.stage === 'download') {
+    // Честный прогресс: сколько байт пришло и из какого источника.
+    els.modelBar.hidden = false;
+    const head = `Скачиваем модель (${s.fileIndex + 1}/${s.fileCount} — ${s.label})`;
+    if (s.cached) {
+      els.modelStatus.textContent = `${head}: уже в кеше браузера.`;
+      setBar(els.modelBar, (s.fileIndex + 1) / s.fileCount);
+    } else if (s.total > 0) {
+      els.modelStatus.textContent = `${head}: ${mb(s.received)} из ${mb(s.total)} МБ · источник: ${s.source}`;
+      setBar(els.modelBar, (s.fileIndex + s.received / s.total) / s.fileCount);
+    } else {
+      els.modelStatus.textContent = `${head}: ${mb(s.received)} МБ · источник: ${s.source}`;
+      setBar(els.modelBar, null);
     }
-  },
-  onFallback: () => {
-    els.gpuNotice.hidden = false;
-    els.gpuNotice.textContent =
-      'WebGPU-сессию создать не удалось (драйвер или GPU заняты/запрещены) — переключились на WASM. Скорость ниже, качество то же.';
-  },
-})
-  .then(({ provider, webgpuSupported }) => {
-    modelReady = true;
-    setBusy(false);
+  } else if (s.stage === 'init') {
     els.modelStatus.textContent =
-      provider === 'webgpu'
-        ? 'Модель готова. Ускорение: WebGPU.'
-        : 'Модель готова. Режим: WASM.';
-    providerBadge(
-      provider === 'webgpu' ? 'WebGPU активен' : 'Работает через WASM',
-      true,
-    );
+      'Создаём сессию распознавания (на WebGPU может занять несколько секунд)…';
+    setBar(els.modelBar, null);
+  }
+}
 
-    // Понятное сообщение, если WebGPU не поддерживается, — приложение
-    // всё равно полноценно работает через WASM (требование №12).
-    if (!webgpuSupported) {
-      els.gpuNotice.hidden = false;
-      els.gpuNotice.textContent =
-        'Браузер не поддерживает WebGPU — работаем через WASM: медленнее, но тот же результат. ' +
-        'WebGPU есть в актуальных версиях Chrome, Edge, Firefox и Safari.';
-    }
-  })
-  .catch((error) => {
-    console.error('OCR init failed:', error);
-    showFatalError(
-      'Не удалось загрузить модель распознавания. Модель скачивается с CDN (HuggingFace) один раз — ' +
-        'проверьте подключение к интернету и обновите страницу. Сами ваши файлы при этом никуда не отправляются.',
-    );
-  });
+function startInit() {
+  els.retryBtn.hidden = true;
+  els.modelBar.hidden = false;
+  els.modelStatus.textContent = 'Инициализация…';
+  setBar(els.modelBar, null);
+
+  initOcr({ onStage: handleModelStage, onFallback: showFallbackNotice })
+    .then(({ provider, webgpuSupported }) => {
+      modelReady = true;
+      els.modelBar.hidden = true;
+      els.modelStatus.textContent =
+        provider === 'webgpu'
+          ? 'Модель готова. Ускорение: WebGPU.'
+          : 'Модель готова. Режим: WASM.';
+      providerBadge(provider === 'webgpu' ? 'WebGPU активен' : 'Работает через WASM', true);
+
+      // Понятное сообщение, если WebGPU не поддерживается, — приложение
+      // всё равно полноценно работает через WASM (требование №12).
+      if (!webgpuSupported) {
+        els.gpuNotice.hidden = false;
+        els.gpuNotice.textContent =
+          'Браузер не поддерживает WebGPU — работаем через WASM: медленнее, но тот же результат. ' +
+          'WebGPU есть в актуальных версиях Chrome, Edge, Firefox и Safari.';
+      }
+
+      // Обрабатываем файлы, выбранные, пока модель загружалась.
+      const queued = queuedFiles.splice(0);
+      if (queued.length > 0) handleFiles(queued);
+    })
+    .catch((error) => {
+      console.error('OCR init failed:', error);
+      els.modelBar.hidden = true;
+      els.modelStatus.textContent = 'Модель загрузить не удалось';
+      els.retryBtn.hidden = false;
+      showFatalError(
+        'Не удалось загрузить модель. Причина последней попытки: ' +
+          (error?.message || 'неизвестная ошибка') +
+          '. Обычно модель берётся из файлов проекта (public/models) и сеть не нужна — ' +
+          'проверьте, что папка public/models на месте и сервер запущен (npm run dev / preview). ' +
+          'Внешние источники (huggingface.co) нужны только как запасные и могут быть ' +
+          'заблокированы в вашей сети. Нажмите «Повторить». Уже выбранные файлы останутся в очереди.',
+      );
+    });
+}
+
+function showFallbackNotice() {
+  els.gpuNotice.hidden = false;
+  els.gpuNotice.textContent =
+    'WebGPU-сессию создать не удалось (драйвер или GPU заняты/запрещены) — переключились на WASM. Скорость ниже, качество то же.';
+}
+
+els.retryBtn.addEventListener('click', () => {
+  els.errorCard.hidden = true;
+  els.errorCard.innerHTML = '';
+  startInit();
+});
+
+startInit();
 
 // ---------------------------------------------------------------------------
-// Ввод файлов: drag&drop + input[type=file]
+// Ввод файлов: drag&drop + input[type=file]. Окно выбора открывается ВСЕГДА,
+// пока идёт обработка; файлы, выбранные до готовности модели, встают в очередь.
 // ---------------------------------------------------------------------------
 function preventWindowNav(event) {
   event.preventDefault();
@@ -165,7 +209,7 @@ window.addEventListener('dragover', preventWindowNav);
 window.addEventListener('drop', preventWindowNav);
 
 function openPicker() {
-  if (busy || !modelReady) return;
+  if (busy) return;
   els.fileInput.click();
 }
 
@@ -195,16 +239,26 @@ function isPdf(file) {
   return file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
 }
 
+function queueFiles(files) {
+  queuedFiles.push(...files);
+  els.progressCard.hidden = false;
+  const names = files.map((f) => f.name).join(', ');
+  els.fileStatus.textContent = `В очереди: ${queuedFiles.length} (${names}) — обработаем, как только модель загрузится.`;
+  setBar(els.fileBar, 0);
+}
+
 async function handleFiles(fileList) {
   if (!fileList || fileList.length === 0) return;
+  const files = Array.from(fileList);
   if (busy) return;
+
   if (!modelReady) {
-    showFileError('Модель ещё загружается — подождите несколько секунд и попробуйте снова.');
+    queueFiles(files);
     return;
   }
 
   setBusy(true);
-  for (const file of Array.from(fileList)) {
+  for (const file of files) {
     try {
       if (isPdf(file)) await processPdf(file);
       else if (file.type.startsWith('image/')) await processImage(file);
