@@ -1,13 +1,5 @@
 "use client";
 
-/**
- * TuxOCR — распознавание текста на картинках, целиком в браузере.
- *
- * Fluid/Liquid-дизайн: один файл стилей (globals.css) + один файл логики (этот).
- * Движок: ppu-paddle-ocr (PP-OCRv5/v6) через ONNX Runtime, инференс в Web Worker,
- * языковые пакеты кэшируются в IndexedDB. Фото не покидает устройство.
- */
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   MODEL_CATALOG,
@@ -455,17 +447,16 @@ export default function Page() {
             <IconDroplet />
           </div>
           <div className="brand__name">
-            Tux<em>OCR</em>
+            Сканери<em>ньо</em>
           </div>
         </header>
 
         <section className="hero">
           <h1 className="hero__title">
-            Текст из картинки — <em>за один клик</em>
+            Текст из картинки — <em>безопасно</em>
           </h1>
           <p className="hero__subtitle">
-            Перетащите фото, скриншот или документ — текст появится здесь же. Всё считается прямо
-            на вашем устройстве, ничего никуда не отправляется.
+           Фото, скриншот, документ
           </p>
         </section>
 
@@ -484,16 +475,16 @@ export default function Page() {
             type="button"
             className={`zone${dragOver ? " zone--over" : ""}`}
             onClick={pickFile}
-            aria-label="Выбрать картинку с текстом"
+            aria-label="Выбрать"
           >
             <span className="zone__icon">
               <IconImage />
             </span>
             <span className="zone__title">
-              {dragOver ? "Отпускайте — я поймаю!" : "Перетащите картинку сюда"}
+              {dragOver ? "Я поймаю!" : "Сюда!"}
             </span>
             <span className="zone__hint">
-              или нажмите, чтобы выбрать файл · вставьте скриншот — <kbd>Ctrl</kbd>+<kbd>V</kbd>
+              <kbd>Ctrl</kbd>+<kbd>V</kbd>
             </span>
           </button>
 
@@ -600,7 +591,7 @@ export default function Page() {
               </button>
               <button type="button" className="btn btn--ghost" onClick={downloadTxt}>
                 <IconDownload />
-                Скачать файл .txt
+                Скачать .txt
               </button>
             </div>
           </section>
@@ -609,9 +600,9 @@ export default function Page() {
         <footer className="footer">
           <span className="footer__lock">
             <IconLock />
-            Фото обрабатывается на вашем устройстве
+            Локально на вашем устройстве
           </span>
-          <span>Бесплатно · без регистрации · без отправки в интернет</span>
+          <span>Без отправки в интернет</span>
         </footer>
       </main>
     </>
