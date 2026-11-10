@@ -9,7 +9,7 @@
 
 import * as ort from "onnxruntime-web";
 import { PaddleOcrService, isWebGpuAvailable } from "ppu-paddle-ocr/web";
-import type { ModelId, WorkerRequest, WorkerResponse } from "@/lib/models";
+import type { ModelId, WorkerRequest, WorkerResponse } from "@/lib/engine";
 
 /*
  * Воркер пре-компилируется отдельно (scripts/build-worker.sh → public/ocr.worker.js),

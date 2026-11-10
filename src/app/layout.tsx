@@ -1,24 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
-const jbMono = JetBrains_Mono({
-  variable: "--font-jbmono",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "TuxOCR — бесплатное распознавание текста в браузере",
+  title: "TuxOCR — текст из картинки за один клик",
   description:
-    "Бесплатный OCR в стиле Linux-терминала: русский и 40+ языков через PP-OCRv5 (ppu-paddle-ocr), WebGPU с фолбэком WASM. Изображения не покидают ваш браузер.",
-  keywords: ["OCR", "распознавание текста", "PaddleOCR", "PP-OCRv5", "WebGPU", "браузер", "русский"],
+    "Бесплатное распознавание текста на фото и скриншотах. Работает прямо в браузере: ничего никуда не загружается. Русский и ещё 50+ языков.",
+  keywords: ["OCR", "распознавание текста", "текст с фото", "скриншот в текст", "онлайн", "бесплатно"],
   icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/favicon.svg` },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#040906",
+  themeColor: "#eef1f8",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body className={`${jbMono.variable} antialiased crt-breathe`}>{children}</body>
+      <body className={`${manrope.variable}`}>{children}</body>
     </html>
   );
 }
