@@ -1,0 +1,203 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-jbmono), ui-monospace, monospace;
+  --font-mono: var(--font-jbmono), ui-monospace, "DejaVu Sans Mono", monospace;
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-term-green: var(--term-green);
+  --color-term-bright: var(--term-bright);
+  --color-term-dim: var(--term-dim);
+  --color-term-amber: var(--term-amber);
+  --color-term-red: var(--term-red);
+  --color-term-panel: var(--term-panel);
+  --color-term-edge: var(--term-edge);
+}
+
+/* ─── Фосфорная палитра зелёного терминала ─────────────────────────── */
+:root {
+  --background: #040906;
+  --foreground: #a9f2bb;
+  --border: #1d4529;
+  --ring: #2f7a45;
+  --term-green: #3fd97c;
+  --term-bright: #7dffb0;
+  --term-dim: #5d8a68;
+  --term-amber: #ffb454;
+  --term-red: #ff6b6b;
+  --term-panel: #060f09;
+  --term-edge: #1d4529;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  font-family: var(--font-jbmono), ui-monospace, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  text-rendering: optimizeLegibility;
+}
+
+/* Свечение фосфора */
+.phos {
+  text-shadow: 0 0 7px rgba(63, 217, 124, 0.35);
+}
+.phos-strong {
+  text-shadow: 0 0 10px rgba(125, 255, 176, 0.55);
+}
+.phos-amber {
+  text-shadow: 0 0 7px rgba(255, 180, 84, 0.35);
+}
+
+/* Панель терминала */
+.term-panel {
+  background: var(--term-panel);
+  border: 1px solid var(--term-edge);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.55), inset 0 0 42px rgba(8, 40, 18, 0.16);
+}
+
+/* CRT-эффекты: строчная развёртка + виньетка (не перехватывают события) */
+.crt-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+.crt-fx::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.16) 0px,
+    rgba(0, 0, 0, 0.16) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+.crt-fx::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 58%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+/* Мигающий курсор-блок */
+.cursor-block {
+  display: inline-block;
+  width: 0.62em;
+  height: 1.06em;
+  margin-left: 2px;
+  background: var(--term-bright);
+  vertical-align: text-bottom;
+  box-shadow: 0 0 8px rgba(125, 255, 176, 0.6);
+  animation: cursor-blink 1.05s steps(1) infinite;
+}
+@keyframes cursor-blink {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  61%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Мягкое дыхание подсветки экрана */
+@keyframes crt-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.972;
+  }
+}
+.crt-breathe {
+  animation: crt-breathe 4.2s ease-in-out infinite;
+}
+
+/* Скроллбар в стиле терминала */
+.term-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #2f7a45 transparent;
+}
+.term-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.term-scroll::-webkit-scrollbar-thumb {
+  background: #235c36;
+  border-radius: 0;
+}
+.term-scroll::-webkit-scrollbar-thumb:hover {
+  background: #2f7a45;
+}
+.term-scroll::-webkit-scrollbar-track {
+  background: rgba(10, 30, 16, 0.35);
+}
+
+::selection {
+  background: rgba(63, 217, 124, 0.32);
+  color: #eaffef;
+}
+
+/* Кнопки терминала */
+.term-btn {
+  border: 1px solid var(--term-edge);
+  color: var(--term-green);
+  background: rgba(13, 42, 24, 0.35);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  transition: all 0.14s ease;
+  min-height: 44px;
+  cursor: pointer;
+}
+.term-btn:hover:not(:disabled) {
+  border-color: #2f7a45;
+  color: var(--term-bright);
+  background: rgba(24, 74, 42, 0.5);
+  box-shadow: 0 0 14px rgba(63, 217, 124, 0.18);
+  text-shadow: 0 0 7px rgba(125, 255, 176, 0.5);
+}
+.term-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+/* Пункты выбора модели */
+.model-row {
+  border: 1px solid transparent;
+  transition: all 0.14s ease;
+  cursor: pointer;
+}
+.model-row:hover {
+  background: rgba(24, 74, 42, 0.28);
+  border-color: rgba(47, 122, 69, 0.4);
+}
+.model-row[data-active="true"] {
+  border-color: var(--term-edge);
+  background: rgba(13, 42, 24, 0.5);
+}
+
+/* Пунктирная зона перетаскивания */
+.dropzone {
+  border: 1px dashed #2a5e3a;
+  transition: all 0.16s ease;
+}
+.dropzone:hover,
+.dropzone[data-drag="true"] {
+  border-color: var(--term-green);
+  background: rgba(24, 74, 42, 0.22);
+  box-shadow: inset 0 0 30px rgba(63, 217, 124, 0.08);
+}
