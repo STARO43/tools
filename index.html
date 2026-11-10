@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Локальный OCR — распознавание текста в браузере</title>
+    <meta
+      name="description"
+      content="Приватное распознавание текста (русский язык) прямо в браузере: изображения и PDF. Файлы не покидают ваш компьютер."
+    />
+    <style>
+      :root {
+        --bg: #f4f5f7;
+        --card: #ffffff;
+        --text: #1b1f24;
+        --muted: #697180;
+        --border: #e2e5ea;
+        --accent: #2f6bff;
+        --accent-contrast: #ffffff;
+        --accent-soft: #eaf0ff;
+        --ok: #1a7f4b;
+        --error-bg: #fdeeee;
+        --error-border: #f3c6c6;
+        --error-text: #a12b21;
+        --shadow: 0 1px 2px rgb(16 24 40 / 0.04), 0 1px 3px rgb(16 24 40 / 0.06);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f1115;
+          --card: #171a21;
+          --text: #e7eaf0;
+          --muted: #98a1b3;
+          --border: #272c36;
+          --accent: #6d9bff;
+          --accent-contrast: #0d1117;
+          --accent-soft: #1c2536;
+          --ok: #4ade80;
+          --error-bg: #2a1618;
+          --error-border: #55282b;
+          --error-text: #fda49f;
+          --shadow: none;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          16px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 40px 16px 56px;
+      }
+
+      header h1 {
+        margin: 0 0 6px;
+        font-size: 26px;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 11px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--card);
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+
+      .badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--muted);
+      }
+
+      .badge.ok .dot {
+        background: var(--ok);
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-top: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .card-label {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .bar {
+        height: 8px;
+        border-radius: 999px;
+        background: var(--border);
+        overflow: hidden;
+        margin-top: 12px;
+      }
+
+      .bar-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 999px;
+        background: var(--accent);
+        transition: width 0.25s ease;
+      }
+
+      .bar.indeterminate .bar-fill {
+        width: 34%;
+        animation: slide 1.3s ease-in-out infinite;
+      }
+
+      @keyframes slide {
+        from {
+          transform: translateX(-110%);
+        }
+        to {
+          transform: translateX(330%);
+        }
+      }
+
+      .notice {
+        margin: 12px 0 0;
+        padding: 10px 13px;
+        border-radius: 10px;
+        background: var(--accent-soft);
+        color: var(--muted);
+        font-size: 13.5px;
+      }
+
+      .dropzone {
+        margin-top: 16px;
+        border: 1.5px dashed var(--border);
+        border-radius: 14px;
+        background: var(--card);
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease;
+      }
+
+      .dropzone:hover,
+      .dropzone.dragover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      .dropzone.disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .dropzone svg {
+        width: 34px;
+        height: 34px;
+        stroke: var(--accent);
+        margin-bottom: 10px;
+      }
+
+      .dz-title {
+        margin: 0;
+        font-weight: 600;
+      }
+
+      .dz-hint {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13.5px;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .row .spacer {
+        flex: 1;
+      }
+
+      .status-text {
+        font-size: 14.5px;
+      }
+
+      button {
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 9px 16px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: filter 0.15s ease;
+      }
+
+      button.primary {
+        background: var(--accent);
+        color: var(--accent-contrast);
+      }
+
+      button.ghost {
+        background: transparent;
+        color: var(--text);
+        border-color: var(--border);
+      }
+
+      button:hover {
+        filter: brightness(1.07);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        filter: none;
+      }
+
+      pre#result {
+        margin: 14px 0 0;
+        padding: 16px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        max-height: 480px;
+        overflow: auto;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font:
+          13.5px/1.6 'SF Mono', 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', Menlo, monospace;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .error-card {
+        background: var(--error-bg);
+        border-color: var(--error-border);
+        color: var(--error-text);
+        font-size: 14px;
+      }
+
+      .error-card p {
+        margin: 0 0 8px;
+      }
+
+      .error-card p:last-child {
+        margin: 0;
+      }
+
+      footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 12.5px;
+        text-align: center;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>Локальный OCR</h1>
+        <p class="subtitle">
+          Распознавание русского текста прямо в браузере — изображения и PDF. Файлы не покидают
+          ваш компьютер: обработка идёт локально, на WebGPU или WASM.
+        </p>
+        <span class="badge" id="providerBadge" hidden>
+          <span class="dot"></span>
+          <span id="providerLabel"></span>
+        </span>
+      </header>
+
+      <!-- Статус модели -->
+      <section class="card" id="modelCard">
+        <div class="card-label">Модель распознавания</div>
+        <div class="status-text" id="modelStatus">Инициализация…</div>
+        <div class="bar indeterminate" id="modelBar"><div class="bar-fill"></div></div>
+        <p class="notice" id="gpuNotice" hidden></p>
+      </section>
+
+      <!-- Ввод файлов -->
+      <section
+        class="dropzone"
+        id="dropZone"
+        role="button"
+        tabindex="0"
+        aria-label="Загрузить файл: перетащите или нажмите"
+      >
+        <input
+          type="file"
+          id="fileInput"
+          accept="image/png,image/jpeg,image/webp,application/pdf,.pdf"
+          multiple
+          hidden
+        />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 3v12" />
+          <path d="m7 10 5 5 5-5" />
+          <path d="M4 21h16" />
+        </svg>
+        <p class="dz-title">Перетащите файл сюда или нажмите, чтобы выбрать</p>
+        <p class="dz-hint">PNG, JPG, WEBP или PDF. Ничего не загружается на сервер.</p>
+      </section>
+
+      <!-- Прогресс обработки -->
+      <section class="card" id="progressCard" hidden>
+        <div class="card-label">Обработка</div>
+        <div class="status-text" id="fileStatus"></div>
+        <div class="bar">
+          <div class="bar-fill" id="fileBar"></div>
+        </div>
+      </section>
+
+      <!-- Ошибки -->
+      <section class="card error-card" id="errorCard" hidden></section>
+
+      <!-- Результат -->
+      <section class="card" id="resultCard" hidden>
+        <div class="row">
+          <div class="card-label" style="margin: 0">Результат</div>
+          <div class="spacer"></div>
+          <button class="primary" id="copyBtn" type="button">Скопировать текст</button>
+          <button class="ghost" id="clearBtn" type="button">Очистить</button>
+        </div>
+        <div class="meta" id="resultMeta" style="margin-top: 6px"></div>
+        <pre id="result"></pre>
+      </section>
+
+      <footer>
+        PP-OCRv5 (кириллический пресет) · ppu-paddle-ocr · ONNX Runtime Web. Модель скачивается
+        с CDN один раз и кешируется браузером; сами документы никуда не отправляются.
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
