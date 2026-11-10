@@ -1,51 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barbour — Heritage Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
 /* ── переменные ─────────────────────────────────────────────────────── */
 :root {
-  /* палитра: обсидиан, слоновая кость, шампань-золото, дымчатый шалфей */
-  --bg: #0e0f12;               /* глубокий обсидиан */
-  --bg-2: #141519;
-  --bg-3: #1a1c21;
+  /* палитра Barbour: тёмный дуб, воск, латунь, тартан */
+  --bg: #1a1712;
+  --bg-2: #211d16;
+  --bg-3: #2a251c;
 
-  --ink: #f2efe9;              /* слоновая кость */
-  --ink-soft: #b6b3ac;
-  --ink-faint: #74716b;
+  --ink: #efe6d2;
+  --ink-soft: #bdb29a;
+  --ink-faint: #7d7463;
 
-  --surface: rgba(255, 255, 255, 0.035);
-  --surface-hi: rgba(255, 255, 255, 0.06);
-  --surface-solid: #16181d;
+  --surface: rgba(239, 230, 210, 0.035);
+  --surface-hi: rgba(239, 230, 210, 0.065);
 
-  --line: rgba(255, 255, 255, 0.08);
-  --line-hi: rgba(255, 255, 255, 0.14);
+  --line: rgba(239, 230, 210, 0.09);
+  --line-hi: rgba(239, 230, 210, 0.16);
 
-  --gold: #c9a86a;             /* шампань-золото */
-  --gold-hi: #e2c98f;
-  --gold-deep: #9a7f4a;
-  --gold-soft: rgba(201, 168, 106, 0.12);
+  --brass: #c9a44c;
+  --brass-hi: #e0c073;
+  --brass-deep: #8f7430;
+  --brass-soft: rgba(201, 164, 76, 0.12);
 
-  --sage: #8ba888;             /* дымчатый шалфей — вместо ядовитого зелёного */
-  --sage-soft: rgba(139, 168, 136, 0.12);
-  --amber: #d4a24e;
-  --ruby: #c96b6b;             /* приглушённый рубин — вместо алого */
-  --ruby-soft: rgba(201, 107, 107, 0.1);
+  --olive: #6b7347;
+  --olive-soft: rgba(107, 115, 71, 0.14);
+  --terracotta: #b06b45;
+  --tartan: #2f3e58;
+  --tartan-soft: rgba(47, 62, 88, 0.16);
 
-  --accent: var(--gold);
-  --accent-2: var(--gold-hi);
-  --accent-ink: var(--gold-hi);
+  --accent: var(--brass);
+  --accent-2: var(--brass-hi);
+  --accent-ink: var(--brass-hi);
 
-  --ok: var(--sage);
-  --ok-soft: var(--sage-soft);
-  --warn: var(--amber);
-  --bad: var(--ruby);
-  --bad-soft: var(--ruby-soft);
+  --ok: var(--olive);
+  --ok-soft: var(--olive-soft);
+  --warn: var(--terracotta);
+  --bad: #a94a3d;
+  --bad-soft: rgba(169, 74, 61, 0.12);
 
-  /* геометрия: очень мягкая, ювелирная */
-  --r-card: 20px;
-  --r-zone: 16px;
-  --r-chip: 999px;
-  --r-btn: 12px;
+  --r-card: 6px;
+  --r-zone: 4px;
+  --r-chip: 3px;
+  --r-btn: 4px;
 
-  /* движение: плавное, «дорогое» */
-  --ease-silk: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-wax: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font-serif: "EB Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
 }
 
 /* ── база ───────────────────────────────────────────────────────────── */
@@ -65,13 +75,18 @@ body {
   color: var(--ink);
   background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201, 168, 106, 0.08), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(139, 168, 136, 0.05), transparent 60%);
-  font-family: var(--font-sans), "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(201, 164, 76, 0.1), transparent 62%),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 3px,
+      rgba(239, 230, 210, 0.012) 3px 4px
+    ),
+    radial-gradient(ellipse 60% 45% at 100% 100%, rgba(47, 62, 88, 0.12), transparent 65%);
+  font-family: var(--font-serif);
   font-size: 17px;
-  line-height: 1.6;
-  letter-spacing: -0.011em;
-  font-feature-settings: "ss01" 1, "cv01" 1, "kern" 1;
+  line-height: 1.62;
+  letter-spacing: 0.002em;
+  font-feature-settings: "liga" 1, "kern" 1, "onum" 1, "pnum" 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -98,11 +113,11 @@ textarea {
 }
 
 ::selection {
-  background: rgba(201, 168, 106, 0.3);
+  background: rgba(201, 164, 76, 0.28);
   color: var(--ink);
 }
 
-/* ── живой фон: деликатные световые пятна ──────────────────────────── */
+/* ── живой фон ──────────────────────────────────────────────────────── */
 .blobs {
   position: fixed;
   inset: 0;
@@ -115,7 +130,7 @@ textarea {
   position: absolute;
   border-radius: 50%;
   filter: blur(140px);
-  opacity: 0.22;
+  opacity: 0.28;
   will-change: transform;
 }
 
@@ -124,8 +139,8 @@ textarea {
   height: 55vmax;
   left: -18vmax;
   top: -18vmax;
-  background: radial-gradient(circle at 40% 40%, rgba(201, 168, 106, 0.45), transparent 65%);
-  animation: drift-a 42s var(--ease-silk) infinite alternate;
+  background: radial-gradient(circle at 40% 40%, rgba(201, 164, 76, 0.5), transparent 65%);
+  animation: drift-a 44s var(--ease-wax) infinite alternate;
 }
 
 .blob--aqua {
@@ -133,8 +148,8 @@ textarea {
   height: 48vmax;
   right: -16vmax;
   top: 20vh;
-  background: radial-gradient(circle at 55% 45%, rgba(139, 168, 136, 0.35), transparent 65%);
-  animation: drift-b 48s var(--ease-silk) infinite alternate;
+  background: radial-gradient(circle at 55% 45%, rgba(107, 115, 71, 0.4), transparent 65%);
+  animation: drift-b 50s var(--ease-wax) infinite alternate;
 }
 
 .blob--peach {
@@ -142,8 +157,8 @@ textarea {
   height: 44vmax;
   left: 22vw;
   bottom: -20vmax;
-  background: radial-gradient(circle at 50% 55%, rgba(212, 162, 78, 0.3), transparent 65%);
-  animation: drift-c 40s var(--ease-silk) infinite alternate;
+  background: radial-gradient(circle at 50% 55%, rgba(176, 107, 69, 0.35), transparent 65%);
+  animation: drift-c 42s var(--ease-wax) infinite alternate;
 }
 
 .blob--sky {
@@ -151,8 +166,8 @@ textarea {
   height: 38vmax;
   right: 14vw;
   bottom: -10vmax;
-  background: radial-gradient(circle at 45% 45%, rgba(180, 190, 210, 0.25), transparent 65%);
-  animation: drift-a 52s var(--ease-silk) infinite alternate-reverse;
+  background: radial-gradient(circle at 45% 45%, rgba(47, 62, 88, 0.4), transparent 65%);
+  animation: drift-a 54s var(--ease-wax) infinite alternate-reverse;
 }
 
 @keyframes drift-a {
@@ -168,7 +183,7 @@ textarea {
   to { transform: translate(5vmax, -3vmax) scale(1.08); }
 }
 
-/* ── каркас страницы ────────────────────────────────────────────────── */
+/* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
   max-width: 760px;
   margin: 0 auto;
@@ -181,102 +196,130 @@ textarea {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.brand::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-hi), transparent);
 }
 
 .brand__mark {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   flex: none;
-  border-radius: 12px;
+  border-radius: 3px;
   background:
-    linear-gradient(135deg, var(--gold-hi) 0%, var(--gold) 45%, var(--gold-deep) 100%);
+    radial-gradient(circle at 35% 30%, #2a251c, #1a1712 75%);
+  border: 1px solid var(--brass-deep);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-    0 8px 24px -10px rgba(201, 168, 106, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+    0 4px 14px -6px rgba(201, 164, 76, 0.35);
   display: grid;
   place-items: center;
-  color: #1a1408;
+  color: var(--brass-hi);
 }
 
 .brand__mark svg {
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
+  display: block;
 }
 
 .brand__name {
-  font-size: 21px;
+  font-size: 24px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--ink);
+  font-family: var(--font-serif);
 }
 
 .brand__name em {
   font-style: normal;
-  color: var(--gold-hi);
-  font-weight: 500;
+  font-weight: 400;
+  color: var(--brass-hi);
+  letter-spacing: 0.18em;
+  font-size: 0.82em;
+  margin-left: 4px;
 }
 
 .hero {
-  margin-bottom: 40px;
+  margin-bottom: 42px;
   position: relative;
 }
 
+.hero::before {
+  content: "Est. · Heritage · Waxed Cotton";
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--brass);
+  opacity: 0.8;
+  margin-bottom: 18px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+}
+
 .hero__title {
-  font-size: clamp(32px, 5.4vw, 52px);
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-size: clamp(34px, 5.6vw, 56px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
   color: var(--ink);
-  max-width: 18ch;
+  max-width: 16ch;
 }
 
 .hero__title em {
-  font-style: normal;
-  font-weight: 400;
-  background: linear-gradient(120deg, var(--gold-hi), var(--gold) 60%, var(--gold-deep));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--brass-hi);
 }
 
 .hero__subtitle {
-  margin-top: 18px;
+  margin-top: 20px;
   max-width: 34em;
   font-size: clamp(16px, 2.2vw, 19px);
   color: var(--ink-soft);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
-/* ── премиальная карточка ───────────────────────────────────────────── */
+/* ── карточка ───────────────────────────────────────────────────────── */
 .glass {
-  background:
-    linear-gradient(180deg, var(--surface-hi), var(--surface));
+  background: linear-gradient(180deg, var(--surface-hi), var(--surface));
   border: 1px solid var(--line);
   border-radius: var(--r-card);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 1px 2px rgba(0, 0, 0, 0.3),
-    0 24px 60px -28px rgba(0, 0, 0, 0.7);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  backdrop-filter: blur(24px) saturate(1.2);
+    inset 0 1px 0 rgba(239, 230, 210, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 26px 60px -30px rgba(0, 0, 0, 0.75);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  backdrop-filter: blur(18px) saturate(1.15);
   padding: clamp(22px, 3.8vw, 36px);
   position: relative;
   animation: rise 0.8s var(--ease-out) both;
 }
 
-/* тонкая золотая линия сверху — фирменный штрих */
 .glass::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 32px;
-  right: 32px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0.6;
+  left: 28px;
+  right: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brass), transparent);
+  opacity: 0.55;
 }
 
 @keyframes rise {
@@ -299,47 +342,61 @@ textarea {
   gap: 14px;
   padding: clamp(32px, 5.5vw, 52px) 24px;
   border-radius: var(--r-zone);
-  border: 1.5px dashed rgba(201, 168, 106, 0.3);
+  border: 1.5px dashed rgba(201, 164, 76, 0.28);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(201, 168, 106, 0.06), transparent 70%),
+    radial-gradient(ellipse at 50% 0%, rgba(201, 164, 76, 0.07), transparent 70%),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 6px,
+      rgba(239, 230, 210, 0.015) 6px 7px
+    ),
     var(--surface);
   overflow: hidden;
   transition:
-    border-color 0.5s var(--ease-silk),
-    background 0.5s var(--ease-silk),
-    transform 0.5s var(--ease-silk),
-    box-shadow 0.5s var(--ease-silk);
+    border-color 0.5s var(--ease-wax),
+    background 0.5s var(--ease-wax),
+    transform 0.5s var(--ease-wax),
+    box-shadow 0.5s var(--ease-wax);
 }
 
 .zone:hover,
 .zone--over {
-  border-color: rgba(201, 168, 106, 0.7);
+  border-color: rgba(201, 164, 76, 0.65);
   border-style: solid;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(201, 168, 106, 0.12), transparent 70%),
+    radial-gradient(ellipse at 50% 0%, rgba(201, 164, 76, 0.14), transparent 70%),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 6px,
+      rgba(239, 230, 210, 0.02) 6px 7px
+    ),
     var(--surface-hi);
   transform: translateY(-2px);
-  box-shadow: 0 20px 48px -24px rgba(201, 168, 106, 0.35);
+  box-shadow: 0 20px 48px -24px rgba(201, 164, 76, 0.35);
 }
 
 .zone__icon {
   width: 60px;
   height: 60px;
-  border-radius: 18px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  color: var(--gold-hi);
-  background: linear-gradient(135deg, rgba(201, 168, 106, 0.16), rgba(201, 168, 106, 0.06));
-  border: 1px solid rgba(201, 168, 106, 0.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transition: transform 0.6s var(--ease-silk), box-shadow 0.6s var(--ease-silk);
+  color: var(--brass-hi);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(201, 164, 76, 0.2), rgba(201, 164, 76, 0.05) 75%);
+  border: 1px solid rgba(201, 164, 76, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 4px rgba(201, 164, 76, 0.04);
+  transition: transform 0.6s var(--ease-wax), box-shadow 0.6s var(--ease-wax);
 }
 
 .zone:hover .zone__icon {
   transform: translateY(-3px) scale(1.04);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 12px 28px -12px rgba(201, 168, 106, 0.4);
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 28px -12px rgba(201, 164, 76, 0.4),
+    0 0 0 4px rgba(201, 164, 76, 0.08);
 }
 
 .zone__icon svg {
@@ -348,14 +405,15 @@ textarea {
 }
 
 .zone__title {
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--ink);
 }
 
 .zone__hint {
   font-size: 15px;
+  font-style: italic;
   color: var(--ink-faint);
 }
 
@@ -363,23 +421,24 @@ textarea {
   font: inherit;
   font-size: 13px;
   font-weight: 600;
+  font-family: var(--font-sans);
   padding: 3px 9px;
-  border-radius: 6px;
-  color: var(--gold-hi);
-  background: rgba(201, 168, 106, 0.12);
-  border: 1px solid rgba(201, 168, 106, 0.2);
+  border-radius: 3px;
+  color: var(--brass-hi);
+  background: rgba(201, 164, 76, 0.12);
+  border: 1px solid rgba(201, 164, 76, 0.22);
 }
 
 /* превью */
 .preview {
   position: relative;
   margin-top: 20px;
-  border-radius: 14px;
+  border-radius: 4px;
   overflow: hidden;
   border: 1px solid var(--line);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.3),
-    0 16px 40px -20px rgba(0, 0, 0, 0.6);
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 16px 40px -20px rgba(0, 0, 0, 0.65);
   background: var(--bg-2);
 }
 
@@ -395,9 +454,9 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(14, 15, 18, 0.6);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: rgba(26, 23, 18, 0.62);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 /* ── переключатель языков ───────────────────────────────────────────── */
@@ -410,26 +469,30 @@ textarea {
 }
 
 .langs__label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--ink-faint);
-  margin-right: 6px;
-  letter-spacing: 0.01em;
+  margin-right: 8px;
+  font-family: var(--font-sans);
 }
 
 .chip {
-  padding: 8px 18px;
+  padding: 8px 16px;
   border-radius: var(--r-chip);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
   color: var(--ink-soft);
   background: var(--surface);
   border: 1px solid var(--line);
+  font-family: var(--font-sans);
   transition:
-    color 0.35s var(--ease-silk),
-    border-color 0.35s var(--ease-silk),
-    background 0.35s var(--ease-silk),
-    transform 0.35s var(--ease-silk);
+    color 0.35s var(--ease-wax),
+    border-color 0.35s var(--ease-wax),
+    background 0.35s var(--ease-wax),
+    transform 0.35s var(--ease-wax);
 }
 
 .chip:hover {
@@ -440,15 +503,15 @@ textarea {
 }
 
 .chip--on {
-  color: #1a1408;
-  background: linear-gradient(135deg, var(--gold-hi), var(--gold));
+  color: #1a1712;
+  background: linear-gradient(135deg, var(--brass-hi), var(--brass));
   border-color: transparent;
-  box-shadow: 0 8px 20px -8px rgba(201, 168, 106, 0.5);
+  box-shadow: 0 8px 20px -8px rgba(201, 164, 76, 0.5);
   font-weight: 600;
 }
 
 .chip--on:hover {
-  color: #1a1408;
+  color: #1a1712;
   transform: translateY(-1px);
 }
 
@@ -458,13 +521,13 @@ textarea {
   height: 6px;
   margin-left: 8px;
   border-radius: 50%;
-  background: var(--sage);
-  box-shadow: 0 0 8px rgba(139, 168, 136, 0.6);
+  background: var(--olive);
+  box-shadow: 0 0 8px rgba(107, 115, 71, 0.6);
   vertical-align: 1px;
 }
 
 .chip--on .chip__dot {
-  background: #1a1408;
+  background: #1a1712;
   box-shadow: none;
 }
 
@@ -475,8 +538,8 @@ textarea {
   gap: 12px;
   margin-top: 22px;
   padding: 15px 20px;
-  border-radius: 14px;
-  font-weight: 500;
+  border-radius: 4px;
+  font-weight: 400;
   font-size: 15.5px;
   color: var(--ink-soft);
   background: var(--surface);
@@ -488,8 +551,8 @@ textarea {
   height: 18px;
   flex: none;
   border-radius: 50%;
-  border: 2px solid rgba(201, 168, 106, 0.18);
-  border-top-color: var(--gold);
+  border: 2px solid rgba(201, 164, 76, 0.18);
+  border-top-color: var(--brass);
   animation: spin 0.9s linear infinite;
 }
 
@@ -501,16 +564,16 @@ textarea {
   margin-top: 14px;
   height: 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(239, 230, 210, 0.06);
   overflow: hidden;
 }
 
 .progress__bar {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--gold-hi));
-  box-shadow: 0 0 12px rgba(201, 168, 106, 0.5);
-  transition: width 0.5s var(--ease-silk);
+  background: linear-gradient(90deg, var(--brass-deep), var(--brass), var(--brass-hi));
+  box-shadow: 0 0 12px rgba(201, 164, 76, 0.45);
+  transition: width 0.5s var(--ease-wax);
   position: relative;
 }
 
@@ -518,8 +581,8 @@ textarea {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-  animation: sheen 2.2s var(--ease-silk) infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: sheen 2.4s var(--ease-wax) infinite;
 }
 
 @keyframes sheen {
@@ -543,13 +606,14 @@ textarea {
   min-height: 50px;
   padding: 13px 26px;
   border-radius: var(--r-btn);
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
-  letter-spacing: -0.005em;
+  letter-spacing: 0.02em;
+  font-family: var(--font-serif);
   transition:
-    transform 0.35s var(--ease-silk),
-    box-shadow 0.35s var(--ease-silk),
-    background 0.35s var(--ease-silk),
+    transform 0.35s var(--ease-wax),
+    box-shadow 0.35s var(--ease-wax),
+    background 0.35s var(--ease-wax),
     opacity 0.25s;
   -webkit-tap-highlight-color: transparent;
 }
@@ -560,27 +624,27 @@ textarea {
 }
 
 .btn--primary {
-  color: #1a1408;
-  background: linear-gradient(135deg, var(--gold-hi) 0%, var(--gold) 50%, var(--gold-deep) 100%);
+  color: #1a1712;
+  background: linear-gradient(135deg, var(--brass-hi) 0%, var(--brass) 55%, var(--brass-deep) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 0 rgba(0, 0, 0, 0.15),
-    0 10px 26px -10px rgba(201, 168, 106, 0.55);
+    0 10px 26px -10px rgba(201, 164, 76, 0.55);
 }
 
 .btn--primary:hover {
   transform: translateY(-2px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
     inset 0 -1px 0 rgba(0, 0, 0, 0.15),
-    0 16px 32px -10px rgba(201, 168, 106, 0.65);
+    0 16px 32px -10px rgba(201, 164, 76, 0.65);
 }
 
 .btn--primary:active {
   transform: translateY(0);
   box-shadow:
     inset 0 1px 2px rgba(0, 0, 0, 0.2),
-    0 4px 12px -6px rgba(201, 168, 106, 0.4);
+    0 4px 12px -6px rgba(201, 164, 76, 0.4);
 }
 
 .btn--ghost {
@@ -591,7 +655,7 @@ textarea {
 
 .btn--ghost:hover {
   background: var(--surface-hi);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(239, 230, 210, 0.22);
   transform: translateY(-2px);
   box-shadow: 0 12px 28px -16px rgba(0, 0, 0, 0.7);
 }
@@ -604,11 +668,11 @@ textarea {
 }
 
 .btn--done {
-  color: #0f1a12;
-  background: linear-gradient(135deg, #a8c4a4, var(--sage));
+  color: #12150d;
+  background: linear-gradient(135deg, #8a9464, var(--olive));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 10px 26px -10px rgba(139, 168, 136, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 10px 26px -10px rgba(107, 115, 71, 0.5);
 }
 
 /* ── результат ──────────────────────────────────────────────────────── */
@@ -625,31 +689,35 @@ textarea {
 }
 
 .result__title {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
   color: var(--ink);
 }
 
 .pill {
   padding: 5px 14px;
   border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--sage);
-  background: var(--sage-soft);
-  border: 1px solid rgba(139, 168, 136, 0.22);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--olive);
+  background: var(--olive-soft);
+  border: 1px solid rgba(107, 115, 71, 0.25);
+  font-family: var(--font-sans);
 }
 
 .pill--mid {
-  color: var(--amber);
-  background: rgba(212, 162, 78, 0.1);
-  border-color: rgba(212, 162, 78, 0.22);
+  color: var(--terracotta);
+  background: rgba(176, 107, 69, 0.1);
+  border-color: rgba(176, 107, 69, 0.25);
 }
 
 .pill__meta {
   margin-left: auto;
   font-size: 14px;
+  font-style: italic;
   font-weight: 400;
   color: var(--ink-faint);
 }
@@ -659,7 +727,7 @@ textarea {
   min-height: 150px;
   resize: vertical;
   padding: 18px 22px;
-  border-radius: 14px;
+  border-radius: 4px;
   border: 1px solid var(--line);
   background: var(--bg-2);
   color: var(--ink);
@@ -667,25 +735,25 @@ textarea {
   font-size: 16.5px;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.35s var(--ease-silk), box-shadow 0.35s var(--ease-silk),
-    background 0.35s var(--ease-silk);
+  transition: border-color 0.35s var(--ease-wax), box-shadow 0.35s var(--ease-wax),
+    background 0.35s var(--ease-wax);
 }
 
 .result__text:focus {
-  border-color: rgba(201, 168, 106, 0.5);
+  border-color: rgba(201, 164, 76, 0.5);
   background: var(--bg-3);
-  box-shadow: 0 0 0 4px rgba(201, 168, 106, 0.1);
+  box-shadow: 0 0 0 4px rgba(201, 164, 76, 0.1);
 }
 
 /* ── ошибка ─────────────────────────────────────────────────────────── */
 .error {
   margin-top: 20px;
   padding: 16px 22px;
-  border-radius: 14px;
-  color: var(--ruby);
-  background: var(--ruby-soft);
-  border: 1px solid rgba(201, 107, 107, 0.24);
-  font-weight: 500;
+  border-radius: 4px;
+  color: var(--bad);
+  background: var(--bad-soft);
+  border: 1px solid rgba(169, 74, 61, 0.28);
+  font-weight: 400;
   font-size: 15.5px;
 }
 
@@ -698,16 +766,19 @@ textarea {
   justify-content: center;
   gap: 10px 20px;
   text-align: center;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--ink-faint);
+  font-family: var(--font-sans);
 }
 
 .footer__lock {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: var(--sage);
+  color: var(--olive);
 }
 
 .footer__lock svg {
@@ -747,8 +818,151 @@ textarea {
     margin-left: 0;
   }
 
-  .glass::before {
-    left: 20px;
-    right: 20px;
+  .brand__name {
+    font-size: 20px;
+    letter-spacing: 0.1em;
+  }
+
+  .hero::before {
+    letter-spacing: 0.22em;
+    font-size: 10.5px;
   }
 }
+</style>
+</head>
+<body>
+
+<!-- фоновые пятна -->
+<div class="blobs" aria-hidden="true">
+  <div class="blob blob--lavender"></div>
+  <div class="blob blob--aqua"></div>
+  <div class="blob blob--peach"></div>
+  <div class="blob blob--sky"></div>
+</div>
+
+<main class="shell">
+
+  <!-- шапка: лого-глаз + имя -->
+  <header class="brand">
+    <div class="brand__mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- внешнее веко -->
+        <path d="M4 24C10.5 14.5 17 10.5 24 10.5C31 10.5 37.5 14.5 44 24"
+              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M4 24C10.5 33.5 17 37.5 24 37.5C31 37.5 37.5 33.5 44 24"
+              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <!-- внутреннее веко -->
+        <path d="M9 24C14 17.5 19 14.8 24 14.8C29 14.8 34 17.5 39 24"
+              stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.55"/>
+        <path d="M9 24C14 30.5 19 33.2 24 33.2C29 33.2 34 30.5 39 24"
+              stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.55"/>
+        <!-- радужка -->
+        <circle cx="24" cy="24" r="7.2" stroke="currentColor" stroke-width="1.4"/>
+        <!-- зрачок -->
+        <circle cx="24" cy="24" r="2.6" fill="currentColor"/>
+        <!-- блик -->
+        <circle cx="22.2" cy="22.2" r="0.9" fill="#fff" opacity="0.85"/>
+        <!-- ресничные насечки -->
+        <g stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.7">
+          <path d="M24 6.5V9"/>
+          <path d="M15.5 8.6L16.6 11"/>
+          <path d="M32.5 8.6L31.4 11"/>
+          <path d="M24 41.5V39"/>
+          <path d="M15.5 39.4L16.6 37"/>
+          <path d="M32.5 39.4L31.4 37"/>
+        </g>
+        <!-- угловые засечки -->
+        <path d="M3 21.4V24M3 24H5.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M45 21.4V24M45 24H42.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="brand__name">Barbour<em>Heritage</em></div>
+  </header>
+
+  <!-- заголовок -->
+  <section class="hero">
+    <h1 class="hero__title">Вощёная <em>ткань</em>, проверенная временем</h1>
+    <p class="hero__subtitle">
+      Загрузите фотографию изделия — мы опишем материал, крой и состояние
+      в духе каталога мастерской.
+    </p>
+  </section>
+
+  <!-- карточка загрузки -->
+  <section class="glass">
+    <button class="zone" type="button" aria-label="Загрузить изображение">
+      <span class="zone__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 16V4"/>
+          <path d="M6 10l6-6 6 6"/>
+          <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+        </svg>
+      </span>
+      <span class="zone__title">Перетащите изображение сюда</span>
+      <span class="zone__hint">или нажмите <kbd>Ctrl</kbd> + <kbd>V</kbd>, чтобы вставить</span>
+    </button>
+
+    <!-- переключатель языков -->
+    <div class="langs">
+      <span class="langs__label">Язык описания</span>
+      <button class="chip chip--on" type="button">
+        Русский<span class="chip__dot"></span>
+      </button>
+      <button class="chip" type="button">English</button>
+      <button class="chip" type="button">Français</button>
+    </div>
+
+    <!-- статус + прогресс (пример) -->
+    <div class="status">
+      <span class="status__spinner" aria-hidden="true"></span>
+      Обрабатываем изображение…
+    </div>
+    <div class="progress" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress__bar" style="width:45%"></div>
+    </div>
+
+    <!-- кнопки -->
+    <div class="actions">
+      <button class="btn btn--primary" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/>
+          <path d="M13 6l6 6-6 6"/>
+        </svg>
+        Сгенерировать описание
+      </button>
+      <button class="btn btn--ghost" type="button">Очистить</button>
+    </div>
+  </section>
+
+  <!-- результат -->
+  <section class="glass">
+    <div class="result">
+      <div class="result__head">
+        <h2 class="result__title">Описание изделия</h2>
+        <span class="pill">Готово</span>
+        <span class="pill__meta">18 слов · 2.4 с</span>
+      </div>
+      <textarea class="result__text" spellcheck="false"
+        placeholder="Здесь появится описание…">Куртка из вощёного хлопка оливкового оттенка. Плотная ткань с характерным блеском, двойной кант по вороту, латунные пуговицы. Крой свободный, длина до середины бедра. Состояние — бережное, патина времени на манжетах.</textarea>
+    </div>
+  </section>
+
+  <!-- подвал -->
+  <footer class="footer">
+    <span>© Barbour Heritage Workshop</span>
+    <span class="footer__lock">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="11" width="16" height="9" rx="1.5"/>
+        <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+      </svg>
+      Изображения не покидают браузер
+    </span>
+  </footer>
+
+</main>
+
+</body>
+</html>
