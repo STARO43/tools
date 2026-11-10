@@ -447,13 +447,13 @@ export default function Page() {
             <IconDroplet />
           </div>
           <div className="brand__name">
-            Сканери<em>ньо</em>
+            Скан<em>ериньо</em>
           </div>
         </header>
 
         <section className="hero">
           <h1 className="hero__title">
-        Фото, скриншот, пидиэф в <em>текст</em>
+        
           </h1>
           <p className="hero__subtitle">
           </p>
