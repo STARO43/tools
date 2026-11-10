@@ -10,6 +10,16 @@
 //   - await service.recognize(ArrayBuffer | CanvasLike) →
 //       { text: string, lines, confidence }.
 //
+// ГЛАВНОЕ ОТЛИЧИЕ ОТ СТАРОЙ ВЕРСИИ (фикс «вечной инициализации»):
+//   [A] init стартует ТОЛЬКО по кнопке пользователя (см. main.js) —
+//       до клика страница ничего не грузит и зависнуть не может;
+//   [B] проба WebGPU ограничена таймаутом: navigator.gpu.requestAdapter()
+//       на машинах с проблемными драйверами может не отвечать никогда;
+//   [C] без COOP/COEP (обычный хостинг) принудительно numThreads = 1 —
+//       многопоточному WASM нужен SharedArrayBuffer, однопоточному нет;
+//   [D] все пути относительные (./models/…), сайт работает в подпапке
+//       хостинга (пример: shir-man.com/free-ocr/ живёт не в корне).
+//
 // МЕСТА, ЧУВСТВИТЕЛЬНЫЕ К ВЕРСИИ (проверять при обновлении пакета):
 //   [1] имя пресета: V5_CYRILLIC_MOBILE_MODEL;
 //   [2] session.executionProviders + session.onSessionFallback;
@@ -20,9 +30,8 @@
 // WASM-бинарники ORT берём из локального бандла (?url у Vite), а НЕ с
 // cdn.jsdelivr.net, куда по умолчанию их направляет ppu-paddle-ocr: в ряде
 // сетей (в частности, в РФ) jsdelivr недоступен — был 404 и WASM падал.
-// Импорт делаем динамическим (page грузится быстрее), но СТРОГО до
-// import('ppu-paddle-ocr/web'): библиотека перезаписывает wasmPaths,
-// только если он ещё не задан ("explicit wins").
+// Импорт делаем динамическим, но СТРОГО до import('ppu-paddle-ocr/web'):
+// библиотека перезаписывает wasmPaths, только если он ещё не задан.
 let ortWasmReady = null;
 
 function ensureOrtWasmPaths() {
@@ -34,22 +43,31 @@ function ensureOrtWasmPaths() {
       import('onnxruntime-web/dist/ort-wasm-simd-threaded.jsep.mjs?url'),
     ]);
     env.wasm.wasmPaths = { wasm: wasmMod.default, mjs: mjsMod.default };
+    // [C] Многопоточный WASM требует SharedArrayBuffer, который есть только
+    // при crossOriginIsolated (заголовки COOP/COEP). На обычном хостинге их
+    // нет — оставляем 1 поток: чуть медленнее, но РАБОТАЕТ ВСЮДУ (так же
+    // поступает transformers.js на сайтах вроде shir-man.com/free-ocr).
+    if (!self.crossOriginIsolated) env.wasm.numThreads = 1;
+    return env;
   })();
   return ortWasmReady;
 }
 
 const MODEL_CACHE = 'paddle-ocr-site-models-v1';
 const FILE_TIMEOUT_MS = 45_000; // сколько ждём ответ/очередной кусок потока
+const GPU_PROBE_TIMEOUT_MS = 5_000; // [B] requestAdapter иногда виснет вечно
+const SESSION_TIMEOUT_MS = 120_000; // [B] создание ONNX-сессий
 const HF_ORIGIN = 'https://huggingface.co';
 
 // Файлы моделей: первый источник — файлы, положенные в public/models/
-// (работает офлайн и в сетях, где внешние CDN заблокированы). Остальные —
-// запасные внешние источники на случай, если локальные файлы удалили.
+// (работает офлайн, в подпапке хостинга и в сетях, где внешние CDN
+// заблокированы). Остальные — запасные внешние источники на случай, если
+// папку models удалили из сборки.
 const MODEL_FILES = [
   {
     label: 'детекция',
     urls: [
-      '/models/PP-OCRv5_mobile_det_infer.onnx',
+      './models/PP-OCRv5_mobile_det_infer.onnx',
       `${HF_ORIGIN}/snowfluke/ppu-paddle-ocr-models/resolve/main/detection/PP-OCRv5_mobile_det_infer.onnx`,
       'https://hf-mirror.com/snowfluke/ppu-paddle-ocr-models/resolve/main/detection/PP-OCRv5_mobile_det_infer.onnx',
     ],
@@ -57,7 +75,7 @@ const MODEL_FILES = [
   {
     label: 'распознавание',
     urls: [
-      '/models/cyrillic_PP-OCRv5_mobile_rec_infer.onnx',
+      './models/cyrillic_PP-OCRv5_mobile_rec_infer.onnx',
       `${HF_ORIGIN}/snowfluke/ppu-paddle-ocr-models/resolve/main/recognition/multi/cyrillic/v5/cyrillic_PP-OCRv5_mobile_rec_infer.onnx`,
       'https://hf-mirror.com/snowfluke/ppu-paddle-ocr-models/resolve/main/recognition/multi/cyrillic/v5/cyrillic_PP-OCRv5_mobile_rec_infer.onnx',
     ],
@@ -65,12 +83,16 @@ const MODEL_FILES = [
   {
     label: 'словарь',
     urls: [
-      '/models/ppocrv5_cyrillic_dict.txt',
+      './models/ppocrv5_cyrillic_dict.txt',
       `${HF_ORIGIN}/snowfluke/ppu-paddle-ocr-models/resolve/main/recognition/multi/cyrillic/v5/ppocrv5_cyrillic_dict.txt`,
       'https://hf-mirror.com/snowfluke/ppu-paddle-ocr-models/resolve/main/recognition/multi/cyrillic/v5/ppocrv5_cyrillic_dict.txt',
     ],
   },
 ];
+
+// Примерный объём модели — для подписи на кнопке (точный прогресс покажем
+// во время скачивания).
+export const ENGINE_SIZE_MB = 13;
 
 let service = null;
 let initPromise = null;
@@ -97,11 +119,40 @@ function concatChunks(parts, length) {
   return out.buffer;
 }
 
+/** Абсолютный URL (ключ кеша и источник диагностических сообщений). */
+function absoluteUrl(url) {
+  try {
+    return new URL(url, location.href).href;
+  } catch {
+    return url;
+  }
+}
+
 function sourceName(url) {
-  if (url.startsWith('/')) return 'файлы проекта';
-  if (url.startsWith('https://hf-mirror.com')) return 'hf-mirror.com';
-  if (url.startsWith(HF_ORIGIN)) return 'huggingface.co';
-  return url;
+  const abs = absoluteUrl(url);
+  if (abs.startsWith(location.origin + location.pathname.replace(/[^/]*$/, '')) && abs.includes('/models/')) {
+    return 'файлы проекта';
+  }
+  if (abs.startsWith('https://hf-mirror.com')) return 'hf-mirror.com';
+  if (abs.startsWith(HF_ORIGIN)) return 'huggingface.co';
+  return abs;
+}
+
+function withTimeout(promise, ms, message) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(message)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+/** [B] Проба WebGPU с таймаутом: зависший requestAdapter = «нет WebGPU». */
+async function probeWebGpu(isWebGpuAvailable) {
+  try {
+    return await withTimeout(isWebGpuAvailable(), GPU_PROBE_TIMEOUT_MS, 'проба WebGPU не ответила');
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -122,10 +173,13 @@ async function fetchModelFile(urls, onProgress) {
 
   let lastError = null;
   for (const url of urls) {
+    const abs = absoluteUrl(url);
+    const isLocal = url.startsWith('.') || url.startsWith('/');
+
     // 1) Кеш для внешних источников: уже скачивали — из сети не ходим.
-    if (cache && !url.startsWith('/')) {
+    if (cache && !isLocal) {
       try {
-        const hit = await cache.match(url);
+        const hit = await cache.match(abs);
         if (hit) {
           const buffer = await hit.arrayBuffer();
           onProgress({ received: buffer.byteLength, total: buffer.byteLength, cached: true, source: sourceName(url) });
@@ -163,10 +217,10 @@ async function fetchModelFile(urls, onProgress) {
 
       const buffer = concatChunks(parts, received);
       // Кешируем только внешние источники (локальные и так мгновенны).
-      if (cache && !url.startsWith('/')) {
+      if (cache && !isLocal) {
         try {
           await cache.put(
-            new Request(url),
+            new Request(abs),
             new Response(buffer.slice(0), {
               headers: {
                 'content-length': String(received),
@@ -181,7 +235,7 @@ async function fetchModelFile(urls, onProgress) {
       return buffer;
     } catch (error) {
       const reason = error?.name === 'AbortError' ? 'нет ответа (таймаут)' : error?.message;
-      lastError = new Error(`${url} — ${reason}`);
+      lastError = new Error(`${sourceName(url)} — ${reason}`);
     }
   }
   throw lastError;
@@ -189,6 +243,8 @@ async function fetchModelFile(urls, onProgress) {
 
 /**
  * Инициализация OCR-движка: выбор бэкенда, загрузка моделей, создание сессий.
+ * Вызывается ТОЛЬКО по клику пользователя (как «Download OCR Engine» у
+ * shir-man.com/free-ocr) — [A].
  *
  * @param {object} [hooks]
  * @param {(s: object) => void} [hooks.onStage] — события для UI:
@@ -211,8 +267,8 @@ export function initOcr({ onStage = () => {}, onFallback = () => {} } = {}) {
     }
 
     onStage({ stage: 'probe' });
-    // Сначала указываем ORT локальные wasm-файлы, только потом грузим SDK —
-    // иначе библиотека перенаправит бинарники на внешний CDN.
+    // Сначала указываем ORT локальные wasm-файлы и число потоков, только
+    // потом грузим SDK — иначе библиотека перенаправит бинарники на CDN.
     await ensureOrtWasmPaths();
     const {
       PaddleOcrService,
@@ -221,9 +277,11 @@ export function initOcr({ onStage = () => {}, onFallback = () => {} } = {}) {
       getDefaultWebExecutionProviders,
     } = await import('ppu-paddle-ocr/web');
 
-    webgpuSupported = await isWebGpuAvailable();
+    webgpuSupported = await probeWebGpu(isWebGpuAvailable);
     // [2] Порядок в массиве = приоритет; фолбэк WebGPU→WASM внутри библиотеки.
-    const executionProviders = await getDefaultWebExecutionProviders();
+    const executionProviders = webgpuSupported
+      ? await getDefaultWebExecutionProviders()
+      : ['wasm'];
     activeProvider = webgpuSupported ? 'webgpu' : 'wasm';
 
     // Загружаем 3 файла модели: с прогрессом, из локальных файлов или кеша.
@@ -274,7 +332,13 @@ export function initOcr({ onStage = () => {}, onFallback = () => {} } = {}) {
       processing: { engine: 'opencv' },
       debugging: { debug: false, verbose: false },
     });
-    await service.initialize();
+    // [B] Даже создание сессий ограничим таймаутом: зависание = понятная
+    // ошибка с кнопкой «Повторить», а не вечное «Инициализация…».
+    await withTimeout(
+      service.initialize(),
+      SESSION_TIMEOUT_MS,
+      'создание сессии не завершилось за 2 минуты — попробуйте ещё раз (кнопка «Повторить»)',
+    );
 
     onStage({ stage: 'ready' });
     return { provider: activeProvider, webgpuSupported };

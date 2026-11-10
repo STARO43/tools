@@ -33,6 +33,10 @@ const ortWasmLocal = {
 };
 
 export default defineConfig({
+  // Относительные пути к ассетам (./assets/…): сайт работает и в корне
+  // домена, и в подпапке хостинга (как shir-man.com/free-ocr/), и при
+  // локальном открытии папки через любой статический сервер.
+  base: './',
   server: {
     headers: isolationHeaders,
   },

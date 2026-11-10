@@ -2,9 +2,10 @@
 // Логика страницы: drag&drop, изображения, PDF (pdfjs-dist), прогресс, вывод.
 // API распознавания спрятано в ./ocr.js, постобработка текста — в ./postprocess.js.
 //
-// Файлы можно выбирать СРАЗУ, не дожидаясь модели: они встают в очередь и
-// обрабатываются, как только модель готова. Если модель скачать не удалось —
-// показываем причину и кнопку «Повторить», очередь сохраняется.
+// СХЕМА КАК У shir-man.com/free-ocr: страница открывается мгновенно, ничего
+// сама не грузит. Движок скачивается ТОЛЬКО по кнопке «Скачать OCR-движок».
+// Файлы можно выбирать в любой момент: до готовности движка они встают в
+// очередь и обрабатываются автоматически, как только он готов.
 // ============================================================================
 
 import * as pdfjsLib from 'pdfjs-dist';
@@ -32,8 +33,9 @@ const els = {
   providerLabel: $('providerLabel'),
   modelStatus: $('modelStatus'),
   modelBar: $('modelBar'),
+  downloadBtn: $('downloadBtn'),
   gpuNotice: $('gpuNotice'),
-  retryBtn: $('retryBtn'),
+  dzHint: document.querySelector('.dz-hint'),
   dropZone: $('dropZone'),
   fileInput: $('fileInput'),
   progressCard: $('progressCard'),
@@ -49,6 +51,7 @@ const els = {
 
 let modelReady = false;
 let busy = false;
+let initStarted = false; // движок запускаем один раз: кнопкой или выбором файла
 const queuedFiles = []; // файлы, выбранные до готовности модели
 
 // Готовый текст накапливается по файлам; <pre> всегда заполняется через
@@ -112,7 +115,8 @@ function providerBadge(text, ok) {
 }
 
 // ---------------------------------------------------------------------------
-// Инициализация модели. Вызывается при старте и по кнопке «Повторить».
+// Движок скачивается ТОЛЬКО по кнопке (как «Download OCR Engine» у
+// shir-man.com/free-ocr): до клика страница ничего не качает — виснуть нечему.
 // ---------------------------------------------------------------------------
 function handleModelStage(s) {
   if (s.stage === 'probe') {
@@ -120,7 +124,7 @@ function handleModelStage(s) {
   } else if (s.stage === 'download') {
     // Честный прогресс: сколько байт пришло и из какого источника.
     els.modelBar.hidden = false;
-    const head = `Скачиваем модель (${s.fileIndex + 1}/${s.fileCount} — ${s.label})`;
+    const head = `Скачиваем движок (${s.fileIndex + 1}/${s.fileCount} — ${s.label})`;
     if (s.cached) {
       els.modelStatus.textContent = `${head}: уже в кеше браузера.`;
       setBar(els.modelBar, (s.fileIndex + 1) / s.fileCount);
@@ -139,9 +143,12 @@ function handleModelStage(s) {
 }
 
 function startInit() {
-  els.retryBtn.hidden = true;
+  initStarted = true;
+  els.downloadBtn.hidden = true;
+  els.errorCard.hidden = true;
+  els.errorCard.innerHTML = '';
   els.modelBar.hidden = false;
-  els.modelStatus.textContent = 'Инициализация…';
+  els.modelStatus.textContent = 'Проверяем поддержку WebGPU…';
   setBar(els.modelBar, null);
 
   initOcr({ onStage: handleModelStage, onFallback: showFallbackNotice })
@@ -150,9 +157,10 @@ function startInit() {
       els.modelBar.hidden = true;
       els.modelStatus.textContent =
         provider === 'webgpu'
-          ? 'Модель готова. Ускорение: WebGPU.'
-          : 'Модель готова. Режим: WASM.';
+          ? 'Движок готов. Ускорение: WebGPU.'
+          : 'Движок готов. Режим: WASM.';
       providerBadge(provider === 'webgpu' ? 'WebGPU активен' : 'Работает через WASM', true);
+      els.dzHint.textContent = 'PNG, JPG, WEBP или PDF. Ничего не загружается на сервер.';
 
       // Понятное сообщение, если WebGPU не поддерживается, — приложение
       // всё равно полноценно работает через WASM (требование №12).
@@ -163,39 +171,36 @@ function startInit() {
           'WebGPU есть в актуальных версиях Chrome, Edge, Firefox и Safari.';
       }
 
-      // Обрабатываем файлы, выбранные, пока модель загружалась.
+      // Обрабатываем файлы, выбранные, пока движок загружался.
       const queued = queuedFiles.splice(0);
       if (queued.length > 0) handleFiles(queued);
     })
     .catch((error) => {
       console.error('OCR init failed:', error);
       els.modelBar.hidden = true;
-      els.modelStatus.textContent = 'Модель загрузить не удалось';
-      els.retryBtn.hidden = false;
+      els.modelStatus.textContent =
+        'Движок загрузить не удалось — смотрите причину ниже.';
+      // Та же кнопка становится «Повторить».
+      els.downloadBtn.hidden = false;
+      els.downloadBtn.textContent = 'Повторить загрузку движка';
       showFatalError(
-        'Не удалось загрузить модель. Причина последней попытки: ' +
+        'Не удалось загрузить OCR-движок. Причина последней попытки: ' +
           (error?.message || 'неизвестная ошибка') +
-          '. Обычно модель берётся из файлов проекта (public/models) и сеть не нужна — ' +
-          'проверьте, что папка public/models на месте и сервер запущен (npm run dev / preview). ' +
-          'Внешние источники (huggingface.co) нужны только как запасные и могут быть ' +
-          'заблокированы в вашей сети. Нажмите «Повторить». Уже выбранные файлы останутся в очереди.',
+          '. Обычно движок берётся из файлов проекта (папка models рядом со страницей) и сеть не нужна — ' +
+          'проверьте, что папка models залита на хостинг вместе со страницей и что страница открыта ' +
+          'по адресу http(s), а не как file://. Внешние источники (huggingface.co) нужны только как ' +
+          'запасные и могут быть заблокированы в вашей сети. Уже выбранные файлы останутся в очереди.',
       );
     });
 }
+
+els.downloadBtn.addEventListener('click', startInit);
 
 function showFallbackNotice() {
   els.gpuNotice.hidden = false;
   els.gpuNotice.textContent =
     'WebGPU-сессию создать не удалось (драйвер или GPU заняты/запрещены) — переключились на WASM. Скорость ниже, качество то же.';
 }
-
-els.retryBtn.addEventListener('click', () => {
-  els.errorCard.hidden = true;
-  els.errorCard.innerHTML = '';
-  startInit();
-});
-
-startInit();
 
 // ---------------------------------------------------------------------------
 // Ввод файлов: drag&drop + input[type=file]. Окно выбора открывается ВСЕГДА,
@@ -243,7 +248,7 @@ function queueFiles(files) {
   queuedFiles.push(...files);
   els.progressCard.hidden = false;
   const names = files.map((f) => f.name).join(', ');
-  els.fileStatus.textContent = `В очереди: ${queuedFiles.length} (${names}) — обработаем, как только модель загрузится.`;
+  els.fileStatus.textContent = `В очереди: ${queuedFiles.length} (${names}) — обработаем, как только движок загрузится.`;
   setBar(els.fileBar, 0);
 }
 
@@ -254,6 +259,9 @@ async function handleFiles(fileList) {
 
   if (!modelReady) {
     queueFiles(files);
+    // Если движок ещё не запускали — сразу качаем его, не дожидаясь клика:
+    // пользователь уже выразил намерение работать.
+    if (!initStarted) startInit();
     return;
   }
 

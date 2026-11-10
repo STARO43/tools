@@ -233,6 +233,13 @@
         color: var(--accent-contrast);
       }
 
+      button.big {
+        font-size: 15.5px;
+        font-weight: 600;
+        padding: 12px 22px;
+        border-radius: 12px;
+      }
+
       button.ghost {
         background: transparent;
         color: var(--text);
@@ -309,15 +316,21 @@
         </span>
       </header>
 
-      <!-- Статус модели -->
+      <!-- Статус движка. Пока движок не скачан — ничего не грузится и
+           зависнуть не может: пользователь сам запускает скачивание.
+           Такая же схема, как «Download OCR Engine» у shir-man.com/free-ocr. -->
       <section class="card" id="modelCard">
-        <div class="card-label">Модель распознавания</div>
-        <div class="status-text" id="modelStatus">Инициализация…</div>
-        <div class="bar indeterminate" id="modelBar"><div class="bar-fill"></div></div>
+        <div class="card-label">OCR-движок · PP-OCRv5, русский язык</div>
+        <div class="status-text" id="modelStatus">
+          Движок работает прямо в браузере: 13 МБ скачиваются один раз и кешируются.
+        </div>
+        <div class="bar" id="modelBar" hidden><div class="bar-fill"></div></div>
         <p class="notice" id="gpuNotice" hidden></p>
-        <button class="ghost" id="retryBtn" type="button" hidden style="margin-top: 12px">
-          Повторить загрузку модели
-        </button>
+        <div class="row" style="margin-top: 14px">
+          <button class="primary big" id="downloadBtn" type="button">
+            Скачать OCR-движок · ≈13 МБ
+          </button>
+        </div>
       </section>
 
       <!-- Ввод файлов -->
@@ -348,7 +361,10 @@
           <path d="M4 21h16" />
         </svg>
         <p class="dz-title">Перетащите файл сюда или нажмите, чтобы выбрать</p>
-        <p class="dz-hint">PNG, JPG, WEBP или PDF. Ничего не загружается на сервер.</p>
+        <p class="dz-hint">
+          PNG, JPG, WEBP или PDF. Ничего не загружается на сервер. Если движок ещё не скачан —
+          файлы встанут в очередь и обработаются автоматически.
+        </p>
       </section>
 
       <!-- Прогресс обработки -->
@@ -376,8 +392,8 @@
       </section>
 
       <footer>
-        PP-OCRv5 (кириллический пресет) · ppu-paddle-ocr · ONNX Runtime Web. Модель скачивается
-        с CDN один раз и кешируется браузером; сами документы никуда не отправляются.
+        PP-OCRv5 (кириллический пресет) · ppu-paddle-ocr · ONNX Runtime Web. Движок лежит рядом со
+        страницей (папка models) и работает локально; сами документы никуда не отправляются.
       </footer>
     </main>
 
