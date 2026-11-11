@@ -92,6 +92,76 @@ const IconLock = () => (
   </svg>
 );
 
+const IconScanner = () => (
+  <svg
+    width="100%"
+    height="100%"
+    viewBox="0 0 32 32"
+    shapeRendering="crispEdges"
+    style={{ display: "block", imageRendering: "pixelated" }}
+    aria-hidden
+  >
+    <defs>
+      <clipPath id="scanner-after-clip">
+        <rect x="0" y="0" width="32" height="0">
+          <animate
+            attributeName="height"
+            values="0;0;32;32"
+            keyTimes="0;0.06;0.86;1"
+            dur="4s"
+            repeatCount="indefinite"
+          />
+        </rect>
+      </clipPath>
+    </defs>
+
+    <g fill="#6a7280">
+      <rect x="2" y="2"  width="28" height="1" />
+      <rect x="2" y="4"  width="26" height="1" />
+      <rect x="2" y="6"  width="28" height="1" />
+      <rect x="2" y="8"  width="20" height="1" />
+      <rect x="4" y="12" width="26" height="1" />
+      <rect x="4" y="14" width="28" height="1" />
+      <rect x="4" y="16" width="24" height="1" />
+      <rect x="4" y="18" width="28" height="1" />
+      <rect x="4" y="20" width="18" height="1" />
+      <rect x="2" y="24" width="28" height="1" />
+      <rect x="2" y="26" width="22" height="1" />
+      <rect x="2" y="28" width="28" height="1" />
+      <rect x="2" y="30" width="26" height="1" />
+    </g>
+
+    <g fill="#b0b8c4" clipPath="url(#scanner-after-clip)">
+      <rect x="2" y="2"  width="28" height="1" />
+      <rect x="2" y="4"  width="26" height="1" />
+      <rect x="2" y="6"  width="28" height="1" />
+      <rect x="2" y="8"  width="20" height="1" />
+      <rect x="4" y="12" width="26" height="1" />
+      <rect x="4" y="14" width="28" height="1" />
+      <rect x="4" y="16" width="24" height="1" />
+      <rect x="4" y="18" width="28" height="1" />
+      <rect x="4" y="20" width="18" height="1" />
+      <rect x="2" y="24" width="28" height="1" />
+      <rect x="2" y="26" width="22" height="1" />
+      <rect x="2" y="28" width="28" height="1" />
+      <rect x="2" y="30" width="26" height="1" />
+    </g>
+
+    <g>
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="0 0; 0 0; 0 32; 0 32"
+        keyTimes="0;0.06;0.86;1"
+        dur="4s"
+        repeatCount="indefinite"
+      />
+      <rect x="0" y="0" width="32" height="1" fill="#5ce1ff" opacity="0.20" />
+      <rect x="0" y="1" width="32" height="1" fill="#5ce1ff" opacity="0.08" />
+      <rect x="0" y="0" width="32" height="1" fill="#ff3636" />
+    </g>
+  </svg>
+);
 /* ────────────────────────── компонент ────────────────────────── */
 
 export default function Page() {
@@ -443,8 +513,8 @@ export default function Page() {
 
       <main className="shell">
         <header className="brand">
-          <div className="brand__mark">
-  <IconEye />
+       <div className="brand__mark">
+  <IconScanner />
 </div>
           <div className="brand__name">
             Сканер<em>иньо</em>
