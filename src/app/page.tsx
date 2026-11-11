@@ -656,7 +656,7 @@ export default function Page() {
             <IconLock />
             Локально на вашем устройстве
           </span>
-          <span>Без отправки в интернет</span>
+          <span>Спасибо @vnvax</span>
         </footer>
       </main>
     </>
