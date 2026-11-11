@@ -1,38 +1,32 @@
 :root {
-  /* ── палитра Ozon: digital blue, magenta, cyan, чистые нейтрали ───── */
-  --bg: #ffffff;
-  --bg-2: #f6f7fa;
-  --bg-3: #eef1f6;
-  --bg-4: #e5e8ed;
+  /* ── офисная монохромная палитра: бумага, графит, ч/б ───────────── */
+  --bg: #f4f4f2; /* цвет офисной бумаги А4 */
+  --bg-2: #ececeb;
+  --bg-3: #e2e2df;
+  --bg-4: #d5d5d2;
 
-  --ink: #222222;
-  --ink-soft: #6b7684;
-  --ink-faint: #bfc5ce;
+  --ink: #1a1a1a; /* почти чёрный */
+  --ink-soft: #555555; /* графит */
+  --ink-faint: #888888; /* серый */
 
-  --ozon-blue: #005bff;
-  --ozon-blue-dark: #0046cc;
-  --ozon-magenta: #ff3636;
-  --ozon-cyan: #00c4ff;
-  --ozon-blue-soft: #e8f6ff;
+  /* акценты заменены на чёрный/графит */
+  --accent: #1a1a1a;
+  --accent-dark: #000000;
+  --accent-soft: #e8e8e6;
 
-  --accent: var(--ozon-blue);
-  --accent-2: var(--ozon-cyan);
-  --accent-ink: #ffffff;
-  --accent-soft: rgba(0, 91, 255, 0.08);
+  --ok: #2e7d32;
+  --ok-soft: rgba(46, 125, 50, 0.10);
+  --warn: #e65100;
+  --bad: #c62828;
+  --bad-soft: rgba(198, 40, 40, 0.08);
 
-  --ok: #00b26a;
-  --ok-soft: rgba(0, 178, 106, 0.10);
-  --warn: #ffa800;
-  --bad: var(--ozon-magenta);
-  --bad-soft: rgba(255, 54, 54, 0.08);
-
-  /* поверхности — чистые, с мягкими скруглениями */
+  /* поверхности — бумага и светло-серые блоки */
   --surface: #ffffff;
-  --surface-2: #f6f7fa;
-  --border: #e5e8ed;
-  --border-strong: #d0d6df;
+  --surface-2: #f4f4f2;
+  --border: #cccccc;
+  --border-strong: #999999;
 
-  /* fluid-движок — сохранён */
+  /* fluid-движок */
   --fs-xs:   clamp(12px, 0.82vw + 0.48vh, 14px);
   --fs-sm:   clamp(13px, 0.95vw + 0.55vh, 16px);
   --fs-md:   clamp(15px, 1.05vw + 0.65vh, 18px);
@@ -46,11 +40,11 @@
   --sp-4: clamp(24px, 2.4vw, 40px);
   --sp-5: clamp(32px, 3.5vw, 56px);
 
-  /* скругления Ozon: мягкие, но не «пузырьковые» */
-  --r-card:  clamp(16px, 1.5vw, 24px);
-  --r-zone:  clamp(12px, 1.2vw, 18px);
-  --r-input: 12px;
-  --r-chip:  999px;
+  /* строгие, «офисные» скругления */
+  --r-card:  clamp(8px, 1vw, 12px);
+  --r-zone:  clamp(6px, 0.8vw, 10px);
+  --r-input: 6px;
+  --r-chip:  4px;
 
   --tap: clamp(44px, 5.5vh, 56px);
 
@@ -84,18 +78,16 @@ body {
   overflow-x: hidden;
 }
 
-/* ── фон: белый с мягкой голубой подсветкой сверху ──────────────────── */
+/* ── фон: бумага с лёгкой тенью по краям ─────────────────────────────── */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
-  background:
-    radial-gradient(80% 50% at 50% 0%, rgba(0, 196, 255, 0.07) 0%, transparent 70%),
-    linear-gradient(180deg, #ffffff 0%, #f6f7fa 100%);
+  background: linear-gradient(180deg, #f4f4f2 0%, #ececeb 100%);
 }
 
-/* Тонкая сетка — как в товарных сетках маркетплейса */
+/* Тонкая канцелярская сетка */
 body::after {
   content: "";
   position: fixed;
@@ -103,18 +95,14 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(0, 91, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 91, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: clamp(48px, 6vw, 96px) clamp(48px, 6vw, 96px);
   mask-image: radial-gradient(ellipse 90% 60% at 50% 20%, black 20%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 20%, black 20%, transparent 80%);
 }
 
-h1,
-h2,
-p {
-  margin: 0;
-}
+h1, h2, p { margin: 0; }
 
 button {
   font: inherit;
@@ -130,13 +118,11 @@ textarea {
 }
 
 ::selection {
-  background: var(--ozon-blue);
+  background: var(--ink);
   color: #ffffff;
 }
 
-.blobs {
-  display: none;
-}
+.blobs { display: none; }
 
 /* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
@@ -162,13 +148,15 @@ textarea {
   width: var(--tap);
   height: var(--tap);
   flex: none;
-  border-radius: calc(var(--tap) * 0.28);
+  border-radius: 8px;
+  background: #1a1a1a; /* Чёрная подложка для лого */
   box-shadow:
-    0 2px 4px rgba(0, 91, 255, 0.18),
-    0 8px 20px -6px rgba(0, 91, 255, 0.28);
+    0 1px 2px rgba(0, 0, 0, 0.10),
+    0 4px 12px -4px rgba(0, 0, 0, 0.15);
   display: grid;
   place-items: center;
   color: #ffffff;
+  overflow: hidden;
 }
 
 .brand__mark svg {
@@ -191,9 +179,7 @@ textarea {
 }
 
 /* заголовок */
-.hero {
-  margin-bottom: var(--sp-2);
-}
+.hero { margin-bottom: var(--sp-2); }
 
 .hero__title {
   font-size: var(--fs-hero);
@@ -205,10 +191,7 @@ textarea {
 
 .hero__title em {
   font-style: normal;
-  color: var(--ozon-blue);
-  background: none;
-  -webkit-background-clip: initial;
-  background-clip: initial;
+  color: var(--ink-soft);
 }
 
 .hero__subtitle {
@@ -220,15 +203,15 @@ textarea {
   letter-spacing: -0.012em;
 }
 
-/* ── карточка: белая, с мягкой тенью и скруглением Ozon ───────────── */
+/* ── карточка: белый лист с мягкой тенью ────────────────────────────── */
 .glass {
   flex: 1 1 auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-card);
   box-shadow:
-    0 1px 2px rgba(34, 34, 34, 0.04),
-    0 8px 24px -12px rgba(34, 34, 34, 0.08);
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 8px 24px -12px rgba(0, 0, 0, 0.06);
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
@@ -245,7 +228,7 @@ textarea {
   animation-delay: 0.05s;
 }
 
-/* ── зона загрузки: мягкая голубая подложка, пунктирная синяя рамка ── */
+/* ── зона загрузки ─────────────────────────────────────────────────── */
 .zone {
   position: relative;
   width: 100%;
@@ -258,23 +241,20 @@ textarea {
   gap: var(--sp-2);
   padding: var(--sp-4);
   border-radius: var(--r-zone);
-  border: 1.5px dashed rgba(0, 91, 255, 0.35);
-  background: linear-gradient(180deg, #f8fbff 0%, #f2f7ff 100%);
+  border: 1.5px dashed var(--border-strong);
+  background: #fafafa;
   overflow: hidden;
   transition:
     border-color 0.3s var(--ease-ozon),
     background 0.3s var(--ease-ozon);
 }
 
-.zone::after {
-  display: none;
-}
+.zone::after { display: none; }
 
-.zone:hover,
-.zone--over {
-  border-color: var(--ozon-blue);
+.zone:hover, .zone--over {
+  border-color: var(--ink);
   border-style: solid;
-  background: linear-gradient(180deg, #f0f7ff 0%, #e8f6ff 100%);
+  background: #f0f0f0;
 }
 
 .zone__icon {
@@ -283,9 +263,9 @@ textarea {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: var(--ozon-blue);
-  background: var(--ozon-blue-soft);
-  border: 1px solid rgba(0, 91, 255, 0.15);
+  color: var(--ink-soft);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
   transition:
     background 0.3s var(--ease-ozon),
     color 0.3s var(--ease-ozon),
@@ -293,7 +273,7 @@ textarea {
 }
 
 .zone:hover .zone__icon {
-  background: var(--ozon-blue);
+  background: var(--ink);
   color: #ffffff;
   transform: scale(1.04);
 }
@@ -321,10 +301,10 @@ textarea {
   font-size: var(--fs-xs);
   font-weight: 600;
   padding: 3px 10px;
-  border-radius: 8px;
-  color: var(--ozon-blue);
-  background: var(--ozon-blue-soft);
-  border: 1px solid rgba(0, 91, 255, 0.18);
+  border-radius: 4px;
+  color: var(--ink);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
 }
 
 /* превью */
@@ -349,12 +329,12 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(250, 250, 250, 0.72);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 
-/* ── языки: капсулы с голубой подложкой при hover ─────────────────── */
+/* ── языки ─────────────────────────────────────────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
@@ -380,7 +360,7 @@ textarea {
   letter-spacing: -0.012em;
   color: var(--ink-soft);
   background: var(--bg-2);
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   transition:
     background 0.22s var(--ease-ozon),
     color 0.22s var(--ease-ozon),
@@ -388,24 +368,24 @@ textarea {
 }
 
 .chip:hover {
-  color: var(--ozon-blue);
-  background: var(--ozon-blue-soft);
-  border-color: rgba(0, 91, 255, 0.20);
+  color: var(--ink);
+  background: #e0e0e0;
+  border-color: #999999;
 }
 
 .chip:active {
-  background: rgba(0, 91, 255, 0.14);
+  background: #d5d5d5;
 }
 
 .chip--on {
   color: #ffffff;
-  background: var(--ozon-blue);
-  border-color: var(--ozon-blue);
+  background: var(--ink);
+  border-color: var(--ink);
 }
 
 .chip--on:hover {
-  background: var(--ozon-blue-dark);
-  border-color: var(--ozon-blue-dark);
+  background: #000000;
+  border-color: #000000;
   color: #ffffff;
 }
 
@@ -441,14 +421,12 @@ textarea {
   height: clamp(15px, 1.3vw, 18px);
   flex: none;
   border-radius: 50%;
-  border: 2px solid rgba(0, 91, 255, 0.15);
-  border-top-color: var(--ozon-blue);
+  border: 2px solid #d5d5d5;
+  border-top-color: var(--ink);
   animation: spin 0.9s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .progress {
   margin-top: var(--sp-2);
@@ -461,15 +439,13 @@ textarea {
 .progress__bar {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--ozon-blue) 0%, var(--ozon-cyan) 100%);
+  background: var(--ink);
   transition: width 0.5s var(--ease-soft);
 }
 
-.progress__bar::after {
-  display: none;
-}
+.progress__bar::after { display: none; }
 
-/* ── кнопки: каждое состояние — свой заметный жест ─────────────────── */
+/* ── кнопки ─────────────────────────────────────────────────────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -484,7 +460,7 @@ textarea {
   gap: 8px;
   min-height: var(--tap);
   padding: var(--sp-2) var(--sp-4);
-  border-radius: var(--r-chip);
+  border-radius: 8px; /* Строгие кнопки */
   font-weight: 600;
   font-size: var(--fs-md);
   letter-spacing: -0.016em;
@@ -497,51 +473,49 @@ textarea {
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn:active {
-  transform: scale(0.97);
-}
+.btn:active { transform: scale(0.97); }
 
 .btn svg {
   width: clamp(16px, 1.3vw, 19px);
   height: clamp(16px, 1.3vw, 19px);
 }
 
-/* primary: синяя → тёмно-синяя + усиленная тень при hover → сдвиг */
+/* primary: чёрная → серая при hover */
 .btn--primary {
   color: #ffffff;
-  background: var(--ozon-blue);
-  border: 2px solid var(--ozon-blue);
-  box-shadow: 0 2px 6px rgba(0, 91, 255, 0.20);
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
 }
 
 .btn--primary:hover {
-  background: var(--ozon-blue-dark);
-  border-color: var(--ozon-blue-dark);
-  box-shadow: 0 6px 16px -4px rgba(0, 91, 255, 0.40);
+  background: #333333;
+  border-color: #333333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn--primary:active {
-  background: #0039a6;
-  border-color: #0039a6;
-  box-shadow: 0 2px 4px rgba(0, 91, 255, 0.25);
+  background: #000000;
+  border-color: #000000;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.20);
 }
 
-/* ghost: прозрачная с синей рамкой → голубая заливка при hover */
+/* ghost: прозрачная с чёрной рамкой */
 .btn--ghost {
-  color: var(--ozon-blue);
+  color: var(--ink);
   background: transparent;
-  border: 2px solid rgba(0, 91, 255, 0.35);
+  border: 2px solid var(--border-strong);
 }
 
 .btn--ghost:hover {
-  color: var(--ozon-blue-dark);
-  background: var(--ozon-blue-soft);
-  border-color: var(--ozon-blue);
+  color: var(--ink);
+  background: #e8e8e6;
+  border-color: var(--ink);
 }
 
 .btn--ghost:active {
-  background: rgba(0, 91, 255, 0.14);
-  border-color: var(--ozon-blue-dark);
+  background: #d5d5d2;
+  border-color: var(--ink);
 }
 
 .btn:disabled {
@@ -550,23 +524,23 @@ textarea {
   pointer-events: none;
 }
 
-/* done: зелёная → насыщенный изумруд + лёгкое свечение */
+/* done: тёмно-зелёная */
 .btn--done {
   color: #ffffff;
   background: var(--ok);
   border: 2px solid var(--ok);
-  box-shadow: 0 2px 6px rgba(0, 178, 106, 0.20);
+  box-shadow: 0 2px 4px rgba(46, 125, 50, 0.20);
 }
 
 .btn--done:hover {
-  background: #009157;
-  border-color: #009157;
-  box-shadow: 0 6px 16px -4px rgba(0, 178, 106, 0.45);
+  background: #1b5e20;
+  border-color: #1b5e20;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.30);
 }
 
 .btn--done:active {
-  background: #007a49;
-  border-color: #007a49;
+  background: #0f4014;
+  border-color: #0f4014;
 }
 
 /* ── результат ─────────────────────────────────────────────────────── */
@@ -593,14 +567,14 @@ textarea {
 }
 
 .pill {
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #ffffff;
-  background: var(--ozon-blue);
+  background: var(--ink);
 }
 
 .pill--mid {
@@ -637,18 +611,18 @@ textarea {
 }
 
 .result__text:focus {
-  border-color: var(--ozon-blue);
-  box-shadow: 0 0 0 3px rgba(0, 91, 255, 0.12);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
 
-/* ── ошибка: красная подложка Ozon, без грубых рамок ───────────────── */
+/* ── ошибка ─────────────────────────────────────────────────────────── */
 .error {
   margin-top: var(--sp-2);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-input);
-  color: #c42b2b;
+  color: var(--bad);
   background: var(--bad-soft);
-  border: 1px solid rgba(255, 54, 54, 0.18);
+  border: 1px solid rgba(198, 40, 40, 0.20);
   font-weight: 500;
   font-size: var(--fs-sm);
   letter-spacing: -0.008em;
@@ -674,7 +648,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--ozon-blue);
+  color: var(--ink);
 }
 
 .footer__lock svg {
@@ -684,9 +658,7 @@ textarea {
 
 /* ── доступность и адаптив ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -694,56 +666,24 @@ textarea {
 }
 
 @media (max-width: 720px) {
-  .shell {
-    padding: var(--sp-3);
-    gap: var(--sp-2);
-  }
-
-  .glass {
-    padding: var(--sp-3);
-    border-radius: var(--r-zone);
-  }
-
-  .zone {
-    min-height: 180px;
-    padding: var(--sp-3) var(--sp-2);
-  }
-
-  .btn {
-    width: 100%;
-    min-height: var(--tap);
-  }
-
-  .pill__meta {
-    margin-left: 0;
-  }
-
-  .hero__title {
-    font-size: clamp(28px, 9vw, 40px);
-  }
+  .shell { padding: var(--sp-3); gap: var(--sp-2); }
+  .glass { padding: var(--sp-3); border-radius: var(--r-zone); }
+  .zone { min-height: 180px; padding: var(--sp-3) var(--sp-2); }
+  .btn { width: 100%; min-height: var(--tap); }
+  .pill__meta { margin-left: 0; }
+  .hero__title { font-size: clamp(28px, 9vw, 40px); }
 }
 
 @media (max-height: 560px) and (orientation: landscape) {
   .hero { margin-bottom: var(--sp-1); }
-  .zone {
-    min-height: 120px;
-    padding: var(--sp-2) var(--sp-3);
-  }
-  .zone__icon {
-    width: 44px;
-    height: 44px;
-  }
+  .zone { min-height: 120px; padding: var(--sp-2) var(--sp-3); }
+  .zone__icon { width: 44px; height: 44px; }
   .glass { padding: var(--sp-2) var(--sp-3); }
 }
 
 @media (min-width: 1200px) {
-  .shell {
-    padding: var(--sp-5) clamp(48px, 7vw, 120px);
-  }
-
-  .glass {
-    padding: var(--sp-5) clamp(40px, 4vw, 64px);
-  }
+  .shell { padding: var(--sp-5) clamp(48px, 7vw, 120px); }
+  .glass { padding: var(--sp-5) clamp(40px, 4vw, 64px); }
 }
 
 @media (min-width: 1800px) {
