@@ -1,49 +1,41 @@
 :root {
   /* ── пастельная палитра ─────────────────────────────────────────── */
-  --bg:        #f7f6f3;   /* тёплый бумажный */
-  --bg-2:      #fbfaf8;
-  --bg-3:      #f1efec;
-  --bg-4:      #e9e6e2;
+  --bg: #f7f6f3;
+  --bg-2: #fbfaf8;
+  --bg-3: #f1efec;
+  --bg-4: #e9e6e2;
 
-  --ink:       #2b2b30;   /* не чёрный — графитовый */
-  --ink-soft:  #6b6b73;
+  --ink: #2b2b30;
+  --ink-soft: #6b6b73;
   --ink-faint: #9a9aa2;
 
-  /* пастельные акценты */
-  --lav:       #b8a4d4;   /* лаванда */
-  --mint:      #a8cdbf;   /* мята */
-  --peach:     #e8c4b0;   /* персик */
-  --sky:       #a9c3dd;   /* пудровый голубой */
-  --accent:    #8b9dc9;   /* сдержанный синий акцент */
-  --accent-2:  #b8a4d4;
+  --lav: #b8a4d4;
+  --mint: #a8cdbf;
+  --peach: #e8c4b0;
+  --sky: #a9c3dd;
+
+  --accent: #8b9dc9;
+  --accent-2: #b8a4d4;
+  --accent-ink: #8b9dc9;
   --accent-soft: rgba(139, 157, 201, 0.10);
 
-  --ok:        #8fbc9d;
-  --warn:      #e0b894;
-  --bad:       #d4a0a0;
-  --bad-soft:  rgba(212, 160, 160, 0.12);
+  --ok: #8fbc9d;
+  --ok-soft: rgba(143, 188, 157, 0.12);
+  --warn: #e0b894;
+  --bad: #d4a0a0;
+  --bad-soft: rgba(212, 160, 160, 0.12);
 
-  /* ── поверхности и тени ─────────────────────────────────────────── */
-  --surface:        rgba(255, 255, 255, 0.72);
-  --surface-solid:  #ffffff;
-  --surface-border: rgba(43, 43, 48, 0.06);
-
-  /* многослойные тени низкой плотности — «премиум», не «колхоз» */
-  --shadow-sm:
-    0 1px 2px rgba(30, 30, 50, 0.04),
-    0 4px 12px -4px rgba(30, 30, 50, 0.06);
-  --shadow-md:
+  /* поверхности */
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-strong: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(43, 43, 48, 0.06);
+  --glass-shadow:
     0 1px 2px rgba(30, 30, 50, 0.04),
     0 8px 24px -8px rgba(30, 30, 50, 0.08),
     0 24px 56px -24px rgba(30, 30, 50, 0.10);
-  --shadow-lift:
-    0 2px 4px rgba(30, 30, 50, 0.05),
-    0 12px 32px -12px rgba(30, 30, 50, 0.10),
-    0 32px 80px -32px rgba(30, 30, 50, 0.12);
   --inner-hi: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
-  /* ── fluid-движок: единый источник правды ───────────────────────── */
-  /* шрифты — vw + vh, чтобы масштаб учитывал и высоту */
+  /* fluid-движок — единый источник правды */
   --fs-xs:   clamp(12px, 0.82vw + 0.48vh, 14px);
   --fs-sm:   clamp(13px, 0.95vw + 0.55vh, 16px);
   --fs-md:   clamp(15px, 1.05vw + 0.65vh, 18px);
@@ -51,33 +43,33 @@
   --fs-xl:   clamp(22px, 1.85vw + 1.05vh, 30px);
   --fs-hero: clamp(32px, 3.6vw + 1.6vh, 64px);
 
-  /* отступы */
   --sp-1: clamp(6px,  0.5vw, 10px);
   --sp-2: clamp(10px, 0.9vw, 16px);
   --sp-3: clamp(16px, 1.5vw, 24px);
   --sp-4: clamp(24px, 2.4vw, 40px);
   --sp-5: clamp(32px, 3.5vw, 56px);
 
-  /* радиусы */
+  /* крупные скругления — сдержанные */
   --r-card:  clamp(20px, 1.8vw, 28px);
   --r-zone:  clamp(16px, 1.5vw, 22px);
   --r-input: clamp(12px, 1vw, 16px);
   --r-chip:  980px;
 
-  /* тап-таргет — минимум 44px по Apple HIG */
   --tap: clamp(44px, 5.5vh, 56px);
 
-  /* ── easing ─────────────────────────────────────────────────────── */
-  --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-liquid: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── reset ──────────────────────────────────────────────────────────── */
 *,
 *::before,
-*::after { box-sizing: border-box; }
+*::after {
+  box-sizing: border-box;
+}
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
   margin: 0;
@@ -95,26 +87,7 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, p { margin: 0; }
-
-button {
-  font: inherit;
-  color: inherit;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-textarea { font: inherit; color: inherit; }
-
-::selection {
-  background: rgba(184, 164, 212, 0.28);
-  color: var(--ink);
-}
-
-/* ── ФОН: три слоя глубины, fixed, за контентом ─────────────────────── */
-
-/* слой 1: базовый градиент бумаги */
+/* ── ФОН: три слоя глубины, fixed, позади контента ──────────────────── */
 body::before {
   content: "";
   position: fixed;
@@ -125,7 +98,6 @@ body::before {
     linear-gradient(180deg, #f7f6f3 0%, #f2f0ec 100%);
 }
 
-/* слой 2: два огромных размытых пастельных пятна */
 body::after {
   content: "";
   position: fixed;
@@ -140,7 +112,31 @@ body::after {
   transform: translateZ(0);
 }
 
-/* слой 3: тонкая шумовая текстура — «плёночная» премиальность */
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: rgba(184, 164, 212, 0.28);
+  color: var(--ink);
+}
+
+/* шумовая текстура — «плёночная» премиальность */
 .blobs {
   position: fixed;
   inset: 0;
@@ -150,6 +146,10 @@ body::after {
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
 }
+
+@keyframes drift-a { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
+@keyframes drift-b { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
+@keyframes drift-c { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
 
 /* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
@@ -163,7 +163,7 @@ body::after {
   gap: var(--sp-3);
 }
 
-/* brand */
+/* шапка */
 .brand {
   display: flex;
   align-items: center;
@@ -178,14 +178,18 @@ body::after {
   border-radius: calc(var(--tap) * 0.30);
   background: linear-gradient(145deg, var(--lav) 0%, var(--accent) 100%);
   box-shadow:
-    var(--shadow-sm),
+    0 1px 2px rgba(30, 30, 50, 0.05),
+    0 6px 16px -6px rgba(139, 157, 201, 0.35),
     var(--inner-hi);
   display: grid;
   place-items: center;
   color: #ffffff;
 }
 
-.brand__mark svg { width: 56%; height: 56%; }
+.brand__mark svg {
+  width: 56%;
+  height: 56%;
+}
 
 .brand__name {
   font-size: var(--fs-xl);
@@ -200,8 +204,10 @@ body::after {
   color: var(--ink-soft);
 }
 
-/* hero */
-.hero { margin-bottom: var(--sp-2); }
+/* заголовок */
+.hero {
+  margin-bottom: var(--sp-2);
+}
 
 .hero__title {
   font-size: var(--fs-hero);
@@ -231,18 +237,18 @@ body::after {
 /* ── карточка ───────────────────────────────────────────────────────── */
 .glass {
   flex: 1 1 auto;
-  background: var(--surface);
-  border: 1px solid var(--surface-border);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
   border-radius: var(--r-card);
   box-shadow:
-    var(--shadow-md),
+    var(--glass-shadow),
     var(--inner-hi);
   -webkit-backdrop-filter: blur(20px) saturate(120%);
   backdrop-filter: blur(20px) saturate(120%);
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
-  animation: rise 0.6s var(--ease-out) both;
+  animation: rise 0.6s var(--ease-soft) both;
 }
 
 @keyframes rise {
@@ -251,6 +257,7 @@ body::after {
 }
 
 .glass + .glass {
+  margin-top: 0;
   animation-delay: 0.06s;
 }
 
@@ -269,12 +276,12 @@ body::after {
   border-radius: var(--r-zone);
   border: 1.5px dashed rgba(139, 157, 201, 0.35);
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.15) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.15) 100%);
   overflow: hidden;
   transition:
-    border-color 0.35s var(--ease),
-    background 0.35s var(--ease),
-    transform 0.25s var(--ease);
+    border-color 0.35s var(--ease-liquid),
+    background 0.35s var(--ease-liquid),
+    transform 0.25s var(--ease-liquid);
 }
 
 .zone:hover,
@@ -282,7 +289,7 @@ body::after {
   border-color: var(--accent);
   border-style: solid;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.35) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.35) 100%);
 }
 
 .zone__icon {
@@ -295,11 +302,12 @@ body::after {
   background: rgba(139, 157, 201, 0.10);
   border: 1px solid rgba(139, 157, 201, 0.22);
   box-shadow:
-    var(--shadow-sm),
+    0 1px 2px rgba(30, 30, 50, 0.04),
+    0 4px 12px -4px rgba(30, 30, 50, 0.06),
     var(--inner-hi);
   transition:
-    transform 0.35s var(--ease),
-    background 0.35s var(--ease);
+    transform 0.35s var(--ease-liquid),
+    background 0.35s var(--ease-liquid);
 }
 
 .zone:hover .zone__icon {
@@ -307,7 +315,10 @@ body::after {
   background: rgba(139, 157, 201, 0.16);
 }
 
-.zone__icon svg { width: 42%; height: 42%; }
+.zone__icon svg {
+  width: 42%;
+  height: 42%;
+}
 
 .zone__title {
   font-size: var(--fs-lg);
@@ -333,15 +344,15 @@ body::after {
   border: 1px solid rgba(139, 157, 201, 0.22);
 }
 
-/* preview */
+/* превью */
 .preview {
   position: relative;
   margin-top: var(--sp-2);
   border-radius: var(--r-zone);
   overflow: hidden;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--glass-border);
+  box-shadow: none;
   background: var(--bg-3);
-  box-shadow: var(--shadow-sm);
 }
 
 .preview img {
@@ -361,7 +372,7 @@ body::after {
   backdrop-filter: blur(14px);
 }
 
-/* ── чипы языков ────────────────────────────────────────────────────── */
+/* ── языки ──────────────────────────────────────────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
@@ -389,10 +400,10 @@ body::after {
   background: rgba(43, 43, 48, 0.035);
   border: 1px solid transparent;
   transition:
-    background 0.25s var(--ease),
-    color 0.25s var(--ease),
-    border-color 0.25s var(--ease),
-    transform 0.15s var(--ease);
+    background 0.25s var(--ease-liquid),
+    color 0.25s var(--ease-liquid),
+    border-color 0.25s var(--ease-liquid),
+    transform 0.15s var(--ease-liquid);
 }
 
 .chip:hover {
@@ -400,7 +411,9 @@ body::after {
   background: rgba(43, 43, 48, 0.06);
 }
 
-.chip:active { transform: scale(0.97); }
+.chip:active {
+  transform: scale(0.97);
+}
 
 .chip--on {
   color: #ffffff;
@@ -423,7 +436,9 @@ body::after {
   vertical-align: 1px;
 }
 
-.chip--on .chip__dot { opacity: 1; }
+.chip--on .chip__dot {
+  opacity: 1;
+}
 
 /* ── статус и прогресс ──────────────────────────────────────────────── */
 .status {
@@ -438,7 +453,7 @@ body::after {
   letter-spacing: -0.012em;
   color: var(--ink-soft);
   background: rgba(255, 255, 255, 0.5);
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--glass-border);
   box-shadow: var(--inner-hi);
 }
 
@@ -452,7 +467,9 @@ body::after {
   animation: spin 0.9s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 .progress {
   margin-top: var(--sp-2);
@@ -466,7 +483,17 @@ body::after {
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--accent) 0%, var(--lav) 50%, var(--peach) 100%);
-  transition: width 0.5s var(--ease-out);
+  transition: width 0.5s var(--ease-soft);
+  position: relative;
+}
+
+.progress__bar::after {
+  display: none;
+}
+
+@keyframes sheen {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }
 
 /* ── кнопки ─────────────────────────────────────────────────────────── */
@@ -489,15 +516,17 @@ body::after {
   font-size: var(--fs-md);
   letter-spacing: -0.016em;
   transition:
-    background 0.25s var(--ease),
-    color 0.25s var(--ease),
-    border-color 0.25s var(--ease),
-    transform 0.15s var(--ease),
-    opacity 0.2s var(--ease);
+    background 0.25s var(--ease-liquid),
+    color 0.25s var(--ease-liquid),
+    border-color 0.25s var(--ease-liquid),
+    transform 0.15s var(--ease-liquid),
+    opacity 0.2s var(--ease-liquid);
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn:active { transform: scale(0.97); }
+.btn:active {
+  transform: scale(0.97);
+}
 
 .btn svg {
   width: clamp(16px, 1.3vw, 19px);
@@ -507,6 +536,7 @@ body::after {
 .btn--primary {
   color: #ffffff;
   background: linear-gradient(145deg, var(--accent) 0%, var(--lav) 100%);
+  border: 0;
   box-shadow:
     0 1px 2px rgba(139, 157, 201, 0.30),
     0 8px 20px -8px rgba(139, 157, 201, 0.45),
@@ -531,6 +561,7 @@ body::after {
 .btn--ghost:hover {
   background: rgba(255, 255, 255, 0.8);
   border-color: rgba(139, 157, 201, 0.55);
+  color: var(--accent);
 }
 
 .btn:disabled {
@@ -540,7 +571,7 @@ body::after {
 
 .btn--done {
   color: #ffffff;
-  background: linear-gradient(145deg, var(--ok) 0%, #a8cdbf 100%);
+  background: linear-gradient(145deg, var(--ok) 0%, var(--mint) 100%);
   border-color: transparent;
   box-shadow:
     0 1px 2px rgba(143, 188, 157, 0.30),
@@ -603,7 +634,7 @@ body::after {
   resize: vertical;
   padding: var(--sp-3);
   border-radius: var(--r-input);
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--glass-border);
   background: rgba(255, 255, 255, 0.55);
   line-height: 1.5;
   font-size: var(--fs-md);
@@ -612,9 +643,9 @@ body::after {
   outline: none;
   box-shadow: var(--inner-hi);
   transition:
-    border-color 0.25s var(--ease),
-    background 0.25s var(--ease),
-    box-shadow 0.25s var(--ease);
+    border-color 0.25s var(--ease-liquid),
+    background 0.25s var(--ease-liquid),
+    box-shadow 0.25s var(--ease-liquid);
 }
 
 .result__text:focus {
@@ -666,7 +697,7 @@ body::after {
   height: clamp(12px, 1vw, 15px);
 }
 
-/* ── доступность ────────────────────────────────────────────────────── */
+/* ── доступность и адаптив ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -677,14 +708,34 @@ body::after {
   }
 }
 
-/* ── адаптив ────────────────────────────────────────────────────────── */
-
-/* телефон портрет */
 @media (max-width: 720px) {
-  .shell { padding: var(--sp-3); gap: var(--sp-2); }
-  .glass { padding: var(--sp-3); }
-  .btn { width: 100%; }
-  .pill__meta { margin-left: 0; }
+  .shell {
+    padding: var(--sp-3);
+    gap: var(--sp-2);
+  }
+
+  .glass {
+    padding: var(--sp-3);
+    border-radius: var(--r-zone);
+  }
+
+  .zone {
+    min-height: 180px;
+    padding: var(--sp-3) var(--sp-2);
+  }
+
+  .btn {
+    width: 100%;
+    min-height: var(--tap);
+  }
+
+  .pill__meta {
+    margin-left: 0;
+  }
+
+  .hero__title {
+    font-size: clamp(28px, 9vw, 40px);
+  }
 }
 
 /* низкий ландшафт — приоритет высоте */
@@ -701,17 +752,17 @@ body::after {
   .glass { padding: var(--sp-2) var(--sp-3); }
 }
 
-/* большие экраны — больше воздуха */
 @media (min-width: 1200px) {
   .shell {
     padding: var(--sp-5) clamp(48px, 7vw, 120px);
   }
+
   .glass {
     padding: var(--sp-5) clamp(40px, 4vw, 64px);
   }
 }
 
-/* очень широкие — ограничиваем ширину контента для читаемости */
+/* очень широкие — ограничиваем ширину для читаемости */
 @media (min-width: 1800px) {
   .shell { max-width: 1600px; }
 }
