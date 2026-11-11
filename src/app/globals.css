@@ -516,7 +516,7 @@ textarea {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
+  flex: 0 0 auto; 
 }
 
 .result__head {
@@ -560,16 +560,31 @@ textarea {
 
 .result__text {
   width: 100%;
-  flex: 1 1 auto;
-  min-height: clamp(140px, 26dvh, 400px);
-  max-height: 60dvh;
-  resize: vertical;
+  /* Убираем жесткие min-height и max-height */
+  min-height: auto; 
+  max-height: none;
+  
+  /* Современное свойство: высота автоматически подстраивается под текст */
+  field-sizing: content;
+  
+  /* Разрешаем пользователю растянуть вручную, если нужно (опционально) */
+  resize: vertical; 
+  overflow-y: hidden; /* Скрываем скролл, пока он сам растет */
+  
   padding: var(--sp-3);
   border-radius: var(--r-input);
   border: 1px solid var(--border);
   background: var(--surface);
-  line-height: 1.5;
-  font-size: var(--fs-md);
+  
+  /* 
+    МЕЛКИЙ ШРИФТ БЕЗ ФИКСОВ:
+    0.875em — это 87.5% от родительского шрифта. 
+    Он будет всегда мельче кнопок и заголовков, но пропорционален им.
+    Можно поставить 0.8em или 0.9em.
+  */
+  font-size: 0.875em; 
+  line-height: 1.5; 
+  
   letter-spacing: -0.01em;
   color: var(--ink);
   outline: none;
