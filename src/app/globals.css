@@ -1,39 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Yeseva+One&family=Manrope:wght@300;400;500&display=swap');
-
 :root {
-  /* шрифты */
-  --font-display: "Yeseva One", "Cormorant Garamond", Georgia, serif;
-  --font-body: "Manrope", "Inter", system-ui, -apple-system, sans-serif;
+  /* ── палитра Госуслуг ───────────────────────────────────────────── */
+  --bg: #f6f8fb;
+  --ink: #17191d;
+  --ink-soft: #666d77;
+  --ink-faint: #9aa1ab;
+  --glass: #ffffff;
+  --glass-strong: #ffffff;
+  --glass-border: #e1e6ef;
+  --glass-shadow: 0 1px 2px rgba(23, 25, 29, 0.06),
+    0 8px 24px -16px rgba(13, 91, 215, 0.12);
+  --accent: #0d5bd7;
+  --accent-2: #0848ae;
+  --accent-ink: #0d5bd7;
+  --accent-soft: #e8f0ff;
+  --ok: #12a36b;
+  --ok-soft: rgba(18, 163, 107, 0.1);
+  --warn: #f07416;
+  --bad: #e13b4b;
+  --bad-soft: rgba(225, 59, 75, 0.08);
 
-  /* премиальный розовый: тёплый пепел розы, уходящий в ivory */
-  --bg: #fdf7f8;
-  --ink: #3a2c31;
-  --ink-soft: #7a676d;
-  --ink-faint: #b8a8ad;
-  --glass: rgba(255, 255, 255, 0.68);
-  --glass-strong: rgba(255, 255, 255, 0.88);
-  --glass-border: rgba(255, 255, 255, 0.95);
-  --glass-shadow:
-    0 1px 2px rgba(217, 161, 176, 0.04),
-    0 24px 60px -30px rgba(217, 161, 176, 0.16);
-  --accent: #d9a1b0;
-  --accent-2: #c88ba0;
-  --accent-ink: #a67082;
-  --accent-soft: rgba(217, 161, 176, 0.1);
-  --ok: #8ea48c;
-  --ok-soft: rgba(142, 164, 140, 0.1);
-  --warn: #c99b6e;
-  --bad: #c77a85;
-  --bad-soft: rgba(199, 122, 133, 0.08);
+  /* форма — сдержанная, как в административных интерфейсах */
+  --r-card: 12px;
+  --r-zone: 8px;
+  --r-chip: 9999px;
 
-  /* форма — мягкая, но не пузырь */
-  --r-card: 28px;
-  --r-zone: 22px;
-  --r-chip: 999px;
-
-  /* движение — медленное, дыхание */
-  --ease-liquid: cubic-bezier(0.32, 0.72, 0.28, 1);
-  --ease-soft: cubic-bezier(0.32, 0.72, 0.28, 1);
+  /* движение — быстрое, без декоративных пружин */
+  --ease-liquid: cubic-bezier(0.2, 0, 0, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── база ───────────────────────────────────────────────────────────── */
@@ -51,20 +44,11 @@ body {
   margin: 0;
   min-height: 100dvh;
   color: var(--ink);
-  background-color: var(--bg);
-  background-image: linear-gradient(
-    145deg,
-    #fbe8ed 0%,
-    #fdf2f3 28%,
-    #fefaf9 62%,
-    #fdf7f8 100%
-  );
-  background-attachment: fixed;
-  font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.65;
-  letter-spacing: 0.005em;
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -91,274 +75,204 @@ textarea {
 }
 
 ::selection {
-  background: rgba(217, 161, 176, 0.25);
+  background: rgba(13, 91, 215, 0.2);
 }
 
-/* ── фон: почти невидимые розовые облака ────────────────────────────── */
+/* ── фон: убрать декоративные пятна — в Госуслугах фон плоский ────── */
 .blobs {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(110px);
-  opacity: 0.5;
-  will-change: transform;
-}
-
-.blob--lavender {
-  width: 46vmax;
-  height: 46vmax;
-  left: -12vmax;
-  top: -14vmax;
-  background: radial-gradient(circle at 35% 35%, #f6d4dc, transparent 70%);
-  animation: drift-a 44s ease-in-out infinite alternate;
-}
-
-.blob--aqua {
-  width: 40vmax;
-  height: 40vmax;
-  right: -10vmax;
-  top: 16vh;
-  background: radial-gradient(circle at 60% 40%, #e8d9ee, transparent 70%);
-  animation: drift-b 52s ease-in-out infinite alternate;
-}
-
-.blob--peach {
-  width: 38vmax;
-  height: 38vmax;
-  left: 18vw;
-  bottom: -18vmax;
-  background: radial-gradient(circle at 50% 55%, #f8e4d8, transparent 70%);
-  animation: drift-c 48s ease-in-out infinite alternate;
-}
-
-.blob--sky {
-  width: 30vmax;
-  height: 30vmax;
-  right: 14vw;
-  bottom: -6vmax;
-  background: radial-gradient(circle at 45% 45%, #e4e0ee, transparent 70%);
-  animation: drift-a 56s ease-in-out infinite alternate-reverse;
+  display: none;
 }
 
 @keyframes drift-a {
-  from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(3vmax, 2vmax) scale(1.06); }
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 0); }
 }
 
 @keyframes drift-b {
-  from { transform: translate(0, 0) scale(1.02); }
-  to { transform: translate(-2vmax, 3vmax) scale(0.98); }
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 0); }
 }
 
 @keyframes drift-c {
-  from { transform: translate(0, 0) scale(0.98); }
-  to { transform: translate(3vmax, -2vmax) scale(1.04); }
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 0); }
 }
 
 /* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
-  max-width: 720px;
+  max-width: 640px;
   margin: 0 auto;
-  padding: clamp(32px, 5vw, 72px) clamp(20px, 4vw, 32px) 96px;
+  padding: 24px 16px 40px;
 }
 
 /* шапка */
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
-/* логотип: тот же SVG, розовый градиент, белая иконка */
+/* логотип: сохраняем SVG, приводим к синему градиенту Госуслуг */
 .brand__mark {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   flex: none;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #e8b4c4 0%, var(--accent) 60%, var(--accent-2) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 8px 24px -10px rgba(217, 161, 176, 0.5);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0d5bd7 0%, #0848ae 100%);
+  box-shadow: 0 2px 6px -2px rgba(13, 91, 215, 0.4);
   display: grid;
   place-items: center;
-  color: #fff;
+  color: #ffffff;
 }
 
 .brand__mark svg {
-  width: 22px;
-  height: 22px;
-  opacity: 0.95;
+  width: 20px;
+  height: 20px;
 }
 
-/* имя бренда — Yeseva One */
 .brand__name {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.1;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
   color: var(--ink);
 }
 
 .brand__name em {
   font-style: normal;
   font-weight: 400;
-  color: var(--accent-ink);
-  margin-left: 8px;
-  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  margin-left: 4px;
 }
 
+/* заголовок */
 .hero {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
-/* заголовок — Yeseva One + склейка слов */
 .hero__title {
-  font-family: var(--font-display);
-  font-size: clamp(30px, 5vw, 44px);
-  font-weight: 400;
-  line-height: 1.14;
-  letter-spacing: -0.005em;
-  word-spacing: -0.25em;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: 0;
   color: var(--ink);
 }
 
 .hero__title em {
   font-style: normal;
-  font-weight: 400;
-  color: var(--accent-ink);
+  color: var(--accent);
 }
 
 .hero__subtitle {
-  margin-top: 18px;
-  max-width: 32em;
-  font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.7;
-  letter-spacing: 0.005em;
+  margin-top: 6px;
+  max-width: 36em;
+  font-size: 14px;
   color: var(--ink-soft);
+  line-height: 1.4;
 }
 
-/* ── карточка — просто облако ───────────────────────────────────────── */
+/* ── карточка: белая административная панель ───────────────────────── */
 .glass {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(253, 246, 247, 0.6) 100%);
+  background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--r-card);
   box-shadow: var(--glass-shadow);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  backdrop-filter: blur(24px) saturate(1.2);
-  padding: clamp(24px, 4vw, 36px);
-  animation: rise 0.9s var(--ease-soft) both;
+  padding: 16px;
+  animation: rise 0.4s var(--ease-soft) both;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
 
 .glass + .glass {
-  margin-top: 20px;
-  animation-delay: 0.15s;
+  margin-top: 12px;
+  animation-delay: 0.05s;
 }
 
-/* ── зона загрузки ──────────────────────────────────────────────────── */
+/* ── зона загрузки: pale-blue, как поле формы ──────────────────────── */
 .zone {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: clamp(32px, 5.5vw, 48px) 24px;
+  gap: 8px;
+  padding: 24px 16px;
   border-radius: var(--r-zone);
-  border: 1.5px dashed rgba(217, 161, 176, 0.35);
-  background: rgba(255, 255, 255, 0.4);
+  border: 1px dashed #b8c4d9;
+  background: #f2f5fa;
   overflow: hidden;
-  transition:
-    border-color 0.5s var(--ease-soft),
-    background 0.5s var(--ease-soft);
+  transition: border-color 0.2s var(--ease-liquid), background 0.2s var(--ease-liquid);
 }
 
 .zone:hover,
 .zone--over {
-  border-color: rgba(217, 161, 176, 0.7);
+  border-color: var(--accent);
   border-style: solid;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--accent-soft);
 }
 
 .zone__icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
-  color: var(--accent-ink);
-  background: linear-gradient(135deg, rgba(232, 180, 196, 0.18), rgba(217, 161, 176, 0.1));
-  transition: transform 0.5s var(--ease-soft);
+  color: var(--accent);
+  background: #ffffff;
+  border: 1px solid var(--glass-border);
+  transition: transform 0.2s var(--ease-liquid);
 }
 
 .zone:hover .zone__icon {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .zone__icon svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
-/* заголовок зоны — Yeseva One */
 .zone__title {
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 400;
-  letter-spacing: 0.005em;
-  line-height: 1.2;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
   color: var(--ink);
 }
 
 .zone__hint {
-  font-family: var(--font-body);
-  font-size: 13.5px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  font-size: 12px;
   color: var(--ink-faint);
 }
 
 .zone kbd {
-  font-family: var(--font-body);
-  font-size: 11.5px;
-  font-weight: 500;
-  padding: 2px 8px;
-  border-radius: 6px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
   color: var(--accent-ink);
-  background: rgba(217, 161, 176, 0.12);
-  letter-spacing: 0.02em;
+  background: rgba(13, 91, 215, 0.08);
+  border: 1px solid rgba(13, 91, 215, 0.12);
 }
 
 /* превью */
 .preview {
   position: relative;
-  margin-top: 20px;
-  border-radius: 16px;
+  margin-top: 12px;
+  border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 30px -16px rgba(217, 161, 176, 0.3);
-  background: #fff;
+  box-shadow: none;
+  background: #ffffff;
 }
 
 .preview img {
   display: block;
   width: 100%;
-  max-height: 340px;
+  max-height: 280px;
   object-fit: contain;
 }
 
@@ -367,98 +281,89 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(253, 247, 248, 0.6);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: rgba(246, 248, 251, 0.7);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 
-/* ── языки ──────────────────────────────────────────────────────────── */
+/* ── языки: компактный сегментированный контрол ────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 24px;
+  gap: 6px;
+  margin-top: 16px;
 }
 
 .langs__label {
-  font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--ink-faint);
-  margin-right: 4px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-right: 2px;
 }
 
 .chip {
-  font-family: var(--font-body);
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: var(--r-chip);
   font-weight: 400;
-  font-size: 13.5px;
-  letter-spacing: 0.005em;
+  font-size: 12px;
   color: var(--ink-soft);
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(217, 161, 176, 0.15);
-  transition:
-    color 0.4s var(--ease-soft),
-    border-color 0.4s var(--ease-soft),
-    background 0.4s var(--ease-soft);
+  background: #f2f5fa;
+  border: 1px solid transparent;
+  transition: background 0.2s var(--ease-liquid), color 0.2s var(--ease-liquid),
+    border-color 0.2s var(--ease-liquid);
 }
 
 .chip:hover {
-  color: var(--accent-ink);
-  border-color: rgba(217, 161, 176, 0.4);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .chip--on {
-  color: #fff;
-  background: linear-gradient(135deg, #e8b4c4, var(--accent));
-  border-color: transparent;
-  font-weight: 500;
-  box-shadow: 0 6px 16px -8px rgba(217, 161, 176, 0.5);
+  color: #ffffff;
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
 }
 
 .chip__dot {
   display: inline-block;
   width: 5px;
   height: 5px;
-  margin-left: 7px;
+  margin-left: 5px;
   border-radius: 50%;
   background: currentColor;
   opacity: 0.7;
-  vertical-align: 2px;
+  vertical-align: 1px;
 }
 
 .chip--on .chip__dot {
   opacity: 1;
 }
 
-/* ── статус и прогресс ──────────────────────────────────────────────── */
+/* ── статус и прогресс ─────────────────────────────────────────────── */
 .status {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 24px;
-  padding: 14px 18px;
-  border-radius: 14px;
-  font-family: var(--font-body);
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
   font-weight: 400;
-  font-size: 13.5px;
-  letter-spacing: 0.01em;
+  font-size: 12px;
   color: var(--ink-soft);
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: #f2f5fa;
+  border: 1px solid var(--glass-border);
 }
 
 .status__spinner {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   flex: none;
   border-radius: 50%;
-  border: 1.8px solid rgba(217, 161, 176, 0.2);
+  border: 2px solid #d0d7e2;
   border-top-color: var(--accent);
-  animation: spin 1.4s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -466,18 +371,18 @@ textarea {
 }
 
 .progress {
-  margin-top: 14px;
+  margin-top: 8px;
   height: 4px;
   border-radius: 999px;
-  background: rgba(217, 161, 176, 0.12);
+  background: #e8edf6;
   overflow: hidden;
 }
 
 .progress__bar {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #e8b4c4, var(--accent));
-  transition: width 0.5s var(--ease-soft);
+  background: var(--accent);
+  transition: width 0.3s var(--ease-soft);
   position: relative;
 }
 
@@ -494,191 +399,169 @@ textarea {
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 24px;
+  gap: 8px;
+  margin-top: 16px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 46px;
-  padding: 12px 24px;
-  border-radius: var(--r-chip);
-  font-family: var(--font-body);
-  font-weight: 500;
+  gap: 6px;
+  min-height: 40px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
   font-size: 14px;
-  letter-spacing: 0.02em;
-  transition:
-    transform 0.4s var(--ease-soft),
-    box-shadow 0.4s var(--ease-soft),
-    background 0.4s var(--ease-soft),
-    opacity 0.3s;
+  letter-spacing: 0;
+  transition: background 0.2s var(--ease-liquid), color 0.2s var(--ease-liquid),
+    border-color 0.2s var(--ease-liquid), opacity 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .btn svg {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
 }
 
 .btn--primary {
-  color: #fff;
-  background: linear-gradient(135deg, #e8b4c4 0%, var(--accent) 70%, var(--accent-2) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 10px 24px -12px rgba(217, 161, 176, 0.55);
-}
-
-.btn--primary:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 14px 28px -12px rgba(217, 161, 176, 0.65);
-}
-
-.btn--primary:active {
-  transform: translateY(0);
-}
-
-.btn--ghost {
-  color: var(--accent-ink);
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(217, 161, 176, 0.3);
-}
-
-.btn--ghost:hover {
-  background: #fff;
-  border-color: rgba(217, 161, 176, 0.5);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-  transform: none !important;
+  color: #ffffff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
   box-shadow: none;
 }
 
+.btn--primary:hover {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+}
+
+.btn--primary:active {
+  background: #063f9a;
+}
+
+.btn--ghost {
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid #b8c4d9;
+}
+
+.btn--ghost:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .btn--done {
-  background: linear-gradient(135deg, #a8c4a4, var(--ok));
-  color: #fff;
+  color: #ffffff;
+  background: var(--ok);
+  border-color: var(--ok);
 }
 
 /* ── результат ──────────────────────────────────────────────────────── */
 .result {
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .result__head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 14px;
-  margin-bottom: 14px;
+  gap: 8px 10px;
+  margin-bottom: 10px;
 }
 
-/* заголовок результата — Yeseva One */
 .result__title {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 400;
+  font-size: 16px;
+  font-weight: 700;
   letter-spacing: 0;
-  line-height: 1.2;
   color: var(--ink);
 }
 
 .pill {
-  font-family: var(--font-body);
-  padding: 4px 12px;
-  border-radius: var(--r-chip);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   color: var(--ok);
   background: var(--ok-soft);
 }
 
 .pill--mid {
   color: var(--warn);
-  background: rgba(201, 155, 110, 0.1);
+  background: rgba(240, 116, 22, 0.1);
 }
 
 .pill__meta {
   margin-left: auto;
-  font-family: var(--font-body);
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.02em;
   color: var(--ink-faint);
 }
 
 .result__text {
   width: 100%;
-  min-height: 150px;
+  min-height: 120px;
   resize: vertical;
-  padding: 18px 20px;
-  border-radius: 16px;
-  border: 1px solid rgba(217, 161, 176, 0.15);
-  background: rgba(255, 255, 255, 0.75);
-  font-family: var(--font-body);
-  line-height: 1.75;
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0.005em;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #b8c4d9;
+  background: #f2f5fa;
+  line-height: 1.5;
+  font-size: 14px;
+  color: var(--ink);
   outline: none;
-  transition:
-    border-color 0.4s var(--ease-soft),
-    box-shadow 0.4s var(--ease-soft),
-    background 0.4s var(--ease-soft);
+  transition: border-color 0.2s var(--ease-liquid), background 0.2s var(--ease-liquid);
 }
 
 .result__text:focus {
-  border-color: rgba(217, 161, 176, 0.5);
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(217, 161, 176, 0.1);
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(13, 91, 215, 0.1);
 }
 
 /* ── ошибка ─────────────────────────────────────────────────────────── */
 .error {
-  margin-top: 20px;
-  padding: 16px 20px;
-  border-radius: 14px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
   color: var(--bad);
   background: var(--bad-soft);
-  border: 1px solid rgba(199, 122, 133, 0.2);
-  font-family: var(--font-body);
+  border: 1px solid rgba(225, 59, 75, 0.18);
   font-weight: 400;
-  font-size: 14px;
-  letter-spacing: 0.005em;
+  font-size: 12px;
 }
 
 /* ── подвал ─────────────────────────────────────────────────────────── */
 .footer {
-  margin-top: 40px;
+  margin-top: 24px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px 18px;
+  gap: 6px 12px;
   text-align: center;
-  font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 0.02em;
   color: var(--ink-faint);
 }
 
 .footer__lock {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   color: var(--ok);
 }
 
 .footer__lock svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 /* ── доступность и адаптив ──────────────────────────────────────────── */
@@ -694,15 +577,15 @@ textarea {
 
 @media (max-width: 520px) {
   body {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .zone {
-    padding: 28px 16px;
+    padding: 20px 12px;
   }
 
   .chip {
-    padding: 8px 14px;
+    padding: 5px 10px;
   }
 
   .btn {
@@ -714,6 +597,6 @@ textarea {
   }
 
   .hero__title {
-    word-spacing: -0.22em;
+    font-size: 20px;
   }
 }
