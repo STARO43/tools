@@ -483,7 +483,7 @@ export default function Page() {
               {dragOver ? "Я поймаю!" : ""}
             </span>
             <span className="zone__hint">
-              <kbd>Ctrl</kbd>+<kbd>V</kbd>
+             
             </span>
           </button>
 
