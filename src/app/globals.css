@@ -1,34 +1,34 @@
 :root {
-  /* краски — бумага, тушь, один сигнальный */
-  --bg: #f4f2ee;
-  --ink: #0a0a0a;
+  /* 人民日报视觉：党旗红、纸色、墨黑 */
+  --bg: #faf8f4;
+  --ink: #1a1a1a;
   --ink-soft: #4a4a4a;
-  --ink-faint: #9a9a96;
+  --ink-faint: #8a8580;
   --glass: #ffffff;
   --glass-strong: #ffffff;
-  --glass-border: #d8d5cf;
+  --glass-border: #e0dbd4;
   --glass-shadow: none;
-  --accent: #ff3b00;
-  --accent-2: #ff3b00;
-  --accent-ink: #ff3b00;
-  --accent-soft: rgba(255, 59, 0, 0.08);
-  --ok: #0a0a0a;
-  --ok-soft: rgba(10, 10, 10, 0.06);
-  --warn: #ff3b00;
-  --bad: #c81e00;
-  --bad-soft: rgba(200, 30, 0, 0.06);
+  --accent: #c8102e;
+  --accent-2: #a00d24;
+  --accent-ink: #c8102e;
+  --accent-soft: rgba(200, 16, 46, 0.06);
+  --ok: #1a6b3c;
+  --ok-soft: rgba(26, 107, 60, 0.08);
+  --warn: #8a6a1a;
+  --bad: #c8102e;
+  --bad-soft: rgba(200, 16, 46, 0.06);
 
-  /* форма — жёстко */
+  /* 形式：报刊版式，直角 */
   --r-card: 0;
   --r-zone: 0;
   --r-chip: 0;
 
-  /* движение — резкое, но не пружинистое */
+  /* 动效：克制、快速 */
   --ease-liquid: cubic-bezier(0.2, 0.6, 0.25, 1);
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── база ───────────────────────────────────────────────────────────── */
+/* ── 基础 ───────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -44,13 +44,12 @@ body {
   min-height: 100dvh;
   color: var(--ink);
   background: var(--bg);
-  font-family: var(--font-manrope), "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-manrope), "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   font-size: 16px;
-  line-height: 1.5;
-  letter-spacing: -0.011em;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
@@ -78,80 +77,49 @@ textarea {
   color: #ffffff;
 }
 
-/* ── фон: убран почти полностью ─────────────────────────────────────── */
+/* ── 背景：几乎纯纸色，取消所有光斑 ────────────────────────────────── */
 .blobs {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.35;
-  will-change: transform;
-}
-
-/* оставляем один едва заметный тёплый отсвет сверху,
-   остальные пятна гасим до нуля — редакционный стиль не любит дымку */
-.blob--lavender {
-  width: 50vmax;
-  height: 50vmax;
-  left: 50%;
-  top: -30vmax;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, #ece9e2, transparent 70%);
-  animation: drift-a 60s ease-in-out infinite alternate;
-}
-
-.blob--aqua,
-.blob--peach,
-.blob--sky {
   display: none;
 }
 
-@keyframes drift-a {
-  from { transform: translateX(-50%) scale(1); }
-  to { transform: translateX(-50%) scale(1.08); }
-}
-
-@keyframes drift-b {
-  from { transform: translate(0, 0); }
-  to { transform: translate(0, 0); }
-}
-
-@keyframes drift-c {
-  from { transform: translate(0, 0); }
-  to { transform: translate(0, 0); }
-}
-
-/* ── каркас ─────────────────────────────────────────────────────────── */
+/* ── 页面骨架 ───────────────────────────────────────────────────────── */
 .shell {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: clamp(28px, 4vw, 56px) clamp(20px, 4vw, 32px) 80px;
+  padding: clamp(20px, 4vw, 40px) clamp(18px, 4vw, 28px) 60px;
 }
 
-/* шапка — с верхней линейкой */
+/* 报头：居中、通栏、下方双线 */
 .brand {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 0;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--ink);
+  padding: 0 0 18px;
+  border-bottom: 3px solid var(--accent);
+  position: relative;
 }
 
-/* логотип — форма та же, фон чёрный, иконка белая */
+/* 报头下方细线（报刊双线效果） */
+.brand::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.4;
+}
+
+/* Logo：保留原 SVG，红底白图标，直角 */
 .brand__mark {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   flex: none;
   border-radius: 0;
-  background: var(--ink);
+  background: var(--accent);
   box-shadow: none;
   display: grid;
   place-items: center;
@@ -164,29 +132,40 @@ textarea {
 }
 
 .brand__name {
-  font-size: 15px;
+  font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+  font-size: clamp(26px, 5vw, 38px);
   font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-align: center;
+  line-height: 1.1;
 }
 
 .brand__name em {
   font-style: normal;
-  color: var(--ink);
+  color: var(--ink-soft);
   font-weight: 400;
+  font-size: 0.5em;
+  letter-spacing: 0.04em;
+  display: block;
+  margin-top: 4px;
 }
 
-/* заголовок — главный носитель стиля */
+/* 标题区：报刊头条感 */
 .hero {
-  margin: 0 0 48px;
-  padding-top: clamp(32px, 5vw, 56px);
+  margin-bottom: 28px;
+  padding-top: 20px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 24px;
 }
 
 .hero__title {
-  font-size: clamp(38px, 8vw, 76px);
+  font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+  font-size: clamp(24px, 4.2vw, 34px);
   font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: var(--ink);
 }
 
 .hero__title em {
@@ -195,57 +174,66 @@ textarea {
 }
 
 .hero__subtitle {
-  margin-top: 20px;
-  max-width: 30em;
-  font-size: clamp(15px, 2vw, 18px);
-  line-height: 1.5;
+  margin-top: 10px;
+  max-width: 36em;
+  font-size: 15px;
   color: var(--ink-soft);
-  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
 }
 
-/* ── карточка-секция: без фона, без рамки, только линейка сверху ────── */
+/* ── 卡片：取消“卡片感”，改为报刊栏目块 ────────────────────────────── */
 .glass {
   background: transparent;
   border: 0;
-  border-top: 1px solid var(--ink);
   border-radius: 0;
   box-shadow: none;
-  padding: 24px 0 0;
-  animation: rise 0.5s var(--ease-soft) both;
+  padding: 0 0 24px;
+  border-bottom: 1px solid var(--glass-border);
+  animation: rise 0.4s var(--ease-soft) both;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .glass + .glass {
-  margin-top: 40px;
+  margin-top: 24px;
   animation-delay: 0;
 }
 
-/* ── зона загрузки — большая, плоская, с жирным пунктиром ───────────── */
+/* 栏目头：红色小方块 + 栏目名 */
+.glass::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  margin-bottom: 12px;
+}
+
+/* ── 上传区：虚线框，红边，报刊广告位感 ─────────────────────────────── */
 .zone {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
-  padding: 40px 32px;
+  padding: 36px 24px;
   border-radius: 0;
-  border: 2px dashed var(--ink);
-  background: transparent;
+  border: 1.5px dashed var(--accent);
+  background: var(--accent-soft);
   overflow: hidden;
-  text-align: left;
-  transition: background 0.15s var(--ease-liquid),
-    border-color 0.15s var(--ease-liquid);
+  text-align: center;
+  transition: background 0.2s var(--ease-liquid);
 }
 
 .zone:hover,
 .zone--over {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  background: rgba(200, 16, 46, 0.1);
+  border-style: solid;
 }
 
 .zone__icon {
@@ -253,54 +241,52 @@ textarea {
   height: auto;
   border-radius: 0;
   display: block;
-  color: var(--ink);
+  color: var(--accent);
   background: none;
-  margin-bottom: 12px;
-  transition: color 0.15s var(--ease-liquid);
+  margin-bottom: 6px;
 }
 
 .zone:hover .zone__icon {
-  color: var(--accent);
   transform: none;
 }
 
 .zone__icon svg {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
 }
 
 .zone__title {
-  font-size: clamp(20px, 3vw, 26px);
+  font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--ink);
 }
 
 .zone__hint {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--ink-faint);
-  font-weight: 400;
 }
 
 .zone kbd {
   font: inherit;
   font-size: 11px;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 6px;
   border-radius: 0;
-  color: var(--ink);
+  color: var(--accent);
   background: transparent;
-  border: 1px solid var(--ink-faint);
+  border: 1px solid var(--accent);
   letter-spacing: 0.04em;
 }
 
-/* превью */
+/* 预览图 */
 .preview {
   position: relative;
-  margin-top: 20px;
+  margin-top: 16px;
   border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--glass-border);
   box-shadow: none;
   background: #ffffff;
 }
@@ -308,7 +294,7 @@ textarea {
 .preview img {
   display: block;
   width: 100%;
-  max-height: 320px;
+  max-height: 300px;
   object-fit: contain;
 }
 
@@ -317,46 +303,44 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(244, 242, 238, 0.7);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: rgba(250, 248, 244, 0.75);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
 }
 
-/* ── переключатель языков — строка, разделённая линиями ─────────────── */
+/* ── 语言切换：报刊栏目导航条 ───────────────────────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0;
-  margin-top: 20px;
+  margin-top: 18px;
   border-top: 1px solid var(--glass-border);
   border-bottom: 1px solid var(--glass-border);
-  padding: 0;
 }
 
 .langs__label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--ink-faint);
   margin-right: 0;
-  padding: 12px 16px 12px 0;
+  padding: 10px 14px 10px 0;
   border-right: 1px solid var(--glass-border);
+  font-family: var(--font-manrope), "Inter", system-ui, sans-serif;
 }
 
 .chip {
-  padding: 12px 16px;
+  padding: 10px 16px;
   border-radius: 0;
   font-weight: 500;
   font-size: 14px;
-  letter-spacing: -0.005em;
+  letter-spacing: 0.02em;
   color: var(--ink-soft);
   background: transparent;
   border: 0;
   border-right: 1px solid var(--glass-border);
-  transition: color 0.15s var(--ease-liquid),
-    background 0.15s var(--ease-liquid);
+  transition: color 0.15s var(--ease-liquid), background 0.15s var(--ease-liquid);
 }
 
 .chip:last-child {
@@ -364,42 +348,43 @@ textarea {
 }
 
 .chip:hover {
-  color: var(--ink);
-  background: rgba(10, 10, 10, 0.03);
+  color: var(--accent);
+  background: rgba(200, 16, 46, 0.04);
 }
 
 .chip--on {
   color: #ffffff;
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
 }
 
 .chip--on:hover {
-  background: var(--ink);
+  background: var(--accent-2);
   color: #ffffff;
 }
 
 .chip__dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-left: 7px;
+  width: 5px;
+  height: 5px;
+  margin-left: 6px;
   border-radius: 50%;
-  background: var(--accent);
+  background: currentColor;
   vertical-align: 1px;
 }
 
 .chip--on .chip__dot {
-  background: var(--accent);
+  background: #ffffff;
 }
 
-/* ── статус — строка с квадратным маркером ──────────────────────────── */
+/* ── 状态与进度 ─────────────────────────────────────────────────────── */
 .status {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 20px;
-  padding: 12px 0;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px 0;
   border-radius: 0;
   font-weight: 500;
   font-size: 14px;
@@ -410,28 +395,24 @@ textarea {
 }
 
 .status__spinner {
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   flex: none;
   border-radius: 0;
   border: 0;
   background: var(--accent);
-  animation: pulse 1s var(--ease-soft) infinite alternate;
+  animation: blink 0.8s steps(2) infinite;
 }
 
-@keyframes pulse {
-  from { opacity: 1; }
-  to { opacity: 0.3; }
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* прогресс — тонкая линия с квадратным заполнением */
+/* 进度条：细红线 */
 .progress {
-  margin-top: 12px;
-  height: 2px;
+  margin-top: 10px;
+  height: 3px;
   border-radius: 0;
   background: var(--glass-border);
   overflow: hidden;
@@ -449,17 +430,12 @@ textarea {
   display: none;
 }
 
-@keyframes sheen {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
-/* ── кнопки — прямые, контрастные ───────────────────────────────────── */
+/* ── 按钮：报刊按钮，红黑双色 ───────────────────────────────────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 24px;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .btn {
@@ -467,44 +443,42 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 48px;
-  padding: 12px 24px;
+  min-height: 44px;
+  padding: 10px 24px;
   border-radius: 0;
   font-weight: 600;
   font-size: 15px;
-  letter-spacing: -0.005em;
-  transition: background 0.15s var(--ease-liquid),
-    color 0.15s var(--ease-liquid),
+  letter-spacing: 0.02em;
+  transition: background 0.15s var(--ease-liquid), color 0.15s var(--ease-liquid),
     border-color 0.15s var(--ease-liquid);
   -webkit-tap-highlight-color: transparent;
 }
 
 .btn svg {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
 }
 
 .btn--primary {
   color: #ffffff;
-  background: var(--ink);
+  background: var(--accent);
   box-shadow: none;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--accent);
 }
 
 .btn--primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-2);
+  border-color: var(--accent-2);
 }
 
 .btn--primary:active {
-  background: var(--bad);
-  border-color: var(--bad);
+  background: #8a0b1f;
 }
 
 .btn--ghost {
   color: var(--ink);
   background: transparent;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
 }
 
 .btn--ghost:hover {
@@ -521,43 +495,42 @@ textarea {
 
 .btn--done {
   color: #ffffff;
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--ok);
+  border-color: var(--ok);
 }
 
-/* ── результат ──────────────────────────────────────────────────────── */
+/* ── 结果区 ─────────────────────────────────────────────────────────── */
 .result {
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .result__head {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px 16px;
-  margin-bottom: 12px;
+  gap: 8px 14px;
+  margin-bottom: 10px;
 }
 
 .result__title {
-  font-size: clamp(20px, 3vw, 26px);
+  font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.02em;
 }
 
 .pill {
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 0;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: #ffffff;
-  background: var(--ink);
+  background: var(--accent);
 }
 
 .pill--mid {
-  color: #ffffff;
-  background: var(--accent);
+  background: var(--warn);
 }
 
 .pill__meta {
@@ -570,16 +543,17 @@ textarea {
 
 .result__text {
   width: 100%;
-  min-height: 160px;
+  min-height: 150px;
   resize: vertical;
-  padding: 18px 0;
+  padding: 16px 0;
   border-radius: 0;
   border: 0;
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
   background: transparent;
-  line-height: 1.6;
-  font-size: 16px;
+  line-height: 1.7;
+  font-size: 15.5px;
+  font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
   outline: none;
   transition: border-color 0.15s var(--ease-liquid);
 }
@@ -588,10 +562,10 @@ textarea {
   border-color: var(--accent);
 }
 
-/* ── ошибка ─────────────────────────────────────────────────────────── */
+/* ── 错误 ───────────────────────────────────────────────────────────── */
 .error {
-  margin-top: 20px;
-  padding: 16px 0;
+  margin-top: 18px;
+  padding: 14px 0;
   border-radius: 0;
   color: var(--bad);
   background: transparent;
@@ -603,36 +577,36 @@ textarea {
   letter-spacing: 0.01em;
 }
 
-/* ── подвал ─────────────────────────────────────────────────────────── */
+/* ── 页脚 ───────────────────────────────────────────────────────────── */
 .footer {
-  margin-top: 56px;
+  margin-top: 40px;
   padding-top: 16px;
-  border-top: 1px solid var(--ink);
+  border-top: 3px solid var(--accent);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 8px 16px;
-  text-align: left;
+  text-align: center;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   color: var(--ink-faint);
 }
 
 .footer__lock {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   color: var(--ink-soft);
 }
 
 .footer__lock svg {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
 }
 
-/* ── доступность и адаптив ──────────────────────────────────────────── */
+/* ── 可访问性与响应式 ───────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -649,7 +623,7 @@ textarea {
   }
 
   .zone {
-    padding: 32px 20px;
+    padding: 28px 16px;
   }
 
   .langs {
@@ -669,8 +643,7 @@ textarea {
     margin-left: 0;
   }
 
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
+  .brand__name {
+    letter-spacing: 0.05em;
   }
 }
