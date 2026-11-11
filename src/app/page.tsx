@@ -542,7 +542,7 @@ export default function Page() {
               <IconImage />
             </span>
             <span className="zone__title">
-              {dragOver ? "Я поймаю!" : ""}
+              {dragOver ? "Поймаю!" : ""}
             </span>
             <span className="zone__hint">
              
@@ -582,8 +582,8 @@ export default function Page() {
           )}
           {busy && !image && percent !== null && (
             <p className="zone__hint" style={{ marginTop: 8 }}>
-              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — это только
-              один раз, потом мгновенно
+              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — 
+              тут первый раз — долго
             </p>
           )}
           {busyFlash && (
@@ -621,7 +621,7 @@ export default function Page() {
         {result && (
           <section className="glass result">
             <div className="result__head">
-              <h2 className="result__title">Результат</h2>
+              <h2 className="result__title">ГОТОВО!</h2>
               {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
               <span className="pill__meta">
                 {words} {plural(words)} · за {fmtSec(result.elapsedMs)}
@@ -641,11 +641,11 @@ export default function Page() {
                 onClick={copyResult}
               >
                 {copied ? <IconCheck /> : <IconCopy />}
-                {copied ? "Скопировано!" : "Копировать текст"}
+                {copied ? "ЕСТЬ!" : "КОПИРОВАТЬ"}
               </button>
               <button type="button" className="btn btn--ghost" onClick={downloadTxt}>
                 <IconDownload />
-                Скачать .txt
+                СКАЧАТЬ
               </button>
             </div>
           </section>
