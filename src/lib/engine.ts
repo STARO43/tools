@@ -110,7 +110,7 @@ export const MODEL_CATALOG: Record<ModelId, ModelDef> = {
   },
   multi: {
     id: "multi",
-    short: "Другой",
+    short: "ДРУГОЙ",
     files: [
       {
         kind: "detection",
