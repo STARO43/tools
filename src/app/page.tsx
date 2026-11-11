@@ -115,8 +115,8 @@ const IconScanner = () => (
       </clipPath>
     </defs>
 
-    {/* Полоски до лазера — приглушённые (полупрозрачный белый) */}
-    <g fill="rgba(255,255,255,0.45)">
+    {/* Полоски до лазера — тёмно-серые */}
+    <g fill="#3a4050">
       <rect x="0" y="3"  width="32" height="1.8" />
       <rect x="0" y="6.5"  width="26" height="1.8" />
       <rect x="0" y="10" width="32" height="1.8" />
@@ -127,8 +127,8 @@ const IconScanner = () => (
       <rect x="0" y="27.5" width="18" height="1.8" />
     </g>
 
-    {/* Полоски после лазера — яркие (чистый белый) */}
-    <g fill="#ffffff" clipPath="url(#scanner-after-clip)">
+    {/* Полоски после лазера — светло-серые */}
+    <g fill="#c8d0dc" clipPath="url(#scanner-after-clip)">
       <rect x="0" y="3"  width="32" height="1.8" />
       <rect x="0" y="6.5"  width="26" height="1.8" />
       <rect x="0" y="10" width="32" height="1.8" />
@@ -149,8 +149,8 @@ const IconScanner = () => (
         dur="4s"
         repeatCount="indefinite"
       />
-      <rect x="0" y="0" width="32" height="1.6" fill="#5ce1ff" opacity="0.4" />
-      <rect x="0" y="0" width="32" height="1" fill="#ffffff" />
+      <rect x="0" y="0" width="32" height="1.6" fill="#5ce1ff" opacity="0.35" />
+      <rect x="0" y="0" width="32" height="1" fill="#ff3636" />
     </g>
   </svg>
 );
