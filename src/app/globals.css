@@ -163,7 +163,6 @@ textarea {
   height: var(--tap);
   flex: none;
   border-radius: calc(var(--tap) * 0.28);
-  background: linear-gradient(145deg, var(--ozon-blue) 0%, #3a7bff 100%);
   box-shadow:
     0 2px 4px rgba(0, 91, 255, 0.18),
     0 8px 20px -6px rgba(0, 91, 255, 0.28);
@@ -173,8 +172,9 @@ textarea {
 }
 
 .brand__mark svg {
-  width: 56%;
-  height: 56%;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
 }
 
 .brand__name {
