@@ -51,9 +51,9 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* ────────────────────────── иконки (инлайн, без библиотек) ────────────────────────── */
 
-const IconDroplet = () => (
+const IconEye = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M12 2.7c3.5 4.3 6.6 7.7 6.6 11.4a6.6 6.6 0 1 1-13.2 0C5.4 10.4 8.5 7 12 2.7z" />
+    <path d="M12 4.2c-4.4 0-8.1 2.6-10.4 6.4a2.9 2.9 0 0 0 0 2.8c2.3 3.8 6 6.4 10.4 6.4s8.1-2.6 10.4-6.4a2.9 2.9 0 0 0 0-2.8C20.1 6.8 16.4 4.2 12 4.2zm0 12.6a4.8 4.8 0 1 1 0-9.6 4.8 4.8 0 0 1 0 9.6zm0-1.9a2.9 2.9 0 1 0 0-5.8 2.9 2.9 0 0 0 0 5.8z" />
   </svg>
 );
 
@@ -444,8 +444,8 @@ export default function Page() {
       <main className="shell">
         <header className="brand">
           <div className="brand__mark">
-            <IconDroplet />
-          </div>
+  <IconEye />
+</div>
           <div className="brand__name">
             Сканер<em>иньо</em>
           </div>
