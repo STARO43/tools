@@ -1,33 +1,41 @@
 :root {
-  /* TikTok-ish palette */
-  --bg: #000000;
-  --bg-2: #121212;
-  --bg-3: #1c1c1e;
-  --ink: #ffffff;
-  --ink-soft: #b0b0b8;
-  --ink-faint: #7a7a82;
-  --glass: #121212;
-  --glass-strong: #1c1c1e;
-  --glass-border: #2a2a2e;
-  --glass-shadow: 0 2px 4px rgba(0, 0, 0, 0.6),
-    0 20px 60px -20px rgba(0, 0, 0, 0.9);
-  --accent: #25f4ee;      /* TikTok cyan */
-  --accent-2: #fe2c55;    /* TikTok pink */
-  --accent-ink: #25f4ee;
-  --accent-soft: rgba(37, 244, 238, 0.12);
-  --ok: #25f4ee;
-  --ok-soft: rgba(37, 244, 238, 0.12);
-  --warn: #ffb020;
-  --bad: #fe2c55;
-  --bad-soft: rgba(254, 44, 85, 0.12);
+  /* Apple-inspired palette */
+  --bg: #f5f5f7;              /* Apple light gray */
+  --bg-2: #ffffff;            /* pure white surfaces */
+  --bg-3: #f0f0f2;            /* subtle fills */
+  --bg-4: #e8e8ed;            /* pressed states */
 
-  /* крупные скругления TikTok */
-  --r-card: 24px;
-  --r-zone: 20px;
-  --r-chip: 9999px;
+  --ink: #1d1d1f;             /* Apple near-black text */
+  --ink-soft: #6e6e73;        /* secondary text */
+  --ink-faint: #86868b;       /* tertiary text */
 
-  --ease-liquid: cubic-bezier(0.2, 0, 0, 1);
-  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  /* surfaces */
+  --surface: #ffffff;
+  --surface-border: rgba(0, 0, 0, 0.08);
+  --surface-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
+                    0 12px 40px -12px rgba(0, 0, 0, 0.12);
+
+  /* Apple system colors */
+  --accent: #0071e3;          /* Apple blue */
+  --accent-hover: #0077ed;
+  --accent-2: #5e5ce6;        /* iOS indigo */
+  --accent-ink: #0071e3;
+  --accent-soft: rgba(0, 113, 227, 0.08);
+
+  --ok: #34c759;              /* Apple green */
+  --ok-soft: rgba(52, 199, 89, 0.1);
+  --warn: #ff9f0a;            /* Apple orange */
+  --bad: #ff3b30;             /* Apple red */
+  --bad-soft: rgba(255, 59, 48, 0.08);
+
+  /* radii — Apple uses continuous corners, tuned to feel soft */
+  --r-card: 28px;
+  --r-zone: 22px;
+  --r-chip: 980px;            /* full pill like Apple buttons */
+  --r-input: 16px;
+
+  --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 *,
@@ -44,14 +52,12 @@ body {
   margin: 0;
   min-height: 100dvh;
   color: var(--ink);
-  background:
-    radial-gradient(900px 500px at 15% 0%, rgba(37, 244, 238, 0.14), transparent 60%),
-    radial-gradient(900px 500px at 85% 100%, rgba(254, 44, 85, 0.16), transparent 60%),
-    var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 20px;
-  line-height: 1.55;
-  letter-spacing: 0;
+  line-height: 1.47059;
+  letter-spacing: -0.022em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -78,31 +84,28 @@ textarea {
 }
 
 ::selection {
-  background: rgba(37, 244, 238, 0.4);
-  color: #000000;
+  background: rgba(0, 113, 227, 0.2);
+  color: var(--ink);
 }
 
+/* subtle ambient gradient — like Apple's soft page backdrops */
 .blobs {
   display: none;
 }
 
-@keyframes drift-a { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
-@keyframes drift-b { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
-@keyframes drift-c { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
-
-/* ── каркас: полноэкранный, крупный ────────────────────────────────── */
+/* ── shell ──────────────────────────────────────────────────────────── */
 .shell {
   max-width: 100%;
   width: 100%;
   min-height: 100dvh;
   margin: 0 auto;
-  padding: clamp(20px, 4vw, 48px);
+  padding: clamp(24px, 4vw, 56px);
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 1.6vw, 20px);
+  gap: clamp(16px, 2vw, 28px);
 }
 
-/* шапка */
+/* brand */
 .brand {
   display: flex;
   align-items: center;
@@ -111,50 +114,46 @@ textarea {
 }
 
 .brand__mark {
-  width: clamp(48px, 6vw, 64px);
-  height: clamp(48px, 6vw, 64px);
+  width: clamp(44px, 5vw, 56px);
+  height: clamp(44px, 5vw, 56px);
   flex: none;
-  border-radius: 20px;
-  background:
-    linear-gradient(135deg, var(--accent) 0%, var(--accent) 40%, var(--accent-2) 100%);
-  box-shadow:
-    -4px 0 18px -4px rgba(37, 244, 238, 0.6),
-    4px 0 18px -4px rgba(254, 44, 85, 0.6);
+  border-radius: 15px;
+  background: linear-gradient(145deg, #0071e3, #5e5ce6);
+  box-shadow: 0 2px 12px rgba(0, 113, 227, 0.25);
   display: grid;
   place-items: center;
-  color: #000000;
+  color: #ffffff;
 }
 
 .brand__mark svg {
-  width: 60%;
-  height: 60%;
+  width: 58%;
+  height: 58%;
 }
 
 .brand__name {
-  font-size: clamp(22px, 2.4vw, 30px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: clamp(21px, 2.2vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
   color: var(--ink);
 }
 
 .brand__name em {
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--ink-soft);
 }
 
-/* заголовок */
+/* hero */
 .hero {
-  margin-bottom: clamp(8px, 1.2vw, 16px);
+  margin-bottom: clamp(8px, 1vw, 16px);
 }
 
 .hero__title {
-  font-size: clamp(32px, 4.2vw, 56px);
-  font-weight: 800;
+  font-size: clamp(34px, 4.6vw, 64px);
+  font-weight: 700;
   line-height: 1.05;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   color: var(--ink);
-  text-shadow: 0 0 40px rgba(37, 244, 238, 0.15);
 }
 
 .hero__title em {
@@ -166,42 +165,43 @@ textarea {
 }
 
 .hero__subtitle {
-  margin-top: 10px;
-  max-width: 48em;
-  font-size: clamp(15px, 1.4vw, 20px);
+  margin-top: 12px;
+  max-width: 44em;
+  font-size: clamp(15px, 1.4vw, 19px);
   color: var(--ink-soft);
-  line-height: 1.45;
+  line-height: 1.47;
+  letter-spacing: -0.016em;
 }
 
-/* ── карточка: тёмная панель TikTok ────────────────────────────────── */
+/* ── card: clean Apple surface ──────────────────────────────────────── */
 .glass {
   flex: 1 1 auto;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
   border-radius: var(--r-card);
-  box-shadow: var(--glass-shadow);
-  padding: clamp(20px, 3vw, 40px);
+  box-shadow: var(--surface-shadow);
+  padding: clamp(24px, 3vw, 48px);
   display: flex;
   flex-direction: column;
-  animation: rise 0.4s var(--ease-soft) both;
+  animation: rise 0.5s var(--ease-apple) both;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: none; }
 }
 
 .glass + .glass {
   margin-top: 0;
-  animation-delay: 0.05s;
+  animation-delay: 0.06s;
 }
 
-/* ── зона загрузки: большая, заметная ──────────────────────────────── */
+/* ── upload zone ────────────────────────────────────────────────────── */
 .zone {
   position: relative;
   width: 100%;
   flex: 1 1 auto;
-  min-height: clamp(220px, 34vh, 420px);
+  min-height: clamp(220px, 32vh, 400px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -209,11 +209,11 @@ textarea {
   gap: 14px;
   padding: clamp(28px, 4vw, 56px);
   border-radius: var(--r-zone);
-  border: 2px dashed #34343a;
-  background: var(--bg-2);
+  border: 1.5px dashed #d2d2d7;
+  background: var(--bg-3);
   overflow: hidden;
-  transition: border-color 0.2s var(--ease-liquid), background 0.2s var(--ease-liquid),
-    transform 0.2s var(--ease-liquid);
+  transition: border-color 0.3s var(--ease-apple),
+    background 0.3s var(--ease-apple), transform 0.2s var(--ease-apple);
 }
 
 .zone:hover,
@@ -221,64 +221,63 @@ textarea {
   border-color: var(--accent);
   border-style: solid;
   background: var(--accent-soft);
-  transform: translateY(-2px);
 }
 
 .zone__icon {
-  width: clamp(72px, 9vw, 104px);
-  height: clamp(72px, 9vw, 104px);
+  width: clamp(68px, 8vw, 92px);
+  height: clamp(68px, 8vw, 92px);
   border-radius: 50%;
   display: grid;
   place-items: center;
   color: var(--accent);
-  background: rgba(37, 244, 238, 0.12);
-  border: 2px solid rgba(37, 244, 238, 0.3);
-  box-shadow: 0 0 40px -8px rgba(37, 244, 238, 0.5);
-  transition: transform 0.2s var(--ease-liquid), background 0.2s var(--ease-liquid);
+  background: rgba(0, 113, 227, 0.1);
+  border: 1.5px solid rgba(0, 113, 227, 0.25);
+  transition: transform 0.3s var(--ease-apple),
+    background 0.3s var(--ease-apple);
 }
 
 .zone:hover .zone__icon {
-  transform: scale(1.05);
-  background: rgba(37, 244, 238, 0.2);
+  transform: scale(1.04);
+  background: rgba(0, 113, 227, 0.16);
 }
 
 .zone__icon svg {
-  width: 44%;
-  height: 44%;
+  width: 42%;
+  height: 42%;
 }
 
 .zone__title {
-  font-size: clamp(18px, 1.8vw, 24px);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-size: clamp(18px, 1.7vw, 23px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
 .zone__hint {
-  font-size: clamp(13px, 1.1vw, 16px);
+  font-size: clamp(13px, 1.1vw, 15px);
   color: var(--ink-faint);
+  letter-spacing: -0.01em;
 }
 
 .zone kbd {
   font: inherit;
-  font-size: clamp(12px, 1vw, 14px);
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 10px;
+  font-size: clamp(12px, 1vw, 13px);
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 8px;
   color: var(--accent);
-  background: rgba(37, 244, 238, 0.14);
-  border: 1px solid rgba(37, 244, 238, 0.3);
+  background: rgba(0, 113, 227, 0.1);
+  border: 1px solid rgba(0, 113, 227, 0.2);
 }
 
-/* превью */
+/* preview */
 .preview {
   position: relative;
-  margin-top: 16px;
+  margin-top: 18px;
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid var(--glass-border);
-  box-shadow: none;
-  background: var(--bg-2);
+  border: 1px solid var(--surface-border);
+  background: var(--bg-3);
 }
 
 .preview img {
@@ -293,62 +292,61 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(0, 0, 0, 0.6);
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
-/* ── языки: крупные чипы ───────────────────────────────────────────── */
+/* ── language chips ─────────────────────────────────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 22px;
 }
 
 .langs__label {
-  font-size: clamp(13px, 1.1vw, 16px);
-  font-weight: 700;
-  color: var(--ink-soft);
+  font-size: clamp(13px, 1.05vw, 15px);
+  font-weight: 600;
+  color: var(--ink-faint);
   margin-right: 4px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .chip {
-  padding: clamp(10px, 1vw, 14px) clamp(18px, 1.8vw, 26px);
+  padding: clamp(9px, 0.9vw, 12px) clamp(18px, 1.7vw, 24px);
   border-radius: var(--r-chip);
-  font-weight: 700;
-  font-size: clamp(14px, 1.2vw, 18px);
-  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: clamp(14px, 1.15vw, 17px);
+  letter-spacing: -0.015em;
+  color: var(--ink);
   background: var(--bg-3);
-  border: 1.5px solid transparent;
-  transition: background 0.2s var(--ease-liquid), color 0.2s var(--ease-liquid),
-    border-color 0.2s var(--ease-liquid), transform 0.1s;
+  border: 1px solid transparent;
+  transition: background 0.2s var(--ease-apple), color 0.2s var(--ease-apple),
+    border-color 0.2s var(--ease-apple), transform 0.12s var(--ease-apple);
 }
 
 .chip:hover {
-  color: var(--accent);
-  background: var(--accent-soft);
-  border-color: rgba(37, 244, 238, 0.4);
+  background: var(--bg-4);
 }
 
 .chip:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .chip--on {
-  color: #000000;
+  color: #ffffff;
   background: var(--accent);
   border-color: var(--accent);
-  box-shadow: 0 0 30px -6px rgba(37, 244, 238, 0.6);
+  box-shadow: 0 1px 4px rgba(0, 113, 227, 0.3);
 }
 
 .chip__dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   margin-left: 7px;
   border-radius: 50%;
   background: currentColor;
@@ -360,27 +358,28 @@ textarea {
   opacity: 1;
 }
 
-/* ── статус и прогресс ─────────────────────────────────────────────── */
+/* ── status & progress ──────────────────────────────────────────────── */
 .status {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-top: 20px;
-  padding: clamp(12px, 1.4vw, 18px) clamp(16px, 1.6vw, 22px);
-  border-radius: 16px;
-  font-weight: 600;
-  font-size: clamp(13px, 1.1vw, 16px);
+  padding: clamp(12px, 1.3vw, 16px) clamp(16px, 1.5vw, 20px);
+  border-radius: 14px;
+  font-weight: 500;
+  font-size: clamp(13px, 1.05vw, 15px);
+  letter-spacing: -0.01em;
   color: var(--ink-soft);
   background: var(--bg-3);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--surface-border);
 }
 
 .status__spinner {
-  width: clamp(18px, 1.6vw, 22px);
-  height: clamp(18px, 1.6vw, 22px);
+  width: clamp(16px, 1.4vw, 20px);
+  height: clamp(16px, 1.4vw, 20px);
   flex: none;
   border-radius: 50%;
-  border: 3px solid #2a2a2e;
+  border: 2.5px solid var(--bg-4);
   border-top-color: var(--accent);
   animation: spin 0.8s linear infinite;
 }
@@ -391,9 +390,9 @@ textarea {
 
 .progress {
   margin-top: 12px;
-  height: clamp(6px, 0.7vw, 10px);
+  height: clamp(5px, 0.6vw, 8px);
   border-radius: 999px;
-  background: #1c1c1e;
+  background: var(--bg-4);
   overflow: hidden;
 }
 
@@ -401,8 +400,7 @@ textarea {
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  box-shadow: 0 0 24px -4px rgba(37, 244, 238, 0.6);
-  transition: width 0.3s var(--ease-soft);
+  transition: width 0.4s var(--ease-apple);
   position: relative;
 }
 
@@ -410,89 +408,82 @@ textarea {
   display: none;
 }
 
-@keyframes sheen {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
-/* ── кнопки: крупные TikTok-«пилюли» ───────────────────────────────── */
+/* ── buttons: Apple pill style ──────────────────────────────────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 22px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: clamp(52px, 6vw, 68px);
-  padding: clamp(12px, 1.4vw, 18px) clamp(24px, 3vw, 44px);
+  gap: 8px;
+  min-height: clamp(46px, 5vw, 56px);
+  padding: clamp(11px, 1.2vw, 15px) clamp(22px, 2.6vw, 36px);
   border-radius: var(--r-chip);
-  font-weight: 800;
-  font-size: clamp(15px, 1.4vw, 20px);
-  letter-spacing: -0.01em;
-  transition: background 0.2s var(--ease-liquid), color 0.2s var(--ease-liquid),
-    border-color 0.2s var(--ease-liquid), transform 0.1s, opacity 0.15s;
+  font-weight: 600;
+  font-size: clamp(15px, 1.3vw, 18px);
+  letter-spacing: -0.015em;
+  transition: background 0.2s var(--ease-apple), color 0.2s var(--ease-apple),
+    border-color 0.2s var(--ease-apple), transform 0.1s var(--ease-apple),
+    opacity 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .btn:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .btn svg {
-  width: clamp(18px, 1.6vw, 22px);
-  height: clamp(18px, 1.6vw, 22px);
+  width: clamp(16px, 1.4vw, 20px);
+  height: clamp(16px, 1.4vw, 20px);
 }
 
 .btn--primary {
-  color: #000000;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #ffffff;
+  background: var(--accent);
   border: 0;
-  box-shadow:
-    -6px 0 30px -8px rgba(37, 244, 238, 0.7),
-    6px 0 30px -8px rgba(254, 44, 85, 0.7);
+  box-shadow: 0 1px 3px rgba(0, 113, 227, 0.3);
 }
 
 .btn--primary:hover {
-  filter: brightness(1.1);
+  background: var(--accent-hover);
 }
 
 .btn--primary:active {
-  filter: brightness(0.95);
+  background: #0062c4;
 }
 
 .btn--ghost {
-  color: var(--ink);
+  color: var(--accent);
   background: transparent;
-  border: 2px solid #34343a;
+  border: 1px solid rgba(0, 113, 227, 0.5);
 }
 
 .btn--ghost:hover {
-  background: var(--bg-3);
+  background: var(--accent-soft);
   border-color: var(--accent);
-  color: var(--accent);
 }
 
 .btn:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
-  filter: grayscale(0.5);
+  filter: none;
 }
 
 .btn--done {
-  color: #000000;
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 30px -6px rgba(37, 244, 238, 0.7);
+  color: #ffffff;
+  background: var(--ok);
+  border-color: var(--ok);
+  box-shadow: 0 1px 3px rgba(52, 199, 89, 0.3);
 }
 
-/* ── результат ─────────────────────────────────────────────────────── */
+/* ── result ─────────────────────────────────────────────────────────── */
 .result {
-  margin-top: 20px;
+  margin-top: 22px;
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -507,71 +498,74 @@ textarea {
 }
 
 .result__title {
-  font-size: clamp(18px, 1.8vw, 26px);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-size: clamp(18px, 1.7vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
 .pill {
-  padding: 5px 12px;
+  padding: 4px 11px;
   border-radius: 8px;
-  font-size: clamp(11px, 0.9vw, 13px);
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  font-size: clamp(11px, 0.85vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #000000;
+  color: #ffffff;
   background: var(--accent);
 }
 
 .pill--mid {
-  color: #000000;
+  color: #ffffff;
   background: var(--warn);
 }
 
 .pill__meta {
   margin-left: auto;
-  font-size: clamp(12px, 1vw, 15px);
-  font-weight: 500;
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 400;
   color: var(--ink-faint);
+  letter-spacing: -0.01em;
 }
 
 .result__text {
   width: 100%;
   flex: 1 1 auto;
-  min-height: clamp(180px, 30vh, 420px);
+  min-height: clamp(180px, 28vh, 400px);
   resize: vertical;
-  padding: clamp(16px, 1.8vw, 24px);
-  border-radius: 20px;
-  border: 1.5px solid var(--glass-border);
-  background: var(--bg-2);
-  line-height: 1.55;
-  font-size: clamp(15px, 1.3vw, 19px);
+  padding: clamp(16px, 1.7vw, 22px);
+  border-radius: var(--r-input);
+  border: 1px solid var(--surface-border);
+  background: var(--bg-3);
+  line-height: 1.47;
+  font-size: clamp(15px, 1.25vw, 18px);
+  letter-spacing: -0.01em;
   color: var(--ink);
   outline: none;
-  transition: border-color 0.2s var(--ease-liquid), background 0.2s var(--ease-liquid),
-    box-shadow 0.2s var(--ease-liquid);
+  transition: border-color 0.2s var(--ease-apple),
+    background 0.2s var(--ease-apple), box-shadow 0.2s var(--ease-apple);
 }
 
 .result__text:focus {
   border-color: var(--accent);
-  background: #0a0a0a;
-  box-shadow: 0 0 0 4px rgba(37, 244, 238, 0.15);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
 }
 
-/* ── ошибка ─────────────────────────────────────────────────────────── */
+/* ── error ──────────────────────────────────────────────────────────── */
 .error {
   margin-top: 16px;
-  padding: clamp(12px, 1.4vw, 18px) clamp(16px, 1.6vw, 22px);
-  border-radius: 16px;
-  color: var(--accent-2);
+  padding: clamp(12px, 1.3vw, 16px) clamp(16px, 1.5vw, 20px);
+  border-radius: 14px;
+  color: var(--bad);
   background: var(--bad-soft);
-  border: 1.5px solid rgba(254, 44, 85, 0.35);
-  font-weight: 600;
-  font-size: clamp(13px, 1.1vw, 16px);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  font-weight: 500;
+  font-size: clamp(13px, 1.05vw, 15px);
+  letter-spacing: -0.01em;
 }
 
-/* ── подвал ─────────────────────────────────────────────────────────── */
+/* ── footer ─────────────────────────────────────────────────────────── */
 .footer {
   margin-top: auto;
   padding-top: clamp(16px, 2vw, 28px);
@@ -581,9 +575,10 @@ textarea {
   justify-content: center;
   gap: 8px 16px;
   text-align: center;
-  font-size: clamp(12px, 1vw, 15px);
-  font-weight: 600;
+  font-size: clamp(12px, 0.95vw, 14px);
+  font-weight: 400;
   color: var(--ink-faint);
+  letter-spacing: -0.01em;
 }
 
 .footer__lock {
@@ -594,11 +589,11 @@ textarea {
 }
 
 .footer__lock svg {
-  width: clamp(14px, 1.2vw, 18px);
-  height: clamp(14px, 1.2vw, 18px);
+  width: clamp(13px, 1.1vw, 16px);
+  height: clamp(13px, 1.1vw, 16px);
 }
 
-/* ── доступность и адаптив ──────────────────────────────────────────── */
+/* ── accessibility & responsive ─────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -612,12 +607,12 @@ textarea {
 @media (max-width: 720px) {
   .shell {
     padding: 16px;
-    gap: 10px;
+    gap: 12px;
   }
 
   .glass {
-    padding: 18px;
-    border-radius: 20px;
+    padding: 20px;
+    border-radius: 22px;
   }
 
   .zone {
@@ -627,7 +622,7 @@ textarea {
 
   .btn {
     width: 100%;
-    min-height: 56px;
+    min-height: 50px;
   }
 
   .pill__meta {
@@ -635,17 +630,16 @@ textarea {
   }
 
   .hero__title {
-    font-size: clamp(28px, 9vw, 40px);
+    font-size: clamp(30px, 9vw, 42px);
   }
 }
 
-/* высокие/широкие экраны — ещё крупнее */
 @media (min-width: 1200px) {
   .shell {
-    padding: 48px clamp(48px, 6vw, 120px);
+    padding: 56px clamp(56px, 7vw, 140px);
   }
 
   .glass {
-    padding: 40px clamp(40px, 4vw, 64px);
+    padding: 48px clamp(48px, 4.5vw, 72px);
   }
 }
