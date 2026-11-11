@@ -1,768 +1,611 @@
-:root {
-  /* ── пастельная палитра ─────────────────────────────────────────── */
-  --bg: #f7f6f3;
-  --bg-2: #fbfaf8;
-  --bg-3: #f1efec;
-  --bg-4: #e9e6e2;
-
-  --ink: #2b2b30;
-  --ink-soft: #6b6b73;
-  --ink-faint: #9a9aa2;
-
-  --lav: #b8a4d4;
-  --mint: #a8cdbf;
-  --peach: #e8c4b0;
-  --sky: #a9c3dd;
-
-  --accent: #8b9dc9;
-  --accent-2: #b8a4d4;
-  --accent-ink: #8b9dc9;
-  --accent-soft: rgba(139, 157, 201, 0.10);
-
-  --ok: #8fbc9d;
-  --ok-soft: rgba(143, 188, 157, 0.12);
-  --warn: #e0b894;
-  --bad: #d4a0a0;
-  --bad-soft: rgba(212, 160, 160, 0.12);
-
-  /* поверхности */
-  --glass: rgba(255, 255, 255, 0.72);
-  --glass-strong: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(43, 43, 48, 0.06);
-  --glass-shadow:
-    0 1px 2px rgba(30, 30, 50, 0.04),
-    0 8px 24px -8px rgba(30, 30, 50, 0.08),
-    0 24px 56px -24px rgba(30, 30, 50, 0.10);
-  --inner-hi: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-
-  /* fluid-движок — единый источник правды */
-  --fs-xs:   clamp(12px, 0.82vw + 0.48vh, 14px);
-  --fs-sm:   clamp(13px, 0.95vw + 0.55vh, 16px);
-  --fs-md:   clamp(15px, 1.05vw + 0.65vh, 18px);
-  --fs-lg:   clamp(18px, 1.35vw + 0.85vh, 24px);
-  --fs-xl:   clamp(22px, 1.85vw + 1.05vh, 30px);
-  --fs-hero: clamp(32px, 3.6vw + 1.6vh, 64px);
-
-  --sp-1: clamp(6px,  0.5vw, 10px);
-  --sp-2: clamp(10px, 0.9vw, 16px);
-  --sp-3: clamp(16px, 1.5vw, 24px);
-  --sp-4: clamp(24px, 2.4vw, 40px);
-  --sp-5: clamp(32px, 3.5vw, 56px);
-
-  /* крупные скругления — сдержанные */
-  --r-card:  clamp(20px, 1.8vw, 28px);
-  --r-zone:  clamp(16px, 1.5vw, 22px);
-  --r-input: clamp(12px, 1vw, 16px);
-  --r-chip:  980px;
-
-  --tap: clamp(44px, 5.5vh, 56px);
-
-  --ease-liquid: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  min-height: 100dvh;
-  color: var(--ink);
-  background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "SF Pro Text", "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: var(--fs-md);
-  line-height: 1.5;
-  letter-spacing: -0.011em;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* ── ФОН: три слоя глубины, fixed, позади контента ──────────────────── */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  background:
-    radial-gradient(120% 80% at 50% 0%, #fdfcfa 0%, transparent 60%),
-    linear-gradient(180deg, #f7f6f3 0%, #f2f0ec 100%);
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: -10%;
-  z-index: -2;
-  pointer-events: none;
-  background:
-    radial-gradient(40vw 40vw at 12% 18%, rgba(184, 164, 212, 0.28) 0%, transparent 65%),
-    radial-gradient(44vw 44vw at 88% 82%, rgba(168, 205, 191, 0.26) 0%, transparent 65%),
-    radial-gradient(36vw 36vw at 78% 12%, rgba(232, 196, 176, 0.20) 0%, transparent 65%);
-  filter: blur(60px);
-  transform: translateZ(0);
-}
-
-h1,
-h2,
-p {
-  margin: 0;
-}
-
-button {
-  font: inherit;
-  color: inherit;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-textarea {
-  font: inherit;
-  color: inherit;
-}
-
-::selection {
-  background: rgba(184, 164, 212, 0.28);
-  color: var(--ink);
-}
-
-/* шумовая текстура — «плёночная» премиальность */
-.blobs {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.35;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
-}
-
-@keyframes drift-a { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
-@keyframes drift-b { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
-@keyframes drift-c { from { transform: translate(0, 0); } to { transform: translate(0, 0); } }
-
-/* ── каркас ─────────────────────────────────────────────────────────── */
-.shell {
-  max-width: 100%;
-  width: 100%;
-  min-height: 100dvh;
-  margin: 0 auto;
-  padding: var(--sp-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-
-/* шапка */
-.brand {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-bottom: var(--sp-1);
-}
-
-.brand__mark {
-  width: var(--tap);
-  height: var(--tap);
-  flex: none;
-  border-radius: calc(var(--tap) * 0.30);
-  background: linear-gradient(145deg, var(--lav) 0%, var(--accent) 100%);
-  box-shadow:
-    0 1px 2px rgba(30, 30, 50, 0.05),
-    0 6px 16px -6px rgba(139, 157, 201, 0.35),
-    var(--inner-hi);
-  display: grid;
-  place-items: center;
-  color: #ffffff;
-}
-
-.brand__mark svg {
-  width: 56%;
-  height: 56%;
-}
-
-.brand__name {
-  font-size: var(--fs-xl);
-  font-weight: 600;
-  letter-spacing: -0.028em;
-  color: var(--ink);
-}
-
-.brand__name em {
-  font-style: normal;
-  font-weight: 400;
-  color: var(--ink-soft);
-}
-
-/* заголовок */
-.hero {
-  margin-bottom: var(--sp-2);
-}
-
-.hero__title {
-  font-size: var(--fs-hero);
-  font-weight: 600;
-  line-height: 1.06;
-  letter-spacing: -0.038em;
-  color: var(--ink);
-}
-
-.hero__title em {
-  font-style: normal;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--lav) 60%, var(--peach) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.hero__subtitle {
-  margin-top: var(--sp-2);
-  max-width: 42em;
-  font-size: var(--fs-md);
-  color: var(--ink-soft);
-  line-height: 1.5;
-  letter-spacing: -0.014em;
-}
-
-/* ── карточка ───────────────────────────────────────────────────────── */
-.glass {
-  flex: 1 1 auto;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--r-card);
-  box-shadow:
-    var(--glass-shadow),
-    var(--inner-hi);
-  -webkit-backdrop-filter: blur(20px) saturate(120%);
-  backdrop-filter: blur(20px) saturate(120%);
-  padding: var(--sp-4);
-  display: flex;
-  flex-direction: column;
-  animation: rise 0.6s var(--ease-soft) both;
-}
-
-@keyframes rise {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
-}
-
-.glass + .glass {
-  margin-top: 0;
-  animation-delay: 0.06s;
-}
-
-/* ── зона загрузки ──────────────────────────────────────────────────── */
-.zone {
-  position: relative;
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: clamp(180px, 30dvh, 400px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
-  padding: var(--sp-4);
-  border-radius: var(--r-zone);
-  border: 1.5px dashed rgba(139, 157, 201, 0.35);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.15) 100%);
-  overflow: hidden;
-  transition:
-    border-color 0.35s var(--ease-liquid),
-    background 0.35s var(--ease-liquid),
-    transform 0.25s var(--ease-liquid);
-}
-
-.zone:hover,
-.zone--over {
-  border-color: var(--accent);
-  border-style: solid;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.35) 100%);
-}
-
-.zone__icon {
-  width: clamp(56px, 6vw + 3vh, 88px);
-  height: clamp(56px, 6vw + 3vh, 88px);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--accent);
-  background: rgba(139, 157, 201, 0.10);
-  border: 1px solid rgba(139, 157, 201, 0.22);
-  box-shadow:
-    0 1px 2px rgba(30, 30, 50, 0.04),
-    0 4px 12px -4px rgba(30, 30, 50, 0.06),
-    var(--inner-hi);
-  transition:
-    transform 0.35s var(--ease-liquid),
-    background 0.35s var(--ease-liquid);
-}
-
-.zone:hover .zone__icon {
-  transform: scale(1.04);
-  background: rgba(139, 157, 201, 0.16);
-}
-
-.zone__icon svg {
-  width: 42%;
-  height: 42%;
-}
-
-.zone__title {
-  font-size: var(--fs-lg);
-  font-weight: 600;
-  letter-spacing: -0.022em;
-  color: var(--ink);
-}
-
-.zone__hint {
-  font-size: var(--fs-sm);
-  color: var(--ink-faint);
-  letter-spacing: -0.012em;
-}
-
-.zone kbd {
-  font: inherit;
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 8px;
-  color: var(--accent);
-  background: rgba(139, 157, 201, 0.10);
-  border: 1px solid rgba(139, 157, 201, 0.22);
-}
-
-/* превью */
-.preview {
-  position: relative;
-  margin-top: var(--sp-2);
-  border-radius: var(--r-zone);
-  overflow: hidden;
-  border: 1px solid var(--glass-border);
-  box-shadow: none;
-  background: var(--bg-3);
-}
-
-.preview img {
-  display: block;
-  width: 100%;
-  max-height: 45dvh;
-  object-fit: contain;
-}
-
-.preview__scrim {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(251, 250, 248, 0.65);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-}
-
-/* ── языки ──────────────────────────────────────────────────────────── */
-.langs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-1) var(--sp-2);
-  margin-top: var(--sp-3);
-}
-
-.langs__label {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--ink-faint);
-  margin-right: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.chip {
-  padding: var(--sp-1) var(--sp-3);
-  border-radius: var(--r-chip);
-  font-weight: 500;
-  font-size: var(--fs-sm);
-  letter-spacing: -0.014em;
-  color: var(--ink-soft);
-  background: rgba(43, 43, 48, 0.035);
-  border: 1px solid transparent;
-  transition:
-    background 0.25s var(--ease-liquid),
-    color 0.25s var(--ease-liquid),
-    border-color 0.25s var(--ease-liquid),
-    transform 0.15s var(--ease-liquid);
-}
-
-.chip:hover {
-  color: var(--ink);
-  background: rgba(43, 43, 48, 0.06);
-}
-
-.chip:active {
-  transform: scale(0.97);
-}
-
-.chip--on {
-  color: #ffffff;
-  background: linear-gradient(145deg, var(--accent) 0%, var(--lav) 100%);
-  border-color: transparent;
-  box-shadow:
-    0 1px 2px rgba(139, 157, 201, 0.30),
-    0 6px 16px -6px rgba(139, 157, 201, 0.40),
-    var(--inner-hi);
-}
-
-.chip__dot {
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  margin-left: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.75;
-  vertical-align: 1px;
-}
-
-.chip--on .chip__dot {
-  opacity: 1;
-}
-
-/* ── статус и прогресс ──────────────────────────────────────────────── */
-.status {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-top: var(--sp-3);
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-input);
-  font-weight: 500;
-  font-size: var(--fs-sm);
-  letter-spacing: -0.012em;
-  color: var(--ink-soft);
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--inner-hi);
-}
-
-.status__spinner {
-  width: clamp(15px, 1.3vw, 18px);
-  height: clamp(15px, 1.3vw, 18px);
-  flex: none;
-  border-radius: 50%;
-  border: 2px solid rgba(139, 157, 201, 0.18);
-  border-top-color: var(--accent);
-  animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.progress {
-  margin-top: var(--sp-2);
-  height: clamp(4px, 0.5vw, 6px);
-  border-radius: 999px;
-  background: rgba(43, 43, 48, 0.06);
-  overflow: hidden;
-}
-
-.progress__bar {
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--lav) 50%, var(--peach) 100%);
-  transition: width 0.5s var(--ease-soft);
-  position: relative;
-}
-
-.progress__bar::after {
-  display: none;
-}
-
-@keyframes sheen {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
-/* ── кнопки ─────────────────────────────────────────────────────────── */
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-  margin-top: var(--sp-3);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: var(--tap);
-  padding: var(--sp-2) var(--sp-4);
-  border-radius: var(--r-chip);
-  font-weight: 600;
-  font-size: var(--fs-md);
-  letter-spacing: -0.016em;
-  transition:
-    background 0.25s var(--ease-liquid),
-    color 0.25s var(--ease-liquid),
-    border-color 0.25s var(--ease-liquid),
-    transform 0.15s var(--ease-liquid),
-    opacity 0.2s var(--ease-liquid);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.btn:active {
-  transform: scale(0.97);
-}
-
-.btn svg {
-  width: clamp(16px, 1.3vw, 19px);
-  height: clamp(16px, 1.3vw, 19px);
-}
-
-.btn--primary {
-  color: #ffffff;
-  background: linear-gradient(145deg, var(--accent) 0%, var(--lav) 100%);
-  border: 0;
-  box-shadow:
-    0 1px 2px rgba(139, 157, 201, 0.30),
-    0 8px 20px -8px rgba(139, 157, 201, 0.45),
-    var(--inner-hi);
-}
-
-.btn--primary:hover {
-  background: linear-gradient(145deg, #7f92c2 0%, #ad98cb 100%);
-}
-
-.btn--primary:active {
-  background: linear-gradient(145deg, #7587b8 0%, #a18dc2 100%);
-}
-
-.btn--ghost {
-  color: var(--accent);
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(139, 157, 201, 0.30);
-  box-shadow: var(--inner-hi);
-}
-
-.btn--ghost:hover {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: rgba(139, 157, 201, 0.55);
-  color: var(--accent);
-}
-
-.btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.btn--done {
-  color: #ffffff;
-  background: linear-gradient(145deg, var(--ok) 0%, var(--mint) 100%);
-  border-color: transparent;
-  box-shadow:
-    0 1px 2px rgba(143, 188, 157, 0.30),
-    0 8px 20px -8px rgba(143, 188, 157, 0.45),
-    var(--inner-hi);
-}
-
-/* ── результат ──────────────────────────────────────────────────────── */
-.result {
-  margin-top: var(--sp-3);
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-}
-
-.result__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-1) var(--sp-2);
-  margin-bottom: var(--sp-2);
-}
-
-.result__title {
-  font-size: var(--fs-lg);
-  font-weight: 600;
-  letter-spacing: -0.022em;
-  color: var(--ink);
-}
-
-.pill {
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #ffffff;
-  background: var(--accent);
-}
-
-.pill--mid {
-  color: #ffffff;
-  background: var(--warn);
-}
-
-.pill__meta {
-  margin-left: auto;
-  font-size: var(--fs-xs);
-  font-weight: 400;
-  color: var(--ink-faint);
-  letter-spacing: -0.008em;
-}
-
-.result__text {
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: clamp(140px, 26dvh, 400px);
-  max-height: 60dvh;
-  resize: vertical;
-  padding: var(--sp-3);
-  border-radius: var(--r-input);
-  border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.55);
-  line-height: 1.5;
-  font-size: var(--fs-md);
-  letter-spacing: -0.012em;
-  color: var(--ink);
-  outline: none;
-  box-shadow: var(--inner-hi);
-  transition:
-    border-color 0.25s var(--ease-liquid),
-    background 0.25s var(--ease-liquid),
-    box-shadow 0.25s var(--ease-liquid);
-}
-
-.result__text:focus {
-  border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow:
-    0 0 0 3px rgba(139, 157, 201, 0.15),
-    var(--inner-hi);
-}
-
-/* ── ошибка ─────────────────────────────────────────────────────────── */
-.error {
-  margin-top: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-input);
-  color: #a86b6b;
-  background: var(--bad-soft);
-  border: 1px solid rgba(212, 160, 160, 0.25);
-  font-weight: 500;
-  font-size: var(--fs-sm);
-  letter-spacing: -0.01em;
-}
-
-/* ── подвал ─────────────────────────────────────────────────────────── */
-.footer {
-  margin-top: auto;
-  padding-top: var(--sp-3);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-1) var(--sp-3);
-  text-align: center;
-  font-size: var(--fs-xs);
-  font-weight: 400;
-  color: var(--ink-faint);
-  letter-spacing: -0.008em;
-}
-
-.footer__lock {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--accent);
-}
-
-.footer__lock svg {
-  width: clamp(12px, 1vw, 15px);
-  height: clamp(12px, 1vw, 15px);
-}
-
-/* ── доступность и адаптив ──────────────────────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-@media (max-width: 720px) {
-  .shell {
-    padding: var(--sp-3);
-    gap: var(--sp-2);
-  }
-
-  .glass {
-    padding: var(--sp-3);
-    border-radius: var(--r-zone);
-  }
-
-  .zone {
-    min-height: 180px;
-    padding: var(--sp-3) var(--sp-2);
-  }
-
-  .btn {
-    width: 100%;
-    min-height: var(--tap);
-  }
-
-  .pill__meta {
-    margin-left: 0;
-  }
-
-  .hero__title {
-    font-size: clamp(28px, 9vw, 40px);
-  }
-}
-
-/* низкий ландшафт — приоритет высоте */
-@media (max-height: 560px) and (orientation: landscape) {
-  .hero { margin-bottom: var(--sp-1); }
-  .zone {
-    min-height: 120px;
-    padding: var(--sp-2) var(--sp-3);
-  }
-  .zone__icon {
-    width: 44px;
-    height: 44px;
-  }
-  .glass { padding: var(--sp-2) var(--sp-3); }
-}
-
-@media (min-width: 1200px) {
-  .shell {
-    padding: var(--sp-5) clamp(48px, 7vw, 120px);
-  }
-
-  .glass {
-    padding: var(--sp-5) clamp(40px, 4vw, 64px);
-  }
-}
-
-/* очень широкие — ограничиваем ширину для читаемости */
-@media (min-width: 1800px) {
-  .shell { max-width: 1600px; }
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  MODEL_CATALOG,
+  MODEL_ORDER,
+  hasCachedModels,
+  loadModelFiles,
+  freshBuffers,
+  type LoadProgress,
+  type ModelId,
+  type WorkerRequest,
+  type WorkerResponse,
+} from "@/lib/engine";
+
+/* ────────────────────────── утилиты ────────────────────────── */
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+function fmtBytes(n: number): string {
+  if (n >= 1024 * 1024) return `${(n / (1024 * 1024)).toFixed(1)} МБ`;
+  if (n >= 1024) return `${(n / 1024).toFixed(0)} КБ`;
+  return `${n} Б`;
+}
+
+function fmtSec(ms: number): string {
+  return `${(ms / 1000).toFixed(1).replace(".", ",")} с`;
+}
+
+function qualityPill(confidence: number): { label: string; mid: boolean } {
+  if (confidence >= 0.8) return { label: "Качество: отличное", mid: false };
+  if (confidence >= 0.6) return { label: "Качество: хорошее", mid: false };
+  return { label: "Есть пропуски — проверьте", mid: true };
+}
+
+interface LoadedImage {
+  name: string;
+  url: string;
+  width: number;
+  height: number;
+  buffer: ArrayBuffer;
+}
+
+interface Result {
+  confidence: number;
+  elapsedMs: number;
+  lang: ModelId;
+}
+
+type Phase = "empty" | "prep" | "ocr" | "done" | "error";
+
+/* ────────────────────────── иконки (инлайн, без библиотек) ────────────────────────── */
+
+const IconEye = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path d="M12 4.2c-4.4 0-8.1 2.6-10.4 6.4a2.9 2.9 0 0 0 0 2.8c2.3 3.8 6 6.4 10.4 6.4s8.1-2.6 10.4-6.4a2.9 2.9 0 0 0 0-2.8C20.1 6.8 16.4 4.2 12 4.2zm0 12.6a4.8 4.8 0 1 1 0-9.6 4.8 4.8 0 0 1 0 9.6zm0-1.9a2.9 2.9 0 1 0 0-5.8 2.9 2.9 0 0 0 0 5.8z" />
+  </svg>
+);
+
+const IconImage = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="3" y="4" width="18" height="16" rx="3.5" />
+    <circle cx="9" cy="10" r="1.7" fill="currentColor" stroke="none" />
+    <path d="M3.5 17.5 9 12.4l4.2 3.8 3.1-2.7 4.2 3.6" />
+  </svg>
+);
+
+const IconCopy = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="9" y="9" width="11" height="12" rx="2.5" />
+    <path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5" />
+  </svg>
+);
+
+const IconCheck = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M4.5 12.8 10 18 19.5 6.5" />
+  </svg>
+);
+
+const IconDownload = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5" />
+    <path d="M4 17.5v1A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-1" />
+  </svg>
+);
+
+const IconLock = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="5" y="10.5" width="14" height="9.5" rx="2.5" />
+    <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
+  </svg>
+);
+
+/* ────────────────────────── компонент ────────────────────────── */
+
+export default function Page() {
+  /* состояние интерфейса */
+  const [lang, setLang] = useState<ModelId>("ru");
+  const [cached, setCached] = useState<ModelId[]>([]);
+  const [image, setImage] = useState<LoadedImage | null>(null);
+  const [phase, setPhase] = useState<Phase>("empty");
+  const [progress, setProgress] = useState<LoadProgress | null>(null);
+  const [status, setStatus] = useState("");
+  const [elapsed, setElapsed] = useState(0);
+  const [result, setResult] = useState<Result | null>(null);
+  const [text, setText] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [busyFlash, setBusyFlash] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  /* движок и ссылки */
+  const workerRef = useRef<Worker | null>(null);
+  const engineRef = useRef<{ modelId: ModelId } | null>(null);
+  const reqId = useRef(0);
+  const pendingRef = useRef<Map<number, (r: WorkerResponse) => void>>(new Map());
+  const busyRef = useRef(false);
+  const imageRef = useRef<LoadedImage | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const pendingFileRef = useRef<{ file: File | Blob; name?: string } | null>(null);
+  /* вызов handleFile из runOcr без петли зависимостей */
+  const handleFileRef = useRef<((f: File | Blob, n?: string) => Promise<void>) | null>(null);
+
+  /* ── worker ── */
+  const getWorker = useCallback((): Worker => {
+    if (!workerRef.current) {
+      // воркер пре-компилируется scripts/build-worker.sh в public/ocr.worker.js
+      const w = new Worker(`${BASE}/ocr.worker.js`, { type: "module" });
+      w.onmessage = (e: MessageEvent<WorkerResponse>) => {
+        const resolver = pendingRef.current.get(e.data.id);
+        pendingRef.current.delete(e.data.id);
+        resolver?.(e.data);
+      };
+      workerRef.current = w;
+    }
+    return workerRef.current;
+  }, []);
+
+  const workerCall = useCallback(
+    (msg: WorkerRequest, transfer: Transferable[]): Promise<WorkerResponse> =>
+      new Promise((resolve) => {
+        pendingRef.current.set(msg.id, resolve);
+        getWorker().postMessage(msg, transfer);
+      }),
+    [getWorker],
+  );
+
+  /* ── подготовка движка (пакет языка + сессии) ── */
+  const ensureEngine = useCallback(
+    async (target: ModelId): Promise<boolean> => {
+      setPhase("prep");
+      setProgress(null);
+      try {
+        if (engineRef.current?.modelId !== target) {
+          /* 1. файлы пакета: из кэша или из сети */
+          setStatus(
+            (await hasCachedModels(target))
+              ? "Настраиваю распознавание…"
+              : `Загружаю языковой пакет «${MODEL_CATALOG[target].short}»…`,
+          );
+          const files = await loadModelFiles(MODEL_CATALOG[target], (p) => setProgress(p));
+
+          /* 2. сессии ONNX в воркере */
+          setStatus("Запускаю движок…");
+          const buffers = await freshBuffers(target);
+          const id = ++reqId.current;
+          const resp = await workerCall(
+            {
+              type: "init",
+              id,
+              modelId: target,
+              detection: buffers.detection,
+              recognition: buffers.recognition,
+              dictionary: buffers.dictionary,
+            },
+            [buffers.detection, buffers.recognition, buffers.dictionary],
+          );
+          if (resp.type === "error") throw new Error(resp.message);
+          if (resp.type !== "ready") throw new Error("Неожиданный ответ воркера");
+          engineRef.current = { modelId: target };
+          setCached((prev) => (prev.includes(target) ? prev : [...prev, target]));
+        }
+        return true;
+      } catch (err) {
+        setPhase("error");
+        setResult(null);
+        throw err instanceof Error ? err : new Error(String(err));
+      } finally {
+        setProgress(null);
+      }
+    },
+    [workerCall],
+  );
+
+  /* ── распознавание ── */
+  const runOcr = useCallback(
+    async (target: ModelId) => {
+      const img = imageRef.current;
+      if (!img || busyRef.current) return;
+
+      busyRef.current = true;
+      setCopied(false);
+      const started = performance.now();
+      const tick = setInterval(() => setElapsed(performance.now() - started), 100);
+      try {
+        await ensureEngine(target);
+        const imgNow = imageRef.current;
+        if (imgNow !== img) return; // пользователь уже выбрал другое фото
+
+        setPhase("ocr");
+        setStatus("Читаю текст…");
+        const copy = imgNow.buffer.slice(0);
+        const id = ++reqId.current;
+        const resp = await workerCall({ type: "recognize", id, image: copy }, [copy]);
+        if (imageRef.current !== imgNow) return;
+
+        if (resp.type === "error") throw new Error(resp.message);
+        if (resp.type !== "result") throw new Error("Неожиданный ответ воркера");
+
+        const elapsedMs = performance.now() - started;
+        if (!resp.text.trim()) {
+          setPhase("error");
+          setResult(null);
+          setText("");
+          setStatus("");
+          setError("На этой картинке не нашлось текста. Попробуйте снимок чётче, без наклона и размытия.");
+          return;
+        }
+        setText(resp.text);
+        setResult({ confidence: resp.confidence, elapsedMs, lang: target });
+        setPhase("done");
+        setStatus("");
+      } catch (err) {
+        if (imageRef.current !== img) return;
+        setPhase("error");
+        setResult(null);
+        setStatus("");
+        setError(
+          err instanceof Error
+            ? `Не получилось: ${err.message}`
+            : "Не получилось распознать текст. Попробуйте ещё раз.",
+        );
+      } finally {
+        clearInterval(tick);
+        busyRef.current = false;
+        /* если за время работы успело прийти новое фото — обрабатываем его */
+        const queued = pendingFileRef.current;
+        pendingFileRef.current = null;
+        if (queued) void handleFileRef.current?.(queued.file, queued.name);
+      }
+    },
+    [ensureEngine, workerCall],
+  );
+
+  /* ── загрузка изображения ── */
+  const handleFile = useCallback(
+    async (file: File | Blob, name?: string) => {
+      const fname = name ?? (file as File).name ?? "снимок.png";
+      const type = (file as File).type || "";
+      if (!type.startsWith("image/") && !/\.(png|jpe?g|webp|bmp|gif|avif)$/i.test(fname)) {
+        setError("Это не картинка. Подойдут PNG, JPEG, WEBP или скриншот.");
+        return;
+      }
+      if (file.size > 30 * 1024 * 1024) {
+        setError(`Файл слишком большой (${fmtBytes(file.size)}). До 30 МБ, пожалуйста.`);
+        return;
+      }
+
+      if (busyRef.current) {
+        pendingFileRef.current = { file, name };
+        setBusyFlash(true);
+        window.setTimeout(() => setBusyFlash(false), 1600);
+        return;
+      }
+
+      try {
+        const buffer = await file.arrayBuffer();
+        const bitmap = await createImageBitmap(new Blob([buffer]));
+        const url = URL.createObjectURL(new Blob([buffer], { type: type || "image/png" }));
+        if (imageRef.current) URL.revokeObjectURL(imageRef.current.url);
+
+        const img: LoadedImage = {
+          name: fname,
+          url,
+          width: bitmap.width,
+          height: bitmap.height,
+          buffer,
+        };
+        bitmap.close?.();
+        imageRef.current = img;
+        setImage(img);
+        setResult(null);
+        setText("");
+        setError(null);
+        setPhase("empty");
+        void runOcr(lang);
+      } catch {
+        setError("Не удалось открыть картинку. Попробуйте другой файл.");
+      }
+    },
+    [lang, runOcr],
+  );
+
+  handleFileRef.current = handleFile;
+
+  /* ── пример ── */
+  const loadSample = useCallback(async () => {
+    try {
+      const resp = await fetch(`${BASE}/sample/report-ru.png`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      await handleFile(await resp.blob(), "report-ru.png");
+    } catch {
+      setError("Пример временно недоступен.");
+    }
+  }, [handleFile]);
+
+  /* ── события: выбор файла, вставка, перетаскивание ── */
+  const pickFile = useCallback(() => fileInputRef.current?.click(), []);
+
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const f = e.target.files?.[0];
+      if (f) void handleFile(f);
+      e.target.value = "";
+    },
+    [handleFile],
+  );
+
+  useEffect(() => {
+    const onPaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          const f = item.getAsFile();
+          if (f) {
+            e.preventDefault();
+            void handleFile(f, f.name || "снимок.png");
+          }
+          return;
+        }
+      }
+    };
+    const preventNav = (e: DragEvent) => e.preventDefault();
+    const onDrop = (e: DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      const f = e.dataTransfer?.files?.[0];
+      if (f) void handleFile(f);
+    };
+    const onDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      setDragOver(true);
+    };
+    const onDragLeave = (e: DragEvent) => {
+      if (!e.relatedTarget) setDragOver(false);
+    };
+    window.addEventListener("paste", onPaste);
+    window.addEventListener("dragover", onDragOver);
+    window.addEventListener("dragleave", onDragLeave);
+    window.addEventListener("drop", onDrop);
+    return () => {
+      window.removeEventListener("paste", onPaste);
+      window.removeEventListener("dragover", onDragOver);
+      window.removeEventListener("dragleave", onDragLeave);
+      window.removeEventListener("drop", onDrop);
+    };
+  }, [handleFile]);
+
+  /* отметки о закэшированных пакетах при старте */
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const present: ModelId[] = [];
+      for (const id of MODEL_ORDER) {
+        if (await hasCachedModels(id).catch(() => false)) present.push(id);
+      }
+      if (!cancelled) setCached(present);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /* смена языка: если картинка уже есть — распознаём заново */
+  const switchLang = useCallback(
+    (id: ModelId) => {
+      if (id === lang || busyRef.current) return;
+      setLang(id);
+      if (imageRef.current) {
+        setResult(null);
+        setText("");
+        void runOcr(id);
+      }
+    },
+    [lang, runOcr],
+  );
+
+  /* ── копирование и скачивание ── */
+  const copyResult = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* старые браузеры: выделение */
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    }
+  }, [text]);
+
+  const downloadTxt = useCallback(() => {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${(image?.name ?? "текст").replace(/\.[^.]+$/, "")}.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }, [text, image]);
+
+  /* ── вычисляемое ── */
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const busy = phase === "prep" || phase === "ocr";
+  const percent = progress && progress.total > 0 ? Math.min(100, Math.floor((progress.received / progress.total) * 100)) : null;
+  const pill = result ? qualityPill(result.confidence) : null;
+
+  return (
+    <>
+      {/* живой фон */}
+      <div className="blobs" aria-hidden>
+        <div className="blob blob--lavender" />
+        <div className="blob blob--aqua" />
+        <div className="blob blob--peach" />
+        <div className="blob blob--sky" />
+      </div>
+
+      <main className="shell">
+        <header className="brand">
+          <div className="brand__mark">
+  <IconEye />
+</div>
+          <div className="brand__name">
+            Сканер<em>иньо</em>
+          </div>
+        </header>
+
+        <section className="hero">
+          <h1 className="hero__title">
+        
+          </h1>
+          <p className="hero__subtitle">
+          </p>
+        </section>
+
+        {/* ── шаг 1: картинка ── */}
+        <section className="glass">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={onInputChange}
+            hidden
+            aria-hidden
+            tabIndex={-1}
+          />
+          <button
+            type="button"
+            className={`zone${dragOver ? " zone--over" : ""}`}
+            onClick={pickFile}
+            aria-label="Выбрать"
+          >
+            <span className="zone__icon">
+              <IconImage />
+            </span>
+            <span className="zone__title">
+              {dragOver ? "Я поймаю!" : ""}
+            </span>
+            <span className="zone__hint">
+             
+            </span>
+          </button>
+
+          {image && (
+            <figure className="preview" style={{ margin: "18px 0 0" }}>
+              <img src={image.url} alt={`Загружено: ${image.name}`} />
+              {busy && (
+                <div className="preview__scrim">
+                  <span className="status" style={{ margin: 0 }}>
+                    <span className="status__spinner" />
+                    {status}
+                    {phase === "ocr" && ` ${fmtSec(elapsed)}`}
+                  </span>
+                </div>
+              )}
+            </figure>
+          )}
+
+          {/* статус + прогресс первой загрузки пакета */}
+          {busy && !image && (
+            <div className="status">
+              <span className="status__spinner" />
+              <span>
+                {status}
+                {percent !== null ? ` ${percent}%` : ""}
+                {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
+              </span>
+            </div>
+          )}
+          {busy && percent !== null && (
+            <div className="progress" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
+              <div className="progress__bar" style={{ width: `${percent}%` }} />
+            </div>
+          )}
+          {busy && !image && percent !== null && (
+            <p className="zone__hint" style={{ marginTop: 8 }}>
+              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — это только
+              один раз, потом мгновенно
+            </p>
+          )}
+          {busyFlash && (
+            <p className="zone__hint" style={{ marginTop: 10 }}>
+              Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
+            </p>
+          )}
+
+          {/* язык */}
+          <div className="langs">
+            <span className="langs__label">Язык текста:</span>
+            {MODEL_ORDER.map((id) => (
+              <button
+                key={id}
+                type="button"
+                className={`chip${lang === id ? " chip--on" : ""}`}
+                onClick={() => switchLang(id)}
+                title={MODEL_CATALOG[id].hint}
+              >
+                {MODEL_CATALOG[id].short}
+                {cached.includes(id) && lang !== id && <span className="chip__dot" title="Уже загружен" />}
+              </button>
+            ))}
+          </div>
+
+         
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+        </section>
+
+        {/* ── шаг 2: результат ── */}
+        {result && (
+          <section className="glass result">
+            <div className="result__head">
+              <h2 className="result__title">Результат</h2>
+              {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
+              <span className="pill__meta">
+                {words} {plural(words)} · за {fmtSec(result.elapsedMs)}
+              </span>
+            </div>
+            <textarea
+              className="result__text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              spellCheck={false}
+              aria-label="Распознанный текст"
+            />
+            <div className="actions">
+              <button
+                type="button"
+                className={`btn btn--primary${copied ? " btn--done" : ""}`}
+                onClick={copyResult}
+              >
+                {copied ? <IconCheck /> : <IconCopy />}
+                {copied ? "Скопировано!" : "Копировать текст"}
+              </button>
+              <button type="button" className="btn btn--ghost" onClick={downloadTxt}>
+                <IconDownload />
+                Скачать .txt
+              </button>
+            </div>
+          </section>
+        )}
+
+        <footer className="footer">
+          <span className="footer__lock">
+            <IconLock />
+            Локально на вашем устройстве
+          </span>
+          <span>Без отправки в интернет</span>
+        </footer>
+      </main>
+    </>
+  );
+}
+
+/* 1 слово, 2 слова, 5 слов… */
+function plural(n: number): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return "слово";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "слова";
+  return "слов";
 }
