@@ -124,7 +124,7 @@ textarea {
 .shell {
  
   width: 100%;
-  max-inline-size: 60ch; 
+  max-inline-size: 80ch; 
   
   min-height: 100dvh;
   margin: 0 auto; 
