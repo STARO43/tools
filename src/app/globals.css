@@ -1,36 +1,33 @@
 :root {
-  /* GS-палитра: серебро, navy, GS red, сталь */
-  --bg: #ebe8e1;
-  --ink: #0c1825;
-  --ink-soft: #4a5560;
-  --ink-faint: #8a9099;
-  --glass: #f5f2eb;
-  --glass-strong: #f9f7f0;
-  --glass-border: #d8d3c8;
+  /* премиальный розовый: тёплый пепел розы, уходящий в ivory */
+  --bg: #fdf7f8;
+  --ink: #3a2c31;
+  --ink-soft: #7a676d;
+  --ink-faint: #b8a8ad;
+  --glass: rgba(255, 255, 255, 0.68);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.95);
   --glass-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 1px 2px rgba(12, 24, 37, 0.04),
-    0 30px 60px -40px rgba(12, 24, 37, 0.2);
-  --accent: #a6192e;
-  --accent-2: #c1304a;
-  --accent-ink: #8a1324;
-  --accent-soft: rgba(166, 25, 46, 0.08);
-  --ok: #2a6b4a;
-  --ok-soft: rgba(42, 107, 74, 0.1);
-  --warn: #9a7b3f;
-  --bad: #a6192e;
-  --bad-soft: rgba(166, 25, 46, 0.08);
+    0 1px 2px rgba(217, 161, 176, 0.04),
+    0 24px 60px -30px rgba(217, 161, 176, 0.16);
+  --accent: #d9a1b0;
+  --accent-2: #c88ba0;
+  --accent-ink: #a67082;
+  --accent-soft: rgba(217, 161, 176, 0.1);
+  --ok: #8ea48c;
+  --ok-soft: rgba(142, 164, 140, 0.1);
+  --warn: #c99b6e;
+  --bad: #c77a85;
+  --bad-soft: rgba(199, 122, 133, 0.08);
 
-  /* форма — точность Zaratsu: почти острые углы */
-  --r-card: 3px;
-  --r-zone: 2px;
-  --r-chip: 2px;
+  /* форма — мягкая, но не пузырь */
+  --r-card: 28px;
+  --r-zone: 22px;
+  --r-chip: 999px;
 
-  /* движение — плавное, как секундная стрелка */
-  --ease-liquid: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-
-  --font-serif: "Cormorant Garamond", "EB Garamond", "Songti SC", Georgia, serif;
+  /* движение — медленное, дыхание */
+  --ease-liquid: cubic-bezier(0.32, 0.72, 0.28, 1);
+  --ease-soft: cubic-bezier(0.32, 0.72, 0.28, 1);
 }
 
 /* ── база ───────────────────────────────────────────────────────────── */
@@ -49,14 +46,23 @@ body {
   min-height: 100dvh;
   color: var(--ink);
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 255, 255, 0.5), transparent 60%);
-  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
-  font-size: 17px;
-  line-height: 1.55;
-  font-variant-numeric: tabular-nums;
+  /* розовый свет сверху слева, уходящий в почти-белое — вся идея в одном градиенте */
+  background-image: linear-gradient(
+    145deg,
+    #fbe8ed 0%,
+    #fdf2f3 28%,
+    #fefaf9 62%,
+    #fdf7f8 100%
+  );
+  background-attachment: fixed;
+  font-family: var(--font-manrope), "Inter", "Segoe UI", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0.005em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
@@ -80,10 +86,10 @@ textarea {
 }
 
 ::selection {
-  background: rgba(166, 25, 46, 0.2);
+  background: rgba(217, 161, 176, 0.25);
 }
 
-/* ── фон: едва заметное отражение на стали ─────────────────────────── */
+/* ── фон: почти невидимые розовые облака ────────────────────────────── */
 .blobs {
   position: fixed;
   inset: 0;
@@ -95,8 +101,8 @@ textarea {
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.35;
+  filter: blur(110px);
+  opacity: 0.5;
   will-change: transform;
 }
 
@@ -105,8 +111,8 @@ textarea {
   height: 46vmax;
   left: -12vmax;
   top: -14vmax;
-  background: radial-gradient(circle at 35% 35%, #d8d3c8, transparent 70%);
-  animation: drift-a 40s ease-in-out infinite alternate;
+  background: radial-gradient(circle at 35% 35%, #f6d4dc, transparent 70%);
+  animation: drift-a 44s ease-in-out infinite alternate;
 }
 
 .blob--aqua {
@@ -114,8 +120,8 @@ textarea {
   height: 40vmax;
   right: -10vmax;
   top: 16vh;
-  background: radial-gradient(circle at 60% 40%, #c9d4dc, transparent 70%);
-  animation: drift-b 46s ease-in-out infinite alternate;
+  background: radial-gradient(circle at 60% 40%, #e8d9ee, transparent 70%);
+  animation: drift-b 52s ease-in-out infinite alternate;
 }
 
 .blob--peach {
@@ -123,8 +129,8 @@ textarea {
   height: 38vmax;
   left: 18vw;
   bottom: -18vmax;
-  background: radial-gradient(circle at 50% 55%, #e6dcc9, transparent 70%);
-  animation: drift-c 38s ease-in-out infinite alternate;
+  background: radial-gradient(circle at 50% 55%, #f8e4d8, transparent 70%);
+  animation: drift-c 48s ease-in-out infinite alternate;
 }
 
 .blob--sky {
@@ -132,30 +138,30 @@ textarea {
   height: 30vmax;
   right: 14vw;
   bottom: -6vmax;
-  background: radial-gradient(circle at 45% 45%, #d4d9e0, transparent 70%);
-  animation: drift-a 52s ease-in-out infinite alternate-reverse;
+  background: radial-gradient(circle at 45% 45%, #e4e0ee, transparent 70%);
+  animation: drift-a 56s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes drift-a {
   from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(4vmax, 3vmax) scale(1.06); }
+  to { transform: translate(3vmax, 2vmax) scale(1.06); }
 }
 
 @keyframes drift-b {
   from { transform: translate(0, 0) scale(1.02); }
-  to { transform: translate(-3vmax, 3vmax) scale(0.98); }
+  to { transform: translate(-2vmax, 3vmax) scale(0.98); }
 }
 
 @keyframes drift-c {
   from { transform: translate(0, 0) scale(0.98); }
-  to { transform: translate(4vmax, -3vmax) scale(1.04); }
+  to { transform: translate(3vmax, -2vmax) scale(1.04); }
 }
 
 /* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
-  max-width: 760px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: clamp(20px, 4vw, 44px) clamp(16px, 4vw, 28px) 60px;
+  padding: clamp(32px, 5vw, 72px) clamp(20px, 4vw, 32px) 96px;
 }
 
 /* шапка */
@@ -163,174 +169,118 @@ textarea {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 10px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 12px;
 }
 
-/* логотип: SVG не тронут, контейнер — navy «корпус» с красной линией снизу */
+/* логотип: тот же SVG, розовый градиент, белая иконка, мягкая тень */
 .brand__mark {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   flex: none;
-  border-radius: 2px;
-  background: var(--ink);
-  box-shadow: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #e8b4c4 0%, var(--accent) 60%, var(--accent-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 8px 24px -10px rgba(217, 161, 176, 0.5);
   display: grid;
   place-items: center;
-  color: var(--glass-strong);
-  position: relative;
-  overflow: hidden;
-}
-
-.brand__mark::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: var(--accent);
+  color: #fff;
 }
 
 .brand__mark svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
+  opacity: 0.95;
 }
 
-/* имя бренда — сериф, капитель, широкий трекинг — как гравировка */
 .brand__name {
-  font-family: var(--font-serif);
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--ink);
 }
 
 .brand__name em {
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
-  color: var(--accent);
-  letter-spacing: 0.1em;
+  color: var(--accent-ink);
   margin-left: 6px;
+  letter-spacing: 0.04em;
 }
 
 .hero {
-  margin-bottom: 26px;
+  margin-bottom: 40px;
 }
 
 .hero__title {
-  font-family: var(--font-serif);
-  font-size: clamp(32px, 5.4vw, 48px);
-  font-weight: 500;
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: clamp(30px, 5vw, 42px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
 .hero__title em {
-  font-style: italic;
-  font-weight: 500;
-  color: var(--accent);
+  font-style: normal;
+  font-weight: 400;
+  color: var(--accent-ink);
 }
 
 .hero__subtitle {
-  margin-top: 12px;
-  max-width: 34em;
-  font-size: clamp(15px, 2.2vw, 17px);
-  color: var(--ink-soft);
+  margin-top: 16px;
+  max-width: 32em;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.7;
   letter-spacing: 0.005em;
+  color: var(--ink-soft);
 }
 
-/* тонкая красная «риска» под заголовком — как метка на безеле */
-.hero::after {
-  content: "";
-  display: block;
-  width: 40px;
-  height: 1px;
-  margin-top: 22px;
-  background: var(--accent);
-}
-
-/* ── стеклянная карточка — теперь циферблат ────────────────────────── */
+/* ── карточка — просто облако ───────────────────────────────────────── */
 .glass {
-  position: relative;
-  background: var(--glass);
-  background-image:
-    radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.85), transparent 70%),
-    linear-gradient(180deg, #f5f2eb 0%, #ede9df 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(253, 246, 247, 0.6) 100%);
   border: 1px solid var(--glass-border);
   border-radius: var(--r-card);
   box-shadow: var(--glass-shadow);
-  padding: clamp(18px, 3.4vw, 30px);
-  animation: rise 0.6s var(--ease-soft) both;
-}
-
-/* тонкая текстура циферблата — горизонтальные линии */
-.glass::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent 0 2px,
-    rgba(12, 24, 37, 0.012) 2px 3px
-  );
-  pointer-events: none;
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  backdrop-filter: blur(24px) saturate(1.2);
+  padding: clamp(24px, 4vw, 36px);
+  animation: rise 0.9s var(--ease-soft) both;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
 }
 
 .glass + .glass {
-  margin-top: 18px;
-  animation-delay: 0.1s;
+  margin-top: 20px;
+  animation-delay: 0.15s;
 }
 
-/* ── зона загрузки — «окно» в циферблате с двойной рамкой ──────────── */
+/* ── зона загрузки — тихая, как чистый лист ─────────────────────────── */
 .zone {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: clamp(28px, 5vw, 44px) 20px;
+  gap: 12px;
+  padding: clamp(32px, 5.5vw, 48px) 24px;
   border-radius: var(--r-zone);
-  border: 1px solid var(--glass-border);
-  background: transparent;
+  border: 1.5px dashed rgba(217, 161, 176, 0.35);
+  background: rgba(255, 255, 255, 0.4);
   overflow: hidden;
-  transition: border-color 0.4s var(--ease-soft), background 0.4s var(--ease-soft);
-}
-
-/* внутренняя пунктирная — как chapter ring на GS */
-.zone::before {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border: 1px dashed var(--glass-border);
-  border-radius: 1px;
-  pointer-events: none;
-  transition: border-color 0.4s var(--ease-soft);
+  transition:
+    border-color 0.5s var(--ease-soft),
+    background 0.5s var(--ease-soft);
 }
 
 .zone:hover,
 .zone--over {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  transform: none;
-  box-shadow: none;
-}
-
-.zone:hover::before,
-.zone--over::before {
-  border-color: rgba(166, 25, 46, 0.3);
+  border-color: rgba(217, 161, 176, 0.7);
+  border-style: solid;
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .zone__icon {
@@ -339,21 +289,13 @@ textarea {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: var(--accent);
-  background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(12, 24, 37, 0.04);
-  transition: transform 0.4s var(--ease-soft), box-shadow 0.4s var(--ease-soft);
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, rgba(232, 180, 196, 0.18), rgba(217, 161, 176, 0.1));
+  transition: transform 0.5s var(--ease-soft);
 }
 
 .zone:hover .zone__icon {
-  transform: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(12, 24, 37, 0.04),
-    0 0 0 4px rgba(166, 25, 46, 0.08);
+  transform: translateY(-2px);
 }
 
 .zone__icon svg {
@@ -362,42 +304,39 @@ textarea {
 }
 
 .zone__title {
-  font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.005em;
   color: var(--ink);
 }
 
 .zone__hint {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 400;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
   color: var(--ink-faint);
 }
 
 .zone kbd {
   font: inherit;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 2px;
-  color: var(--ink);
-  background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--accent-ink);
+  background: rgba(217, 161, 176, 0.12);
+  letter-spacing: 0.02em;
 }
 
 /* превью */
 .preview {
   position: relative;
-  margin-top: 18px;
-  border-radius: 2px;
+  margin-top: 20px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 2px rgba(12, 24, 37, 0.04);
-  background: var(--glass-strong);
+  box-shadow: 0 8px 30px -16px rgba(217, 161, 176, 0.3);
+  background: #fff;
 }
 
 .preview img {
@@ -412,120 +351,114 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(245, 242, 235, 0.7);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: rgba(253, 247, 248, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
-/* ── переключатель языков — как индексы на циферблате ──────────────── */
+/* ── языки — тихие капсулы ──────────────────────────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .langs__label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   color: var(--ink-faint);
   margin-right: 4px;
-  font-variant-numeric: tabular-nums;
 }
 
 .chip {
   padding: 8px 16px;
   border-radius: var(--r-chip);
-  font-family: var(--font-manrope), sans-serif;
-  font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 13.5px;
+  letter-spacing: 0.005em;
   color: var(--ink-soft);
-  background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
-  transition: all 0.3s var(--ease-soft);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(217, 161, 176, 0.15);
+  transition:
+    color 0.4s var(--ease-soft),
+    border-color 0.4s var(--ease-soft),
+    background 0.4s var(--ease-soft);
 }
 
 .chip:hover {
-  color: var(--ink);
-  border-color: var(--ink-soft);
-  transform: none;
+  color: var(--accent-ink);
+  border-color: rgba(217, 161, 176, 0.4);
 }
 
 .chip--on {
   color: #fff;
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 2px 8px -2px rgba(166, 25, 46, 0.4);
+  background: linear-gradient(135deg, #e8b4c4, var(--accent));
+  border-color: transparent;
+  font-weight: 500;
+  box-shadow: 0 6px 16px -8px rgba(217, 161, 176, 0.5);
 }
 
 .chip__dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   margin-left: 7px;
   border-radius: 50%;
   background: currentColor;
-  vertical-align: 1px;
   opacity: 0.7;
+  vertical-align: 2px;
 }
 
 .chip--on .chip__dot {
   opacity: 1;
 }
 
-/* ── статус — как строка на задней крышке ──────────────────────────── */
+/* ── статус и прогресс — тонкие, спокойные ──────────────────────────── */
 .status {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 20px;
-  padding: 12px 0;
-  border-radius: 0;
+  margin-top: 24px;
+  padding: 14px 18px;
+  border-radius: 14px;
   font-weight: 400;
-  font-size: 13px;
-  letter-spacing: 0.06em;
+  font-size: 13.5px;
+  letter-spacing: 0.01em;
   color: var(--ink-soft);
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--glass-border);
-  border-bottom: 1px solid var(--glass-border);
-  font-variant-numeric: tabular-nums;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 .status__spinner {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   flex: none;
   border-radius: 50%;
-  border: 1.5px solid rgba(166, 25, 46, 0.15);
+  border: 1.8px solid rgba(217, 161, 176, 0.2);
   border-top-color: var(--accent);
-  animation: spin 1.2s linear infinite;
+  animation: spin 1.4s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* прогресс — секундная стрелка GS */
 .progress {
-  margin-top: 12px;
-  height: 2px;
-  border-radius: 0;
-  background: var(--glass-border);
+  margin-top: 14px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(217, 161, 176, 0.12);
   overflow: hidden;
 }
 
 .progress__bar {
   height: 100%;
-  border-radius: 0;
-  background: var(--accent);
-  box-shadow: none;
-  transition: width 0.4s var(--ease-soft);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e8b4c4, var(--accent));
+  transition: width 0.5s var(--ease-soft);
   position: relative;
 }
 
@@ -538,12 +471,12 @@ textarea {
   to { transform: translateX(100%); }
 }
 
-/* ── кнопки — как пушеры хронографа ────────────────────────────────── */
+/* ── кнопки — мягкие, без резкости ──────────────────────────────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 22px;
+  margin-top: 24px;
 }
 
 .btn {
@@ -552,77 +485,69 @@ textarea {
   justify-content: center;
   gap: 8px;
   min-height: 46px;
-  padding: 10px 22px;
+  padding: 12px 24px;
   border-radius: var(--r-chip);
-  font-family: var(--font-manrope), sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: background 0.3s var(--ease-soft), color 0.3s var(--ease-soft),
-    border-color 0.3s var(--ease-soft), box-shadow 0.3s var(--ease-soft);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  transition:
+    transform 0.4s var(--ease-soft),
+    box-shadow 0.4s var(--ease-soft),
+    background 0.4s var(--ease-soft),
+    opacity 0.3s;
   -webkit-tap-highlight-color: transparent;
-  font-variant-numeric: tabular-nums;
 }
 
 .btn svg {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
 }
 
 .btn--primary {
-  color: var(--glass-strong);
-  background: var(--ink);
-  border: 1px solid var(--ink);
+  color: #fff;
+  background: linear-gradient(135deg, #e8b4c4 0%, var(--accent) 70%, var(--accent-2) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 1px 2px rgba(12, 24, 37, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 24px -12px rgba(217, 161, 176, 0.55);
 }
 
 .btn--primary:hover {
-  background: #1a2838;
-  transform: none;
+  transform: translateY(-1px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 2px 6px rgba(12, 24, 37, 0.15);
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 14px 28px -12px rgba(217, 161, 176, 0.65);
 }
 
 .btn--primary:active {
-  background: #050c14;
-  transform: none;
-  box-shadow:
-    inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
 }
 
 .btn--ghost {
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--ink);
-  box-shadow: none;
+  color: var(--accent-ink);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(217, 161, 176, 0.3);
 }
 
 .btn--ghost:hover {
-  background: var(--ink);
-  color: var(--glass-strong);
-  transform: none;
+  background: #fff;
+  border-color: rgba(217, 161, 176, 0.5);
 }
 
 .btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  opacity: 0.5;
+  cursor: default;
   transform: none !important;
   box-shadow: none;
 }
 
 .btn--done {
-  color: var(--glass-strong);
-  background: var(--ok);
-  border-color: var(--ok);
+  background: linear-gradient(135deg, #a8c4a4, var(--ok));
+  color: #fff;
 }
 
 /* ── результат ──────────────────────────────────────────────────────── */
 .result {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .result__head {
@@ -631,45 +556,36 @@ textarea {
   align-items: center;
   gap: 10px 14px;
   margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--glass-border);
 }
 
 .result__title {
-  font-family: var(--font-serif);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  color: var(--ink);
 }
 
 .pill {
-  padding: 4px 10px;
-  border-radius: 2px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: var(--r-chip);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
   color: var(--ok);
   background: var(--ok-soft);
-  border: 1px solid rgba(42, 107, 74, 0.2);
-  font-variant-numeric: tabular-nums;
 }
 
 .pill--mid {
   color: var(--warn);
-  background: rgba(154, 123, 63, 0.08);
-  border-color: rgba(154, 123, 63, 0.2);
+  background: rgba(201, 155, 110, 0.1);
 }
 
 .pill__meta {
   margin-left: auto;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   color: var(--ink-faint);
-  font-variant-numeric: tabular-nums;
 }
 
 .result__text {
@@ -677,69 +593,64 @@ textarea {
   min-height: 150px;
   resize: vertical;
   padding: 18px 20px;
-  border-radius: 2px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-strong);
-  box-shadow: inset 0 1px 2px rgba(12, 24, 37, 0.04);
-  line-height: 1.7;
-  font-size: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(217, 161, 176, 0.15);
+  background: rgba(255, 255, 255, 0.75);
+  line-height: 1.75;
+  font-size: 15px;
   font-weight: 400;
   letter-spacing: 0.005em;
   outline: none;
-  transition: border-color 0.3s var(--ease-soft), box-shadow 0.3s var(--ease-soft);
+  transition:
+    border-color 0.4s var(--ease-soft),
+    box-shadow 0.4s var(--ease-soft),
+    background 0.4s var(--ease-soft);
 }
 
 .result__text:focus {
-  border-color: var(--ink-soft);
-  box-shadow:
-    inset 0 1px 2px rgba(12, 24, 37, 0.04),
-    0 0 0 3px rgba(166, 25, 46, 0.06);
+  border-color: rgba(217, 161, 176, 0.5);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(217, 161, 176, 0.1);
 }
 
 /* ── ошибка ─────────────────────────────────────────────────────────── */
 .error {
-  margin-top: 18px;
-  padding: 14px 18px;
-  border-radius: 2px;
-  color: var(--accent);
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  color: var(--bad);
   background: var(--bad-soft);
-  border: 1px solid rgba(166, 25, 46, 0.3);
-  border-left-width: 3px;
-  border-left-color: var(--accent);
-  font-weight: 500;
+  border: 1px solid rgba(199, 122, 133, 0.2);
+  font-weight: 400;
   font-size: 14px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.005em;
 }
 
 /* ── подвал ─────────────────────────────────────────────────────────── */
 .footer {
-  margin-top: 28px;
-  padding-top: 16px;
-  border-top: 1px solid var(--glass-border);
+  margin-top: 40px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  justify-content: center;
+  gap: 8px 18px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   color: var(--ink-faint);
-  font-variant-numeric: tabular-nums;
 }
 
 .footer__lock {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--ink-soft);
+  color: var(--ok);
 }
 
 .footer__lock svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
 }
 
 /* ── доступность и адаптив ──────────────────────────────────────────── */
@@ -755,11 +666,11 @@ textarea {
 
 @media (max-width: 520px) {
   body {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .zone {
-    padding: 26px 14px;
+    padding: 28px 16px;
   }
 
   .chip {
@@ -772,15 +683,5 @@ textarea {
 
   .pill__meta {
     margin-left: 0;
-  }
-
-  .brand__name {
-    font-size: 20px;
-    letter-spacing: 0.12em;
-  }
-
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
