@@ -12,6 +12,8 @@ import {
   type WorkerRequest,
   type WorkerResponse,
 } from "@/lib/engine";
+import { PdfReaderLegacyWeb } from "ppu-pdf/web";
+
 
 /* ────────────────────────── утилиты ────────────────────────── */
 
@@ -25,6 +27,21 @@ function fmtBytes(n: number): string {
 
 function fmtSec(ms: number): string {
   return `${(ms / 1000).toFixed(1).replace(".", ",")} с`;
+}
+
+async function pdfToImageBuffers(buffer: ArrayBuffer): Promise<ArrayBuffer[]> {
+  const reader = new PdfReaderLegacyWeb();
+  const pdf = await reader.open(buffer);
+  const canvasMap = await reader.renderAll(pdf);
+  const buffers: ArrayBuffer[] = [];
+  for (const canvas of canvasMap.values()) {
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("canvas.toBlob failed"))), "image/png");
+    });
+    buffers.push(await blob.arrayBuffer());
+  }
+  await reader.destroy(pdf);
+  return buffers;
 }
 
 function qualityPill(confidence: number): { label: string; mid: boolean } {
@@ -48,6 +65,21 @@ interface Result {
 }
 
 type Phase = "empty" | "prep" | "ocr" | "done" | "error";
+
+async function pdfToImageBlobs(buffer: ArrayBuffer): Promise<Blob[]> {
+  const reader = new PdfReaderLegacyWeb();
+  const pdf = await reader.open(buffer);
+  const canvasMap = await reader.renderAll(pdf); // Map<number, HTMLCanvasElement>
+  const blobs: Blob[] = [];
+  for (const canvas of canvasMap.values()) {
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("canvas.toBlob failed"))), "image/png");
+    });
+    blobs.push(blob);
+  }
+  await reader.destroy(pdf);
+  return blobs;
+}
 
 /* ────────────────────────── иконки (инлайн, без библиотек) ────────────────────────── */
 
@@ -316,14 +348,17 @@ export default function Page() {
   );
 
   /* ── загрузка изображения ── */
-  const handleFile = useCallback(
-    async (file: File | Blob, name?: string) => {
-      const fname = name ?? (file as File).name ?? "снимок.png";
-      const type = (file as File).type || "";
-      if (!type.startsWith("image/") && !/\.(png|jpe?g|webp|bmp|gif|avif)$/i.test(fname)) {
-        setError("Это не картинка. Подойдут PNG, JPEG, WEBP или скриншот.");
-        return;
-      }
+ const handleFile = useCallback(
+  async (file: File | Blob, name?: string) => {
+    const fname = name ?? (file as File).name ?? "файл";
+    const type = (file as File).type || "";
+    const isPdf = type === "application/pdf" || /\.pdf$/i.test(fname);
+    const isImage = type.startsWith("image/") || /\.(png|jpe?g|webp|bmp|gif|avif)$/i.test(fname);
+
+    if (!isPdf && !isImage) {
+      setError("PDF, PNG, JPEG, WEBP или скриншот");
+      return;
+    }
       if (file.size > 30 * 1024 * 1024) {
         setError(`Файл слишком большой (${fmtBytes(file.size)}). До 30 МБ, пожалуйста.`);
         return;
@@ -336,29 +371,48 @@ export default function Page() {
         return;
       }
 
-      try {
+            try {
         const buffer = await file.arrayBuffer();
-        const bitmap = await createImageBitmap(new Blob([buffer]));
-        const url = URL.createObjectURL(new Blob([buffer], { type: type || "image/png" }));
-        if (imageRef.current) URL.revokeObjectURL(imageRef.current.url);
+        let imageBuffers: ArrayBuffer[];
 
-        const img: LoadedImage = {
-          name: fname,
-          url,
-          width: bitmap.width,
-          height: bitmap.height,
-          buffer,
-        };
-        bitmap.close?.();
-        imageRef.current = img;
-        setImage(img);
-        setResult(null);
-        setText("");
-        setError(null);
-        setPhase("empty");
-        void runOcr(lang);
-      } catch {
-        setError("Не удалось открыть картинку. Попробуйте другой файл.");
+        if (isPdf) {
+          setPhase("prep");
+          setStatus("Рендерю страницы PDF…");
+          imageBuffers = await pdfToImageBuffers(buffer);
+        } else {
+          imageBuffers = [buffer];
+        }
+
+        for (let i = 0; i < imageBuffers.length; i++) {
+          const imgBuffer = imageBuffers[i];
+          const bitmap = await createImageBitmap(new Blob([imgBuffer]));
+          const url = URL.createObjectURL(new Blob([imgBuffer], { type: "image/png" }));
+
+          if (imageRef.current) URL.revokeObjectURL(imageRef.current.url);
+
+          const img: LoadedImage = {
+            name: imageBuffers.length > 1 ? `${fname} — стр. ${i + 1}` : fname,
+            url,
+            width: bitmap.width,
+            height: bitmap.height,
+            buffer: imgBuffer,
+          };
+          bitmap.close?.();
+          imageRef.current = img;
+          setImage(img);
+          setResult(null);
+          setText("");
+          setError(null);
+          setPhase("empty");
+
+          await runOcr(lang);
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? `Не удалось открыть файл: ${err.message}`
+            : "Не удалось открыть файл. Попробуйте другой.",
+        );
       }
     },
     [lang, runOcr],
@@ -526,7 +580,7 @@ export default function Page() {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.pdf"
             onChange={onInputChange}
             hidden
             aria-hidden
