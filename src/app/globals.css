@@ -314,6 +314,121 @@ textarea {
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.04);
 }
 
+/* ══════════════════════════════════════════════════════════════
+   ПАРЯЩАЯ ДРОПЗОНА (вариант 3, без текста)
+   ══════════════════════════════════════════════════════════════ */
+.dz {
+  position: relative;
+  width: 100%;
+  min-height: clamp(220px, 30dvh, 320px);
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-zone);
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    box-shadow .5s var(--ease-soft),
+    transform .4s var(--ease-soft),
+    border-color .4s var(--ease-ozon);
+  -webkit-tap-highlight-color: transparent;
+}
+.dz:active { transform: scale(.995); }
+
+.dz__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  z-index: 3;
+}
+.dz__icon svg { width: 46%; height: 46%; display: block; }
+
+/* ── сам вариант «Парящая» ─────────────────────────────────── */
+.dz--float {
+  border: 1px solid rgba(0,0,0,.06);
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.03),
+    0 10px 30px -18px rgba(0,0,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.dz--float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,0,0,.025), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(0,0,0,.03), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.6), transparent 70%);
+  opacity: .8;
+  transition: opacity .5s var(--ease-soft);
+}
+
+.dz--float::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0,0,0,.15), transparent 40%, transparent 60%, rgba(0,0,0,.15));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .5s var(--ease-soft);
+  pointer-events: none;
+}
+
+.dz--float:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0,0,0,.12);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.04),
+    0 24px 48px -24px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.9);
+}
+.dz--float:hover::before { opacity: 1; }
+.dz--float:hover::after  { opacity: 1; }
+
+.dz--float .dz__icon {
+  width: clamp(60px, 5.5vw + 3vh, 84px);
+  height: clamp(60px, 5.5vw + 3vh, 84px);
+  border-radius: 50%;
+  color: #fff;
+  background: radial-gradient(circle at 30% 25%, #3a3a3a, var(--ink) 70%);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.2),
+    0 8px 20px -8px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.14);
+  transition:
+    transform .5s var(--ease-soft),
+    box-shadow .5s var(--ease-soft);
+}
+.dz--float:hover .dz__icon {
+  transform: translateY(-4px) scale(1.06);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.2),
+    0 16px 32px -10px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+/* drag-over */
+.dz--float.is-over {
+  border-color: var(--ok) !important;
+  background: rgba(46,125,50,.04) !important;
+  transform: scale(1.01);
+  box-shadow:
+    0 0 0 4px rgba(46,125,50,.12),
+    0 16px 32px -18px rgba(46,125,50,.3) !important;
+}
+.dz--float.is-over::before,
+.dz--float.is-over::after { opacity: 0 !important; }
+
 /* превью */
 .preview {
   position: relative;
