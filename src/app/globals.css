@@ -1,42 +1,45 @@
-/* ── экспериментальные функции (Chromium Canary+, безопасно игнорируются) ── */
+/* ── СУПЕР-ФУНКЦИИ CSS 2026 ─────────────────────────────────────────── */
+
+/* 1. @function — свои функции без препроцессоров[reference:2] */
 @function --elevation(--level) {
-  result: 0 calc(var(--level) * 2px) calc(var(--level) * 8px)
-    calc(var(--level) * -2px) rgba(0, 0, 0, 0.4);
+  result: 0 calc(var(--level) * 4px) calc(var(--level) * 16px)
+    calc(var(--level) * -6px) rgba(84, 96, 158, 0.18);
 }
 
-@function --inset-x(--space) {
-  result: calc(var(--space) * 4px);
+/* 2. if() — условия прямо в значениях[reference:3] */
+@function --adaptive-radius(--size) {
+  result: if(media(width > 640px): var(--size); else: calc(var(--size) * 0.7));
 }
 
 :root {
-  /* 单一观点：石墨 + 暖白 + 一个不声张的暖石色 */
-  --bg: #0a0a0b;
-  --ink: #ededed;
-  --ink-soft: #8f8d88;
-  --ink-faint: #575550;
-  --glass: #121213;
-  --glass-strong: #161617;
-  --glass-border: #242425;
-  --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.6),
-    0 16px 40px -24px rgba(0, 0, 0, 0.8);
-  --accent: #c9c4b8;
-  --accent-2: #b8b2a4;
-  --accent-ink: #c9c4b8;
-  --accent-soft: rgba(201, 196, 184, 0.08);
-  --ok: #7d9a7d;
-  --ok-soft: rgba(125, 154, 125, 0.1);
-  --warn: #b8a67a;
-  --bad: #b86b6b;
-  --bad-soft: rgba(184, 107, 107, 0.1);
+  /* краски — оставляем твои, но добавляем запас для contrast-color */
+  --bg: #eef1f8;
+  --ink: #1c2333;
+  --ink-soft: #4c5568;
+  --ink-faint: #8a92a6;
+  --glass: rgba(255, 255, 255, 0.64);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-shadow: 0 24px 60px -24px rgba(84, 96, 158, 0.28),
+    0 4px 16px -8px rgba(84, 96, 158, 0.14);
+  --accent: #6d5df0;
+  --accent-2: #3f8ef7;
+  --accent-ink: #4f41d9;
+  --accent-soft: rgba(109, 93, 240, 0.1);
+  --ok: #1fa97e;
+  --ok-soft: rgba(31, 169, 126, 0.12);
+  --warn: #c2622e;
+  --bad: #d64560;
+  --bad-soft: rgba(214, 69, 96, 0.09);
 
-  /* 形式 */
-  --r-card: 12px;
-  --r-zone: 10px;
+  /* форма — теперь управляется @function + if() */
+  --r-card: --adaptive-radius(32px);
+  --r-zone: --adaptive-radius(26px);
   --r-chip: 999px;
 
-  /* 运动 */
-  --ease-liquid: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  /* движение */
+  --ease-liquid: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-soft: cubic-bezier(0.25, 0.8, 0.3, 1);
 }
 
 /* ── база ───────────────────────────────────────────────────────────── */
@@ -48,7 +51,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  /* экспериментально: разрешает анимацию height: auto */
+  /* 3. interpolate-size — height: auto теперь анимируется */
   interpolate-size: allow-keywords;
 }
 
@@ -57,13 +60,11 @@ body {
   min-height: 100dvh;
   color: var(--ink);
   background: var(--bg);
-  font-family: var(--font-manrope), "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
-  font-size: 16px;
+  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 17px;
   line-height: 1.55;
-  letter-spacing: -0.01em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
@@ -84,14 +85,15 @@ button {
 textarea {
   font: inherit;
   color: inherit;
+  /* 4. field-sizing — textarea сам подстраивает высоту */
+  field-sizing: content;
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--bg);
+  background: rgba(109, 93, 240, 0.22);
 }
 
-/* ── фон: убираем движение ──────────────────────────────────────────── */
+/* ── живой фон ──────────────────────────────────────────────────────── */
 .blobs {
   position: fixed;
   inset: 0;
@@ -101,238 +103,287 @@ textarea {
 }
 
 .blob {
-  display: none;
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.blob--lavender {
+  width: 46vmax;
+  height: 46vmax;
+  left: -12vmax;
+  top: -14vmax;
+  background: radial-gradient(circle at 35% 35%, #c9b9ff, transparent 70%);
+  animation: drift-a 26s ease-in-out infinite alternate;
+}
+
+.blob--aqua {
+  width: 40vmax;
+  height: 40vmax;
+  right: -10vmax;
+  top: 16vh;
+  background: radial-gradient(circle at 60% 40%, #a4e9d4, transparent 70%);
+  animation: drift-b 30s ease-in-out infinite alternate;
+}
+
+.blob--peach {
+  width: 38vmax;
+  height: 38vmax;
+  left: 18vw;
+  bottom: -18vmax;
+  background: radial-gradient(circle at 50% 55%, #ffd7c0, transparent 70%);
+  animation: drift-c 24s ease-in-out infinite alternate;
+}
+
+.blob--sky {
+  width: 30vmax;
+  height: 30vmax;
+  right: 14vw;
+  bottom: -6vmax;
+  background: radial-gradient(circle at 45% 45%, #b0d4ff, transparent 70%);
+  animation: drift-a 34s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes drift-a {
-  from { transform: translate(0, 0); }
-  to { transform: translate(0, 0); }
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(6vmax, 4vmax) scale(1.12); }
 }
 
 @keyframes drift-b {
-  from { transform: translate(0, 0); }
-  to { transform: translate(0, 0); }
+  from { transform: translate(0, 0) scale(1.05) rotate(0deg); }
+  to { transform: translate(-5vmax, 6vmax) scale(0.94) rotate(18deg); }
 }
 
 @keyframes drift-c {
-  from { transform: translate(0, 0); }
-  to { transform: translate(0, 0); }
+  from { transform: translate(0, 0) scale(0.96); }
+  to { transform: translate(7vmax, -5vmax) scale(1.1); }
 }
 
 /* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: clamp(24px, 4vw, 48px) clamp(20px, 4vw, 28px) 80px;
+  padding: clamp(20px, 4vw, 44px) clamp(16px, 4vw, 28px) 60px;
 }
 
-/* шапка — sticky + scroll-state query меняет фон при скролле */
+/* шапка — 5. scroll-state query меняет фон при прилипании[reference:4] */
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid transparent;
   position: sticky;
   top: 0;
   z-index: 100;
   background: var(--bg);
   container-type: scroll-state;
-  transition: background 0.2s var(--ease-liquid),
-    border-color 0.2s var(--ease-liquid);
+  transition: background 0.3s var(--ease-soft),
+    border-color 0.3s var(--ease-soft),
+    backdrop-filter 0.3s var(--ease-soft);
 }
 
 @container scroll-state(stuck: top) {
   .brand {
-    background: rgba(10, 10, 11, 0.82);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2);
-    backdrop-filter: blur(16px) saturate(1.2);
-    border-bottom-color: var(--ink-faint);
+    background: rgba(238, 241, 248, 0.82);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    border-bottom-color: rgba(84, 96, 158, 0.12);
   }
 }
 
-/* логотип: SVG не тронут, цвет контейнера — под палитру */
+/* логотип — 6. border-shape: тень теперь круглая, а не квадратная[reference:5] */
 .brand__mark {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   flex: none;
-  border-radius: 8px;
-  background: var(--accent);
-  box-shadow: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 10px 24px -8px rgba(109, 93, 240, 0.55);
   display: grid;
   place-items: center;
-  color: var(--bg);
+  color: #fff;
+  border-shape: circle(50%);
+  /* SVG внутри не тронут, только контейнер получил форму */
 }
 
 .brand__mark svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .brand__name {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .brand__name em {
   font-style: normal;
-  color: var(--accent);
-  font-weight: 500;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-/* заголовок — единственный визуальный акцент */
+/* заголовок */
 .hero {
-  margin-bottom: 48px;
-  padding-top: clamp(32px, 5vw, 56px);
+  margin-bottom: 26px;
 }
 
 .hero__title {
-  font-size: clamp(34px, 7vw, 64px);
-  font-weight: 600;
-  line-height: 0.94;
-  letter-spacing: -0.055em;
-  color: var(--ink);
+  font-size: clamp(30px, 5.4vw, 44px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
 }
 
 .hero__title em {
   font-style: normal;
-  color: var(--accent);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2) 70%, #4fc9f0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .hero__subtitle {
-  margin-top: 20px;
-  max-width: 30em;
-  font-size: 15px;
-  line-height: 1.65;
+  margin-top: 10px;
+  max-width: 34em;
+  font-size: clamp(16px, 2.4vw, 19px);
   color: var(--ink-soft);
-  letter-spacing: -0.005em;
 }
 
-/* ── карточка: squircle-углы через corner-shape ─────────────────────── */
+/* ── стеклянная карточка — 7. corner-shape: squircle вместо border-radius ── */
 .glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--r-card);
   box-shadow: var(--glass-shadow);
-  padding: clamp(20px, 3.4vw, 28px);
-  animation: rise 0.5s var(--ease-soft) both;
-  position: relative;
-}
-
-/* экспериментально: squircle-углы вместо простого border-radius */
-@supports (corner-shape: squircle) {
-  .glass {
-    corner-shape: squircle;
-  }
-  .zone {
-    corner-shape: squircle;
-  }
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  padding: clamp(18px, 3.4vw, 30px);
+  animation: rise 0.7s var(--ease-soft) both;
+  corner-shape: squircle;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(18px) scale(0.985); }
   to { opacity: 1; transform: none; }
 }
 
 .glass + .glass {
-  margin-top: 16px;
-  animation-delay: 0.06s;
+  margin-top: 18px;
+  animation-delay: 0.12s;
 }
 
-/* ── зона загрузки: circle-форма иконки с реальной тенью ────────────── */
+/* ── зона загрузки — 8. border-shape для сложной формы ──────────────── */
 .zone {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: clamp(28px, 5vw, 40px) 20px;
+  gap: 10px;
+  padding: clamp(28px, 5vw, 44px) 20px;
   border-radius: var(--r-zone);
-  border: 1px dashed var(--glass-border);
-  background: transparent;
+  border: 1.6px dashed rgba(109, 93, 240, 0.35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.16));
   overflow: hidden;
-  transition: border-color 0.2s var(--ease-liquid),
-    background 0.2s var(--ease-liquid);
+  transition: border-color 0.35s var(--ease-soft), background 0.35s var(--ease-soft),
+    transform 0.45s var(--ease-liquid), box-shadow 0.45s var(--ease-soft);
+  animation: morph 9s ease-in-out infinite;
+  /* 9. shape() — любая форма, не только circle/inset[reference:6] */
+  border-shape: shape(
+    from 0 0,
+    line to 100% 0,
+    line to 100% 100%,
+    line to 0 100%,
+    close
+  );
+}
+
+@keyframes morph {
+  0%, 100% {
+    border-radius: 26px 32px 28px 34px / 32px 26px 34px 28px;
+  }
+  33% {
+    border-radius: 34px 26px 32px 28px / 28px 34px 26px 32px;
+  }
+  66% {
+    border-radius: 30px 34px 26px 30px / 34px 30px 30px 26px;
+  }
 }
 
 .zone:hover,
 .zone--over {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  border-color: rgba(109, 93, 240, 0.75);
+  background: linear-gradient(180deg, rgba(109, 93, 240, 0.1), rgba(63, 142, 247, 0.07));
+  transform: scale(1.012);
+  box-shadow: 0 18px 44px -20px rgba(109, 93, 240, 0.45);
 }
 
 .zone__icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
   display: grid;
   place-items: center;
-  color: var(--accent);
-  background: var(--accent-soft);
-  box-shadow: none;
-  transition: transform 0.25s var(--ease-liquid);
-}
-
-/* экспериментально: border-shape делает тень круглой */
-@supports (border-shape: circle(50%)) {
-  .zone__icon {
-    border-shape: circle(50%);
-    box-shadow: 0 4px 14px -4px rgba(201, 196, 184, 0.25);
-  }
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, rgba(109, 93, 240, 0.16), rgba(63, 142, 247, 0.14));
+  transition: transform 0.45s var(--ease-liquid);
+  corner-shape: squircle;
 }
 
 .zone:hover .zone__icon {
-  transform: translateY(-2px);
+  transform: translateY(-4px) rotate(-4deg) scale(1.06);
 }
 
 .zone__icon svg {
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
 }
 
 .zone__title {
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  color: var(--ink);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .zone__hint {
-  font-size: 13px;
+  font-size: 15.5px;
   color: var(--ink-faint);
 }
 
 .zone kbd {
   font: inherit;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: var(--ink-soft);
-  background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+  color: var(--accent-ink);
+  background: rgba(109, 93, 240, 0.12);
+  corner-shape: squircle;
 }
 
 /* превью */
 .preview {
   position: relative;
-  margin-top: 16px;
-  border-radius: 8px;
+  margin-top: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid var(--glass-border);
-  box-shadow: none;
-  background: var(--bg);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 34px -18px rgba(84, 96, 158, 0.4);
+  background: #fff;
+  corner-shape: squircle;
 }
 
 .preview img {
   display: block;
   width: 100%;
-  max-height: 320px;
+  max-height: 340px;
   object-fit: contain;
 }
 
@@ -341,136 +392,113 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(10, 10, 11, 0.7);
+  background: rgba(238, 241, 248, 0.55);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
 
-/* ── языки: сегментированный контрол без «чипсов» ──────────────────── */
+/* ── переключатель языков — 10. contrast-color() авто-контраст[reference:7] */
 .langs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .langs__label {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: var(--ink-faint);
-  margin-right: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-right: 2px;
 }
 
 .chip {
-  padding: 7px 14px;
+  padding: 9px 18px;
   border-radius: var(--r-chip);
-  font-weight: 400;
-  font-size: 13.5px;
-  letter-spacing: -0.005em;
+  font-weight: 700;
+  font-size: 15.5px;
   color: var(--ink-soft);
-  background: transparent;
-  border: 1px solid var(--glass-border);
-  transition: color 0.18s var(--ease-liquid),
-    border-color 0.18s var(--ease-liquid),
-    background 0.18s var(--ease-liquid);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(84, 96, 158, 0.14);
+  transition: all 0.3s var(--ease-soft);
 }
 
 .chip:hover {
-  color: var(--ink);
-  border-color: var(--ink-faint);
-}
-
-/* экспериментально: contrast-color сам выбирает цвет текста */
-@supports (color: contrast-color(white)) {
-  .chip--on {
-    color: contrast-color(var(--accent));
-  }
+  color: var(--accent-ink);
+  border-color: rgba(109, 93, 240, 0.4);
+  transform: translateY(-1px);
 }
 
 .chip--on {
-  color: var(--bg);
-  background: var(--accent);
-  border-color: var(--accent);
-  font-weight: 500;
-}
-
-.chip--on:hover {
-  color: var(--bg);
-  border-color: var(--accent-2);
-  background: var(--accent-2);
+  color: contrast-color(var(--accent)); /* сам выберет белый или чёрный */
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  box-shadow: 0 8px 20px -8px rgba(109, 93, 240, 0.6);
 }
 
 .chip__dot {
   display: inline-block;
-  width: 5px;
-  height: 5px;
-  margin-left: 6px;
+  width: 7px;
+  height: 7px;
+  margin-left: 7px;
   border-radius: 50%;
-  background: currentColor;
-  vertical-align: 1px;
-  opacity: 0.7;
+  background: var(--ok);
+  vertical-align: 2px;
 }
 
-.chip--on .chip__dot {
-  opacity: 0.5;
-}
-
-/* ── статус ─────────────────────────────────────────────────────────── */
+/* ── статусы и прогресс ─────────────────────────────────────────────── */
 .status {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 12px 0;
-  border-radius: 0;
-  font-weight: 400;
-  font-size: 13px;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-weight: 600;
   color: var(--ink-soft);
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  corner-shape: squircle;
 }
 
 .status__spinner {
-  width: 6px;
-  height: 6px;
+  width: 20px;
+  height: 20px;
   flex: none;
   border-radius: 50%;
-  border: 0;
-  background: var(--accent);
-  animation: pulse 1.4s var(--ease-soft) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+  border: 2.4px solid rgba(109, 93, 240, 0.25);
+  border-top-color: var(--accent);
+  animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* прогресс: 2px, без блеска */
 .progress {
-  margin-top: 10px;
-  height: 2px;
+  margin-top: 14px;
+  height: 10px;
   border-radius: 999px;
-  background: var(--glass-border);
+  background: rgba(84, 96, 158, 0.12);
   overflow: hidden;
 }
 
 .progress__bar {
   height: 100%;
   border-radius: 999px;
-  background: var(--accent);
-  transition: width 0.3s var(--ease-liquid);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.25s var(--ease-soft);
   position: relative;
 }
 
 .progress__bar::after {
-  display: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: sheen 1.4s linear infinite;
 }
 
 @keyframes sheen {
@@ -478,94 +506,87 @@ textarea {
   to { transform: translateX(100%); }
 }
 
-/* ── кнопки: contrast-color + 1px press feedback ─────────────────────── */
+/* ── кнопки — 11. contrast-color + 12. :has() для валидации ─────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* 13. :has() — карточка реагирует на состояние вложенных элементов[reference:8] */
+.glass:has(.result__text:invalid) {
+  border-color: rgba(214, 69, 96, 0.4);
+}
+
+.glass:has(.result__text:focus) {
+  box-shadow: var(--glass-shadow), 0 0 0 4px rgba(109, 93, 240, 0.08);
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: -0.005em;
-  transition: background 0.15s var(--ease-liquid),
-    color 0.15s var(--ease-liquid),
-    border-color 0.15s var(--ease-liquid),
-    transform 0.1s var(--ease-liquid);
+  gap: 9px;
+  min-height: 50px;
+  padding: 12px 26px;
+  border-radius: var(--r-chip);
+  font-weight: 800;
+  font-size: 16.5px;
+  letter-spacing: 0.005em;
+  transition: transform 0.3s var(--ease-liquid), box-shadow 0.3s var(--ease-soft),
+    opacity 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .btn svg {
-  width: 16px;
-  height: 16px;
+  width: 19px;
+  height: 19px;
 }
 
 .btn--primary {
-  color: var(--bg);
-  background: var(--accent);
-  box-shadow: none;
-  border: 0;
-}
-
-/* экспериментально: contrast-color гарантирует читаемость на акценте */
-@supports (color: contrast-color(white)) {
-  .btn--primary {
-    color: contrast-color(var(--accent));
-  }
-  .btn--primary:hover {
-    color: contrast-color(var(--accent-2));
-  }
+  color: contrast-color(var(--accent)); /* гарантированный контраст */
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 14px 30px -10px rgba(109, 93, 240, 0.55);
 }
 
 .btn--primary:hover {
-  background: var(--accent-2);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 18px 36px -10px rgba(109, 93, 240, 0.65);
 }
 
 .btn--primary:active {
-  transform: translateY(1px);
+  transform: translateY(0) scale(0.98);
 }
 
 .btn--ghost {
-  color: var(--ink-soft);
-  background: transparent;
-  border: 1px solid var(--glass-border);
+  color: var(--accent-ink);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(109, 93, 240, 0.3);
 }
 
 .btn--ghost:hover {
-  color: var(--ink);
-  border-color: var(--ink-faint);
-}
-
-.btn--ghost:active {
-  transform: translateY(1px);
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -14px rgba(109, 93, 240, 0.45);
 }
 
 .btn:disabled {
-  opacity: 0.35;
+  opacity: 0.55;
   cursor: default;
   transform: none !important;
   box-shadow: none;
 }
 
 .btn--done {
-  color: var(--bg);
-  background: var(--ok);
-  border-color: var(--ok);
+  background: linear-gradient(135deg, var(--ok), #3fc9a2);
+  color: contrast-color(var(--ok));
 }
 
-/* ── результат: изоляция через @scope ───────────────────────────────── */
+/* ── результат — 14. @scope изолирует стили[reference:9] */
 @scope (.glass) to (.actions) {
   .result__title {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
   }
   .result__text {
     font-variant-numeric: tabular-nums;
@@ -573,111 +594,101 @@ textarea {
 }
 
 .result {
-  margin-top: 20px;
+  margin-top: 22px;
 }
 
 .result__head {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 14px;
+  align-items: center;
+  gap: 10px 14px;
   margin-bottom: 12px;
 }
 
 .result__title {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 21px;
+  font-weight: 800;
   letter-spacing: -0.015em;
-  color: var(--ink);
 }
 
 .pill {
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: var(--r-chip);
+  font-size: 14px;
+  font-weight: 700;
   color: var(--ok);
   background: var(--ok-soft);
+  corner-shape: squircle;
 }
 
 .pill--mid {
   color: var(--warn);
-  background: rgba(184, 166, 122, 0.1);
+  background: rgba(194, 98, 46, 0.12);
 }
 
 .pill__meta {
   margin-left: auto;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--ink-faint);
 }
 
 .result__text {
   width: 100%;
-  min-height: 140px;
+  min-height: 150px;
   resize: vertical;
-  padding: 14px 0;
-  border-radius: 0;
-  border: 0;
-  border-top: 1px solid var(--glass-border);
-  border-bottom: 1px solid var(--glass-border);
-  background: transparent;
-  color: var(--ink);
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(84, 96, 158, 0.16);
+  background: rgba(255, 255, 255, 0.85);
   line-height: 1.65;
-  font-size: 15px;
+  font-size: 16.5px;
   outline: none;
-  transition: border-color 0.18s var(--ease-liquid);
+  transition: border-color 0.25s, box-shadow 0.25s;
+  corner-shape: squircle;
 }
 
 .result__text:focus {
-  border-color: var(--accent);
+  border-color: rgba(109, 93, 240, 0.5);
+  box-shadow: 0 0 0 4px rgba(109, 93, 240, 0.12);
 }
 
 /* ── ошибка ─────────────────────────────────────────────────────────── */
 .error {
-  margin-top: 20px;
-  padding: 12px 0;
-  border-radius: 0;
+  margin-top: 18px;
+  padding: 16px 20px;
+  border-radius: 20px;
   color: var(--bad);
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--bad);
-  border-bottom: 1px solid var(--bad);
-  font-weight: 400;
-  font-size: 13px;
-  letter-spacing: 0.01em;
+  background: var(--bad-soft);
+  border: 1px solid rgba(214, 69, 96, 0.22);
+  font-weight: 600;
+  corner-shape: squircle;
 }
 
 /* ── подвал ─────────────────────────────────────────────────────────── */
 .footer {
-  margin-top: 48px;
-  padding-top: 16px;
-  border-top: 1px solid var(--glass-border);
+  margin-top: 26px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 8px 16px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--ink-faint);
 }
 
 .footer__lock {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  color: var(--ink-faint);
+  gap: 7px;
+  color: var(--ok);
 }
 
 .footer__lock svg {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
 }
 
 /* ── доступность и адаптив ──────────────────────────────────────────── */
@@ -693,20 +704,15 @@ textarea {
 
 @media (max-width: 520px) {
   body {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .zone {
-    padding: 28px 16px;
-  }
-
-  .langs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
+    padding: 26px 14px;
   }
 
   .chip {
-    flex: none;
+    padding: 10px 16px;
   }
 
   .btn {
@@ -715,18 +721,5 @@ textarea {
 
   .pill__meta {
     margin-left: 0;
-  }
-
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .hero__title {
-    letter-spacing: -0.04em;
-  }
-
-  .brand {
-    padding: 10px 0;
   }
 }
