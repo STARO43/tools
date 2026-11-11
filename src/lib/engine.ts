@@ -1,12 +1,4 @@
-/**
- * Движок TuxOCR: каталог языковых пакетов + загрузчик с кэшем в IndexedDB.
- * Один файл для главной страницы и web worker'а.
- *
- * Модели — официальные пресеты ppu-paddle-ocr 6.7.0 (PP-OCRv5/v6, MIT),
- * хостинг: HuggingFace-зеркало ppu-paddle-ocr-models.
- */
 
-/* ────────────────────────── типы ────────────────────────── */
 
 export type ModelId = "ru" | "en" | "multi";
 
@@ -76,8 +68,7 @@ const MB = 1024 * 1024;
 export const MODEL_CATALOG: Record<ModelId, ModelDef> = {
   ru: {
     id: "ru",
-    short: "Русский",
-    hint: "русский, украинский, белорусский и другие кириллические языки",
+    short: "РУССКИЙ",
     files: [
       {
         kind: "detection",
@@ -98,8 +89,7 @@ export const MODEL_CATALOG: Record<ModelId, ModelDef> = {
   },
   en: {
     id: "en",
-    short: "English",
-    hint: "английский и ещё 40+ языков на латинице",
+    short: "АНГЛИЙСКИЙ",
     files: [
       {
         kind: "detection",
@@ -120,8 +110,7 @@ export const MODEL_CATALOG: Record<ModelId, ModelDef> = {
   },
   multi: {
     id: "multi",
-    short: "50+ языков",
-    hint: "латиница, китайский, японский, корейский, арабский и другие",
+    short: "Другой",
     files: [
       {
         kind: "detection",
