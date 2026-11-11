@@ -648,7 +648,7 @@ export default function Page() {
 
           {/* язык */}
           <div className="langs">
-            <span className="langs__label">Текст:</span>
+            <span className="langs__label"></span>
             {MODEL_ORDER.map((id) => (
               <button
                 key={id}
