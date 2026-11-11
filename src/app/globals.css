@@ -1,15 +1,4 @@
-/* ── СУПЕР-ФУНКЦИИ CSS 2026 ─────────────────────────────────────────── */
 
-/* 1. @function — свои функции без препроцессоров[reference:2] */
-@function --elevation(--level) {
-  result: 0 calc(var(--level) * 4px) calc(var(--level) * 16px)
-    calc(var(--level) * -6px) rgba(84, 96, 158, 0.18);
-}
-
-/* 2. if() — условия прямо в значениях[reference:3] */
-@function --adaptive-radius(--size) {
-  result: if(media(width > 640px): var(--size); else: calc(var(--size) * 0.7));
-}
 
 :root {
   /* краски — оставляем твои, но добавляем запас для contrast-color */
