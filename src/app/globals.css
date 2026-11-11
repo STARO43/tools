@@ -49,6 +49,12 @@
 
   --ease-ozon: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── премиум-микротени и слои ─────────────────────────────────── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px -8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 32px -16px rgba(0, 0, 0, 0.08);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 *, *::before, *::after {
@@ -71,6 +77,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   overflow-x: hidden;
 }
 
@@ -80,7 +87,9 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -2;
-  background: linear-gradient(180deg, #f4f4f2 0%, #ececea 100%);
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255, 255, 255, 0.5) 0%, transparent 55%),
+    linear-gradient(180deg, #f6f6f4 0%, #ececea 100%);
 }
 
 /* Тонкая канцелярская сетка */
@@ -91,8 +100,8 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.028) 1px, transparent 1px);
   background-size: clamp(48px, 6vw, 96px) clamp(48px, 6vw, 96px);
   mask-image: radial-gradient(ellipse 90% 60% at 50% 20%, black 20%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 20%, black 20%, transparent 80%);
@@ -122,12 +131,10 @@ textarea {
 
 /* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
- 
   width: 100%;
-  max-inline-size: 80ch; 
-  
+  max-inline-size: 80ch;
   min-height: 100dvh;
-  margin: 0 auto; 
+  margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
@@ -182,8 +189,9 @@ textarea {
   font-size: var(--fs-hero);
   font-weight: 700;
   line-height: 1.04;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   color: var(--ink);
+  text-wrap: balance;
 }
 
 .hero__title em {
@@ -196,27 +204,26 @@ textarea {
   max-width: 42em;
   font-size: var(--fs-md);
   color: var(--ink-soft);
-  line-height: 1.5;
+  line-height: 1.55;
   letter-spacing: -0.012em;
+  text-wrap: pretty;
 }
 
 /* карточки */
 .glass {
   flex: 1 1 auto;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.04),
-    0 8px 24px -12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
-  animation: rise 0.5s var(--ease-soft) both;
+  animation: rise 0.55s var(--ease-soft) both;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
 }
 
@@ -239,17 +246,20 @@ textarea {
   padding: var(--sp-4);
   border-radius: var(--r-zone);
   border: 1.5px dashed var(--border-strong);
-  background: #fafafa;
+  background:
+    linear-gradient(180deg, #fcfcfc 0%, #f8f8f7 100%);
   overflow: hidden;
   transition:
     border-color 0.3s var(--ease-ozon),
-    background 0.3s var(--ease-ozon);
+    background 0.3s var(--ease-ozon),
+    box-shadow 0.3s var(--ease-ozon);
 }
 
 .zone:hover, .zone--over {
   border-color: var(--ink);
   border-style: solid;
-  background: #f0f0f0;
+  background: #f4f4f2;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.03);
 }
 
 .zone__icon {
@@ -259,18 +269,22 @@ textarea {
   display: grid;
   place-items: center;
   color: var(--ink-soft);
-  background: var(--bg-2);
+  background:
+    linear-gradient(180deg, #ffffff 0%, var(--bg-2) 100%);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-xs), var(--shadow-inset);
   transition:
     background 0.3s var(--ease-ozon),
     color 0.3s var(--ease-ozon),
-    transform 0.3s var(--ease-ozon);
+    transform 0.3s var(--ease-ozon),
+    box-shadow 0.3s var(--ease-ozon);
 }
 
 .zone:hover .zone__icon {
   background: var(--ink);
   color: #ffffff;
-  transform: scale(1.04);
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.35);
 }
 
 .zone__icon svg { width: 42%; height: 42%; }
@@ -278,7 +292,7 @@ textarea {
 .zone__title {
   font-size: var(--fs-lg);
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.028em;
   color: var(--ink);
 }
 
@@ -297,6 +311,7 @@ textarea {
   color: var(--ink);
   background: var(--bg-2);
   border: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.04);
 }
 
 /* превью */
@@ -307,6 +322,7 @@ textarea {
   overflow: hidden;
   border: 1px solid var(--border);
   background: var(--bg-2);
+  box-shadow: var(--shadow-xs), var(--shadow-inset);
 }
 
 .preview img {
@@ -322,8 +338,8 @@ textarea {
   display: grid;
   place-items: center;
   background: rgba(250, 250, 250, 0.72);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(12px) saturate(1.1);
 }
 
 /* языки */
@@ -341,7 +357,7 @@ textarea {
   color: var(--ink-faint);
   margin-right: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
 }
 
 .chip {
@@ -351,26 +367,34 @@ textarea {
   font-size: var(--fs-sm);
   letter-spacing: -0.012em;
   color: var(--ink-soft);
-  background: var(--bg-2);
+  background:
+    linear-gradient(180deg, #f8f8f7 0%, var(--bg-2) 100%);
   border: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(0, 0, 0, 0.03);
   transition:
     background 0.22s var(--ease-ozon),
     color 0.22s var(--ease-ozon),
-    border-color 0.22s var(--ease-ozon);
+    border-color 0.22s var(--ease-ozon),
+    box-shadow 0.22s var(--ease-ozon),
+    transform 0.12s var(--ease-ozon);
 }
 
 .chip:hover {
   color: var(--ink);
-  background: #e0e0e0;
-  border-color: #999999;
+  background: #e6e6e4;
+  border-color: #8f8f8f;
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.08);
 }
 
-.chip:active { background: #d5d5d5; }
+.chip:active { background: #dcdcda; transform: scale(0.98); }
 
 .chip--on {
   color: #ffffff;
   background: var(--ink);
   border-color: var(--ink);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .chip--on:hover {
@@ -404,6 +428,7 @@ textarea {
   color: var(--ink-soft);
   background: var(--bg-2);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-inset);
 }
 
 .status__spinner {
@@ -424,12 +449,13 @@ textarea {
   border-radius: 999px;
   background: var(--bg-3);
   overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .progress__bar {
   height: 100%;
   border-radius: 999px;
-  background: var(--ink);
+  background: linear-gradient(90deg, #333333 0%, var(--ink) 100%);
   transition: width 0.5s var(--ease-soft);
 }
 
@@ -466,15 +492,20 @@ textarea {
 
 .btn--primary {
   color: #ffffff;
-  background: var(--ink);
+  background:
+    linear-gradient(180deg, #2a2a2a 0%, var(--ink) 100%);
   border: 2px solid var(--ink);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
 .btn--primary:hover {
-  background: #333333;
-  border-color: #333333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+  border-color: #2a2a2a;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
 .btn--primary:active {
@@ -484,13 +515,14 @@ textarea {
 
 .btn--ghost {
   color: var(--ink);
-  background: transparent;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8f7 100%);
   border: 2px solid var(--border-strong);
+  box-shadow: var(--shadow-xs), var(--shadow-inset);
 }
 
 .btn--ghost:hover {
   color: var(--ink);
-  background: #e8e8e6;
+  background: #f0f0ee;
   border-color: var(--ink);
 }
 
@@ -502,12 +534,15 @@ textarea {
 
 .btn--done {
   color: #ffffff;
-  background: var(--ok);
+  background: linear-gradient(180deg, #348a3a 0%, var(--ok) 100%);
   border: 2px solid var(--ok);
+  box-shadow:
+    0 2px 4px rgba(46, 125, 50, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .btn--done:hover {
-  background: #1b5e20;
+  background: linear-gradient(180deg, #1f5d24 0%, #1b5e20 100%);
   border-color: #1b5e20;
 }
 
@@ -516,7 +551,7 @@ textarea {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 0 0 auto; 
+  flex: 0 0 auto;
 }
 
 .result__head {
@@ -530,7 +565,7 @@ textarea {
 .result__title {
   font-size: var(--fs-lg);
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.028em;
   color: var(--ink);
 }
 
@@ -539,15 +574,17 @@ textarea {
   border-radius: 4px;
   font-size: var(--fs-xs);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #ffffff;
   background: var(--ink);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 .pill--mid {
   color: var(--ink);
   background: var(--bg-4);
+  box-shadow: none;
 }
 
 .pill__meta {
@@ -560,31 +597,18 @@ textarea {
 
 .result__text {
   width: 100%;
-  /* Убираем жесткие min-height и max-height */
-  min-height: auto; 
+  min-height: auto;
   max-height: none;
-  
-  /* Современное свойство: высота автоматически подстраивается под текст */
   field-sizing: content;
-  
-  /* Разрешаем пользователю растянуть вручную, если нужно (опционально) */
-  resize: vertical; 
-  overflow-y: hidden; /* Скрываем скролл, пока он сам растет */
-  
+  resize: vertical;
+  overflow-y: hidden;
   padding: var(--sp-3);
   border-radius: var(--r-input);
   border: 1px solid var(--border);
   background: var(--surface);
-  
-  /* 
-    МЕЛКИЙ ШРИФТ БЕЗ ФИКСОВ:
-    0.875em — это 87.5% от родительского шрифта. 
-    Он будет всегда мельче кнопок и заголовков, но пропорционален им.
-    Можно поставить 0.8em или 0.9em.
-  */
-  font-size: 0.875em; 
-  line-height: 1.5; 
-  
+  box-shadow: var(--shadow-inset);
+  font-size: 0.875em;
+  line-height: 1.55;
   letter-spacing: -0.01em;
   color: var(--ink);
   outline: none;
@@ -595,7 +619,9 @@ textarea {
 
 .result__text:focus {
   border-color: var(--ink);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.07),
+    var(--shadow-inset);
 }
 
 /* ошибка */
