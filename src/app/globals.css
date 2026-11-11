@@ -1,7 +1,5 @@
-
-
 :root {
-  /* краски — оставляем твои, но добавляем запас для contrast-color */
+  /* краски — твои, без изменений */
   --bg: #eef1f8;
   --ink: #1c2333;
   --ink-soft: #4c5568;
@@ -9,7 +7,8 @@
   --glass: rgba(255, 255, 255, 0.64);
   --glass-strong: rgba(255, 255, 255, 0.82);
   --glass-border: rgba(255, 255, 255, 0.9);
-  --glass-shadow: 0 24px 60px -24px rgba(84, 96, 158, 0.28),
+  --glass-shadow: 0 1px 2px rgba(84, 96, 158, 0.04),
+    0 24px 60px -24px rgba(84, 96, 158, 0.28),
     0 4px 16px -8px rgba(84, 96, 158, 0.14);
   --accent: #6d5df0;
   --accent-2: #3f8ef7;
@@ -21,12 +20,12 @@
   --bad: #d64560;
   --bad-soft: rgba(214, 69, 96, 0.09);
 
-  /* форма — теперь управляется @function + if() */
-  --r-card: --adaptive-radius(32px);
-  --r-zone: --adaptive-radius(26px);
+  /* форма — твоя */
+  --r-card: 32px;
+  --r-zone: 26px;
   --r-chip: 999px;
 
-  /* движение */
+  /* движение — твоё */
   --ease-liquid: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-soft: cubic-bezier(0.25, 0.8, 0.3, 1);
 }
@@ -40,20 +39,23 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  /* 3. interpolate-size — height: auto теперь анимируется */
-  interpolate-size: allow-keywords;
 }
 
 body {
   margin: 0;
   min-height: 100dvh;
   color: var(--ink);
-  background: var(--bg);
+  background-color: var(--bg);
+  /* добавлен тонкий радиальный отсвет сверху — глубина без смены палитры */
+  background-image:
+    radial-gradient(ellipse 120% 60% at 50% -10%, #ffffff 0%, transparent 55%),
+    radial-gradient(ellipse 80% 50% at 100% 100%, rgba(63, 142, 247, 0.04), transparent 60%);
   font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: 17px;
   line-height: 1.55;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
@@ -74,15 +76,13 @@ button {
 textarea {
   font: inherit;
   color: inherit;
-  /* 4. field-sizing — textarea сам подстраивает высоту */
-  field-sizing: content;
 }
 
 ::selection {
   background: rgba(109, 93, 240, 0.22);
 }
 
-/* ── живой фон ──────────────────────────────────────────────────────── */
+/* ── живой фон: плавающие пятна ─────────────────────────────────────── */
 .blobs {
   position: fixed;
   inset: 0;
@@ -104,7 +104,7 @@ textarea {
   height: 46vmax;
   left: -12vmax;
   top: -14vmax;
-  background: radial-gradient(circle at 35% 35%, #c9b9ff, transparent 70%);
+  background: radial-gradient(circle at 35% 35%, #c9b9ff, #b6a8ff 40%, transparent 70%);
   animation: drift-a 26s ease-in-out infinite alternate;
 }
 
@@ -113,7 +113,7 @@ textarea {
   height: 40vmax;
   right: -10vmax;
   top: 16vh;
-  background: radial-gradient(circle at 60% 40%, #a4e9d4, transparent 70%);
+  background: radial-gradient(circle at 60% 40%, #a4e9d4, #7fdfc4 40%, transparent 70%);
   animation: drift-b 30s ease-in-out infinite alternate;
 }
 
@@ -122,7 +122,7 @@ textarea {
   height: 38vmax;
   left: 18vw;
   bottom: -18vmax;
-  background: radial-gradient(circle at 50% 55%, #ffd7c0, transparent 70%);
+  background: radial-gradient(circle at 50% 55%, #ffd7c0, #ffc0a0 40%, transparent 70%);
   animation: drift-c 24s ease-in-out infinite alternate;
 }
 
@@ -131,7 +131,7 @@ textarea {
   height: 30vmax;
   right: 14vw;
   bottom: -6vmax;
-  background: radial-gradient(circle at 45% 45%, #b0d4ff, transparent 70%);
+  background: radial-gradient(circle at 45% 45%, #b0d4ff, #8fc0ff 40%, transparent 70%);
   animation: drift-a 34s ease-in-out infinite alternate-reverse;
 }
 
@@ -157,57 +157,40 @@ textarea {
   padding: clamp(20px, 4vw, 44px) clamp(16px, 4vw, 28px) 60px;
 }
 
-/* шапка — 5. scroll-state query меняет фон при прилипании[reference:4] */
+/* шапка */
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 10px;
-  padding: 14px 0;
-  border-bottom: 1px solid transparent;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--bg);
-  container-type: scroll-state;
-  transition: background 0.3s var(--ease-soft),
-    border-color 0.3s var(--ease-soft),
-    backdrop-filter 0.3s var(--ease-soft);
 }
 
-@container scroll-state(stuck: top) {
-  .brand {
-    background: rgba(238, 241, 248, 0.82);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    backdrop-filter: blur(16px) saturate(1.4);
-    border-bottom-color: rgba(84, 96, 158, 0.12);
-  }
-}
-
-/* логотип — 6. border-shape: тень теперь круглая, а не квадратная[reference:5] */
 .brand__mark {
   width: 46px;
   height: 46px;
   flex: none;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 10px 24px -8px rgba(109, 93, 240, 0.55);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #7f70ff 0%, var(--accent) 50%, var(--accent-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(84, 96, 158, 0.08),
+    0 10px 24px -8px rgba(109, 93, 240, 0.55);
   display: grid;
   place-items: center;
   color: #fff;
-  border-shape: circle(50%);
-  /* SVG внутри не тронут, только контейнер получил форму */
 }
 
 .brand__mark svg {
   width: 24px;
   height: 24px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
 }
 
 .brand__name {
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 .brand__name em {
@@ -218,7 +201,6 @@ textarea {
   color: transparent;
 }
 
-/* заголовок */
 .hero {
   margin-bottom: 26px;
 }
@@ -226,8 +208,8 @@ textarea {
 .hero__title {
   font-size: clamp(30px, 5.4vw, 44px);
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.025em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .hero__title em {
@@ -243,19 +225,36 @@ textarea {
   max-width: 34em;
   font-size: clamp(16px, 2.4vw, 19px);
   color: var(--ink-soft);
+  line-height: 1.6;
 }
 
-/* ── стеклянная карточка — 7. corner-shape: squircle вместо border-radius ── */
+/* ── стеклянная карточка — многослойное стекло ──────────────────────── */
 .glass {
-  background: var(--glass);
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.56));
   border: 1px solid var(--glass-border);
   border-radius: var(--r-card);
-  box-shadow: var(--glass-shadow);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(84, 96, 158, 0.04),
+    var(--glass-shadow);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
   padding: clamp(18px, 3.4vw, 30px);
   animation: rise 0.7s var(--ease-soft) both;
-  corner-shape: squircle;
+}
+
+/* тонкий блик в верхнем левом углу — как отражение на стекле */
+.glass::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  border-radius: var(--r-card) var(--r-card) 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent);
+  pointer-events: none;
 }
 
 @keyframes rise {
@@ -268,7 +267,7 @@ textarea {
   animation-delay: 0.12s;
 }
 
-/* ── зона загрузки — 8. border-shape для сложной формы ──────────────── */
+/* ── зона загрузки ──────────────────────────────────────────────────── */
 .zone {
   position: relative;
   width: 100%;
@@ -279,55 +278,72 @@ textarea {
   padding: clamp(28px, 5vw, 44px) 20px;
   border-radius: var(--r-zone);
   border: 1.6px dashed rgba(109, 93, 240, 0.35);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.16));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.16));
   overflow: hidden;
-  transition: border-color 0.35s var(--ease-soft), background 0.35s var(--ease-soft),
-    transform 0.45s var(--ease-liquid), box-shadow 0.45s var(--ease-soft);
+  transition:
+    border-color 0.35s var(--ease-soft),
+    background 0.35s var(--ease-soft),
+    transform 0.45s var(--ease-liquid),
+    box-shadow 0.45s var(--ease-soft);
   animation: morph 9s ease-in-out infinite;
-  /* 9. shape() — любая форма, не только circle/inset[reference:6] */
-  border-shape: shape(
-    from 0 0,
-    line to 100% 0,
-    line to 100% 100%,
-    line to 0 100%,
-    close
-  );
 }
 
 @keyframes morph {
-  0%, 100% {
-    border-radius: 26px 32px 28px 34px / 32px 26px 34px 28px;
-  }
-  33% {
-    border-radius: 34px 26px 32px 28px / 28px 34px 26px 32px;
-  }
-  66% {
-    border-radius: 30px 34px 26px 30px / 34px 30px 30px 26px;
-  }
+  0%, 100% { border-radius: 26px 32px 28px 34px / 32px 26px 34px 28px; }
+  33% { border-radius: 34px 26px 32px 28px / 28px 34px 26px 32px; }
+  66% { border-radius: 30px 34px 26px 30px / 34px 30px 30px 26px; }
+}
+
+/* мягкое свечение изнутри при hover */
+.zone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 50% 0%, rgba(109, 93, 240, 0.12), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-soft);
+  pointer-events: none;
 }
 
 .zone:hover,
 .zone--over {
   border-color: rgba(109, 93, 240, 0.75);
-  background: linear-gradient(180deg, rgba(109, 93, 240, 0.1), rgba(63, 142, 247, 0.07));
+  border-style: solid;
+  background: linear-gradient(180deg, rgba(109, 93, 240, 0.08), rgba(63, 142, 247, 0.04));
   transform: scale(1.012);
-  box-shadow: 0 18px 44px -20px rgba(109, 93, 240, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 18px 44px -20px rgba(109, 93, 240, 0.45);
+}
+
+.zone:hover::after,
+.zone--over::after {
+  opacity: 1;
 }
 
 .zone__icon {
+  position: relative;
+  z-index: 1;
   width: 64px;
   height: 64px;
   border-radius: 22px;
   display: grid;
   place-items: center;
   color: var(--accent-ink);
-  background: linear-gradient(135deg, rgba(109, 93, 240, 0.16), rgba(63, 142, 247, 0.14));
-  transition: transform 0.45s var(--ease-liquid);
-  corner-shape: squircle;
+  background: linear-gradient(135deg, rgba(109, 93, 240, 0.18), rgba(63, 142, 247, 0.14));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(84, 96, 158, 0.06);
+  transition: transform 0.45s var(--ease-liquid), box-shadow 0.45s var(--ease-soft);
 }
 
 .zone:hover .zone__icon {
   transform: translateY(-4px) rotate(-4deg) scale(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(84, 96, 158, 0.06),
+    0 12px 24px -10px rgba(109, 93, 240, 0.35);
 }
 
 .zone__icon svg {
@@ -336,12 +352,16 @@ textarea {
 }
 
 .zone__title {
+  position: relative;
+  z-index: 1;
   font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .zone__hint {
+  position: relative;
+  z-index: 1;
   font-size: 15.5px;
   color: var(--ink-faint);
 }
@@ -354,7 +374,7 @@ textarea {
   border-radius: 8px;
   color: var(--accent-ink);
   background: rgba(109, 93, 240, 0.12);
-  corner-shape: squircle;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* превью */
@@ -364,9 +384,11 @@ textarea {
   border-radius: 20px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 14px 34px -18px rgba(84, 96, 158, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 1px 2px rgba(84, 96, 158, 0.06),
+    0 14px 34px -18px rgba(84, 96, 158, 0.4);
   background: #fff;
-  corner-shape: squircle;
 }
 
 .preview img {
@@ -386,7 +408,7 @@ textarea {
   backdrop-filter: blur(6px);
 }
 
-/* ── переключатель языков — 10. contrast-color() авто-контраст[reference:7] */
+/* ── переключатель языков ───────────────────────────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
@@ -408,22 +430,36 @@ textarea {
   font-weight: 700;
   font-size: 15.5px;
   color: var(--ink-soft);
-  background: rgba(255, 255, 255, 0.72);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.7));
   border: 1px solid rgba(84, 96, 158, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(84, 96, 158, 0.04);
   transition: all 0.3s var(--ease-soft);
 }
 
 .chip:hover {
   color: var(--accent-ink);
   border-color: rgba(109, 93, 240, 0.4);
+  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.85));
   transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 4px 10px -4px rgba(109, 93, 240, 0.2);
 }
 
 .chip--on {
-  color: contrast-color(var(--accent)); /* сам выберет белый или чёрный */
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  background: linear-gradient(135deg, #7f70ff 0%, var(--accent) 50%, var(--accent-2) 100%);
   border-color: transparent;
-  box-shadow: 0 8px 20px -8px rgba(109, 93, 240, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+    0 8px 20px -8px rgba(109, 93, 240, 0.6);
+}
+
+.chip--on:hover {
+  color: #fff;
 }
 
 .chip__dot {
@@ -433,7 +469,13 @@ textarea {
   margin-left: 7px;
   border-radius: 50%;
   background: var(--ok);
+  box-shadow: 0 0 6px rgba(31, 169, 126, 0.5);
   vertical-align: 2px;
+}
+
+.chip--on .chip__dot {
+  background: #fff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
 }
 
 /* ── статусы и прогресс ─────────────────────────────────────────────── */
@@ -446,9 +488,9 @@ textarea {
   border-radius: 18px;
   font-weight: 600;
   color: var(--ink-soft);
-  background: rgba(255, 255, 255, 0.66);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5));
   border: 1px solid rgba(255, 255, 255, 0.9);
-  corner-shape: squircle;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .status__spinner {
@@ -456,7 +498,7 @@ textarea {
   height: 20px;
   flex: none;
   border-radius: 50%;
-  border: 2.4px solid rgba(109, 93, 240, 0.25);
+  border: 2.4px solid rgba(109, 93, 240, 0.2);
   border-top-color: var(--accent);
   animation: spin 0.9s linear infinite;
 }
@@ -469,14 +511,16 @@ textarea {
   margin-top: 14px;
   height: 10px;
   border-radius: 999px;
-  background: rgba(84, 96, 158, 0.12);
+  background: rgba(84, 96, 158, 0.1);
   overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(84, 96, 158, 0.12);
 }
 
 .progress__bar {
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px rgba(109, 93, 240, 0.5);
   transition: width 0.25s var(--ease-soft);
   position: relative;
 }
@@ -486,7 +530,7 @@ textarea {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
   animation: sheen 1.4s linear infinite;
 }
 
@@ -495,21 +539,12 @@ textarea {
   to { transform: translateX(100%); }
 }
 
-/* ── кнопки — 11. contrast-color + 12. :has() для валидации ─────────── */
+/* ── кнопки ─────────────────────────────────────────────────────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 18px;
-}
-
-/* 13. :has() — карточка реагирует на состояние вложенных элементов[reference:8] */
-.glass:has(.result__text:invalid) {
-  border-color: rgba(214, 69, 96, 0.4);
-}
-
-.glass:has(.result__text:focus) {
-  box-shadow: var(--glass-shadow), 0 0 0 4px rgba(109, 93, 240, 0.08);
 }
 
 .btn {
@@ -522,8 +557,11 @@ textarea {
   border-radius: var(--r-chip);
   font-weight: 800;
   font-size: 16.5px;
-  letter-spacing: 0.005em;
-  transition: transform 0.3s var(--ease-liquid), box-shadow 0.3s var(--ease-soft),
+  letter-spacing: -0.005em;
+  transition:
+    transform 0.3s var(--ease-liquid),
+    box-shadow 0.3s var(--ease-soft),
+    background 0.3s var(--ease-soft),
     opacity 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
@@ -534,30 +572,51 @@ textarea {
 }
 
 .btn--primary {
-  color: contrast-color(var(--accent)); /* гарантированный контраст */
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 14px 30px -10px rgba(109, 93, 240, 0.55);
+  color: #fff;
+  background: linear-gradient(135deg, #7f70ff 0%, var(--accent) 50%, var(--accent-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(84, 96, 158, 0.1),
+    0 14px 30px -10px rgba(109, 93, 240, 0.55);
 }
 
 .btn--primary:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 18px 36px -10px rgba(109, 93, 240, 0.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(84, 96, 158, 0.1),
+    0 18px 36px -10px rgba(109, 93, 240, 0.65);
 }
 
 .btn--primary:active {
   transform: translateY(0) scale(0.98);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.15),
+    0 4px 12px -6px rgba(109, 93, 240, 0.4);
 }
 
 .btn--ghost {
   color: var(--accent-ink);
-  background: rgba(255, 255, 255, 0.72);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.7));
   border: 1px solid rgba(109, 93, 240, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(84, 96, 158, 0.04);
 }
 
 .btn--ghost:hover {
   background: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px -14px rgba(109, 93, 240, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 12px 26px -14px rgba(109, 93, 240, 0.45);
+}
+
+.btn--ghost:active {
+  transform: translateY(0);
+  box-shadow: inset 0 1px 3px rgba(84, 96, 158, 0.12);
 }
 
 .btn:disabled {
@@ -568,20 +627,13 @@ textarea {
 }
 
 .btn--done {
-  background: linear-gradient(135deg, var(--ok), #3fc9a2);
-  color: contrast-color(var(--ok));
+  background: linear-gradient(135deg, #3fc9a2 0%, var(--ok) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 14px 30px -10px rgba(31, 169, 126, 0.5);
 }
 
-/* ── результат — 14. @scope изолирует стили[reference:9] */
-@scope (.glass) to (.actions) {
-  .result__title {
-    letter-spacing: -0.015em;
-  }
-  .result__text {
-    font-variant-numeric: tabular-nums;
-  }
-}
-
+/* ── результат ──────────────────────────────────────────────────────── */
 .result {
   margin-top: 22px;
 }
@@ -597,7 +649,7 @@ textarea {
 .result__title {
   font-size: 21px;
   font-weight: 800;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
 .pill {
@@ -607,12 +659,13 @@ textarea {
   font-weight: 700;
   color: var(--ok);
   background: var(--ok-soft);
-  corner-shape: squircle;
+  box-shadow: inset 0 0 0 1px rgba(31, 169, 126, 0.18);
 }
 
 .pill--mid {
   color: var(--warn);
   background: rgba(194, 98, 46, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(194, 98, 46, 0.18);
 }
 
 .pill__meta {
@@ -629,17 +682,22 @@ textarea {
   padding: 18px 20px;
   border-radius: 20px;
   border: 1px solid rgba(84, 96, 158, 0.16);
-  background: rgba(255, 255, 255, 0.85);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.82));
+  box-shadow:
+    inset 0 1px 2px rgba(84, 96, 158, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   line-height: 1.65;
   font-size: 16.5px;
   outline: none;
-  transition: border-color 0.25s, box-shadow 0.25s;
-  corner-shape: squircle;
+  transition: border-color 0.25s var(--ease-soft), box-shadow 0.25s var(--ease-soft);
 }
 
 .result__text:focus {
   border-color: rgba(109, 93, 240, 0.5);
-  box-shadow: 0 0 0 4px rgba(109, 93, 240, 0.12);
+  box-shadow:
+    inset 0 1px 2px rgba(84, 96, 158, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 0 4px rgba(109, 93, 240, 0.12);
 }
 
 /* ── ошибка ─────────────────────────────────────────────────────────── */
@@ -648,10 +706,10 @@ textarea {
   padding: 16px 20px;
   border-radius: 20px;
   color: var(--bad);
-  background: var(--bad-soft);
+  background: linear-gradient(180deg, rgba(214, 69, 96, 0.1), rgba(214, 69, 96, 0.07));
   border: 1px solid rgba(214, 69, 96, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   font-weight: 600;
-  corner-shape: squircle;
 }
 
 /* ── подвал ─────────────────────────────────────────────────────────── */
