@@ -122,15 +122,12 @@ textarea {
 
 /* ── каркас ─────────────────────────────────────────────────────────── */
 .shell {
-  /* 
-    Ширина 100% на мобилках (меньше 100ch), 
-    но на широких экранах ограничивается 100 символами.
-  */
+ 
   width: 100%;
-  max-inline-size: 100ch; 
+  max-inline-size: 60ch; 
   
   min-height: 100dvh;
-  margin: 0 auto; /* Центрируем по горизонтали */
+  margin: 0 auto; 
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
