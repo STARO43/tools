@@ -1,33 +1,45 @@
+/* ── экспериментальные функции (Chromium Canary+, безопасно игнорируются) ── */
+@function --elevation(--level) {
+  result: 0 calc(var(--level) * 2px) calc(var(--level) * 8px)
+    calc(var(--level) * -2px) rgba(0, 0, 0, 0.4);
+}
+
+@function --inset-x(--space) {
+  result: calc(var(--space) * 4px);
+}
+
 :root {
-  /* 单一观点：深炭 + 暖白 + 一个克制的铜信号 */
-  --bg: #141414;
-  --ink: #e8e6e1;
-  --ink-soft: #a8a5a0;
-  --ink-faint: #6b6965;
-  --glass: #1a1a1a;
-  --glass-strong: #1f1f1f;
-  --glass-border: #2a2a2a;
-  --glass-shadow: none;
-  --accent: #b8845a;
-  --accent-2: #b8845a;
-  --accent-ink: #b8845a;
-  --accent-soft: rgba(184, 132, 90, 0.08);
-  --ok: #7a9478;
-  --ok-soft: rgba(122, 148, 120, 0.1);
-  --warn: #b8845a;
-  --bad: #a85a5a;
-  --bad-soft: rgba(168, 90, 90, 0.1);
+  /* 单一观点：石墨 + 暖白 + 一个不声张的暖石色 */
+  --bg: #0a0a0b;
+  --ink: #ededed;
+  --ink-soft: #8f8d88;
+  --ink-faint: #575550;
+  --glass: #121213;
+  --glass-strong: #161617;
+  --glass-border: #242425;
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.6),
+    0 16px 40px -24px rgba(0, 0, 0, 0.8);
+  --accent: #c9c4b8;
+  --accent-2: #b8b2a4;
+  --accent-ink: #c9c4b8;
+  --accent-soft: rgba(201, 196, 184, 0.08);
+  --ok: #7d9a7d;
+  --ok-soft: rgba(125, 154, 125, 0.1);
+  --warn: #b8a67a;
+  --bad: #b86b6b;
+  --bad-soft: rgba(184, 107, 107, 0.1);
 
-  /* 形式：直角，零装饰 */
-  --r-card: 0;
-  --r-zone: 0;
-  --r-chip: 0;
+  /* 形式 */
+  --r-card: 12px;
+  --r-zone: 10px;
+  --r-chip: 999px;
 
-  /* 运动：快进快出，不拖 */
+  /* 运动 */
   --ease-liquid: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ── база ───────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -36,6 +48,8 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* экспериментально: разрешает анимацию height: auto */
+  interpolate-size: allow-keywords;
 }
 
 body {
@@ -77,34 +91,73 @@ textarea {
   color: var(--bg);
 }
 
-/* ── 背景：关掉所有运动，评委不测无限动画 ──────────────────────────── */
+/* ── фон: убираем движение ──────────────────────────────────────────── */
 .blobs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
   display: none;
 }
 
-/* ── 骨架 ───────────────────────────────────────────────────────────── */
-.shell {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: clamp(32px, 5vw, 64px) clamp(20px, 4vw, 32px) 80px;
+@keyframes drift-a {
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 0); }
 }
 
-/* 头部：极简，一条线分隔 */
+@keyframes drift-b {
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 0); }
+}
+
+@keyframes drift-c {
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 0); }
+}
+
+/* ── каркас ─────────────────────────────────────────────────────────── */
+.shell {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 48px) clamp(20px, 4vw, 28px) 80px;
+}
+
+/* шапка — sticky + scroll-state query меняет фон при скролле */
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 0;
-  padding-bottom: 20px;
+  margin-bottom: 24px;
+  padding: 14px 0;
   border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  container-type: scroll-state;
+  transition: background 0.2s var(--ease-liquid),
+    border-color 0.2s var(--ease-liquid);
 }
 
-/* Logo：保留原 SVG，容器改为直角、铜色底、深色图标 */
+@container scroll-state(stuck: top) {
+  .brand {
+    background: rgba(10, 10, 11, 0.82);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    backdrop-filter: blur(16px) saturate(1.2);
+    border-bottom-color: var(--ink-faint);
+  }
+}
+
+/* логотип: SVG не тронут, цвет контейнера — под палитру */
 .brand__mark {
   width: 40px;
   height: 40px;
   flex: none;
-  border-radius: 0;
+  border-radius: 8px;
   background: var(--accent);
   box-shadow: none;
   display: grid;
@@ -120,7 +173,7 @@ textarea {
 .brand__name {
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -131,16 +184,16 @@ textarea {
   font-weight: 500;
 }
 
-/* 标题：唯一视觉事件。负字距拉到极限 */
+/* заголовок — единственный визуальный акцент */
 .hero {
-  margin: 0 0 48px;
-  padding-top: clamp(40px, 6vw, 72px);
+  margin-bottom: 48px;
+  padding-top: clamp(32px, 5vw, 56px);
 }
 
 .hero__title {
   font-size: clamp(34px, 7vw, 64px);
   font-weight: 600;
-  line-height: 0.92;
+  line-height: 0.94;
   letter-spacing: -0.055em;
   color: var(--ink);
 }
@@ -151,70 +204,90 @@ textarea {
 }
 
 .hero__subtitle {
-  margin-top: 24px;
-  max-width: 28em;
+  margin-top: 20px;
+  max-width: 30em;
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--ink-soft);
   letter-spacing: -0.005em;
 }
 
-/* ── 区块：无线框，无卡片感，只有上边线 ────────────────────────────── */
+/* ── карточка: squircle-углы через corner-shape ─────────────────────── */
 .glass {
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--glass-border);
-  border-radius: 0;
-  box-shadow: none;
-  padding: 24px 0 0;
-  animation: none;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-card);
+  box-shadow: var(--glass-shadow);
+  padding: clamp(20px, 3.4vw, 28px);
+  animation: rise 0.5s var(--ease-soft) both;
+  position: relative;
+}
+
+/* экспериментально: squircle-углы вместо простого border-radius */
+@supports (corner-shape: squircle) {
+  .glass {
+    corner-shape: squircle;
+  }
+  .zone {
+    corner-shape: squircle;
+  }
 }
 
 @keyframes rise {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
 }
 
 .glass + .glass {
-  margin-top: 32px;
+  margin-top: 16px;
+  animation-delay: 0.06s;
 }
 
-/* ── 上传区：平面、虚线、左对齐，不是居中“掉落区” ─────────────────── */
+/* ── зона загрузки: circle-форма иконки с реальной тенью ────────────── */
 .zone {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 32px 24px;
-  border-radius: 0;
+  align-items: center;
+  gap: 8px;
+  padding: clamp(28px, 5vw, 40px) 20px;
+  border-radius: var(--r-zone);
   border: 1px dashed var(--glass-border);
   background: transparent;
   overflow: hidden;
-  text-align: left;
-  transition: border-color 0.15s var(--ease-liquid);
+  transition: border-color 0.2s var(--ease-liquid),
+    background 0.2s var(--ease-liquid);
 }
 
 .zone:hover,
 .zone--over {
   border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .zone__icon {
-  width: auto;
-  height: auto;
-  border-radius: 0;
-  display: block;
-  color: var(--ink-faint);
-  background: none;
-  margin-bottom: 10px;
-  transition: color 0.15s var(--ease-liquid);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: none;
+  transition: transform 0.25s var(--ease-liquid);
+}
+
+/* экспериментально: border-shape делает тень круглой */
+@supports (border-shape: circle(50%)) {
+  .zone__icon {
+    border-shape: circle(50%);
+    box-shadow: 0 4px 14px -4px rgba(201, 196, 184, 0.25);
+  }
 }
 
 .zone:hover .zone__icon {
-  color: var(--accent);
-  transform: none;
+  transform: translateY(-2px);
 }
 
 .zone__icon svg {
@@ -223,9 +296,9 @@ textarea {
 }
 
 .zone__title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   color: var(--ink);
 }
 
@@ -238,18 +311,18 @@ textarea {
   font: inherit;
   font-size: 11px;
   font-weight: 600;
-  padding: 1px 5px;
-  border-radius: 0;
+  padding: 2px 6px;
+  border-radius: 4px;
   color: var(--ink-soft);
-  background: transparent;
+  background: var(--glass-strong);
   border: 1px solid var(--glass-border);
 }
 
-/* 预览 */
+/* превью */
 .preview {
   position: relative;
   margin-top: 16px;
-  border-radius: 0;
+  border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--glass-border);
   box-shadow: none;
@@ -259,7 +332,7 @@ textarea {
 .preview img {
   display: block;
   width: 100%;
-  max-height: 300px;
+  max-height: 320px;
   object-fit: contain;
 }
 
@@ -268,83 +341,93 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(20, 20, 20, 0.8);
+  background: rgba(10, 10, 11, 0.7);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
-/* ── 语言切换：极简文本行，不是 chip ────────────────────────────────── */
+/* ── языки: сегментированный контрол без «чипсов» ──────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0;
+  gap: 8px;
   margin-top: 20px;
-  border-bottom: 1px solid var(--glass-border);
 }
 
 .langs__label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   color: var(--ink-faint);
-  margin-right: 16px;
-  padding: 10px 0;
+  margin-right: 4px;
 }
 
 .chip {
-  padding: 10px 14px;
-  border-radius: 0;
+  padding: 7px 14px;
+  border-radius: var(--r-chip);
   font-weight: 400;
-  font-size: 13px;
-  letter-spacing: 0;
-  color: var(--ink-faint);
+  font-size: 13.5px;
+  letter-spacing: -0.005em;
+  color: var(--ink-soft);
   background: transparent;
-  border: 0;
-  transition: color 0.15s var(--ease-liquid);
+  border: 1px solid var(--glass-border);
+  transition: color 0.18s var(--ease-liquid),
+    border-color 0.18s var(--ease-liquid),
+    background 0.18s var(--ease-liquid);
 }
 
 .chip:hover {
   color: var(--ink);
-  background: transparent;
+  border-color: var(--ink-faint);
+}
+
+/* экспериментально: contrast-color сам выбирает цвет текста */
+@supports (color: contrast-color(white)) {
+  .chip--on {
+    color: contrast-color(var(--accent));
+  }
 }
 
 .chip--on {
-  color: var(--accent);
-  background: transparent;
-  border-color: transparent;
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
   font-weight: 500;
 }
 
 .chip--on:hover {
-  background: transparent;
-  color: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent-2);
+  background: var(--accent-2);
 }
 
 .chip__dot {
   display: inline-block;
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   margin-left: 6px;
   border-radius: 50%;
   background: currentColor;
   vertical-align: 1px;
+  opacity: 0.7;
 }
 
 .chip--on .chip__dot {
-  background: var(--accent);
+  opacity: 0.5;
 }
 
-/* ── 状态：一行字 + 铜色方块，不是 spinner ─────────────────────────── */
+/* ── статус ─────────────────────────────────────────────────────────── */
 .status {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 20px;
-  padding: 10px 0;
+  padding: 12px 0;
   border-radius: 0;
   font-weight: 400;
   font-size: 13px;
-  color: var(--ink-faint);
+  color: var(--ink-soft);
   background: transparent;
   border: 0;
   border-bottom: 1px solid var(--glass-border);
@@ -354,31 +437,35 @@ textarea {
   width: 6px;
   height: 6px;
   flex: none;
-  border-radius: 0;
+  border-radius: 50%;
   border: 0;
   background: var(--accent);
-  animation: none;
+  animation: pulse 1.4s var(--ease-soft) infinite;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
 }
 
-/* 进度：2px 线，无光效 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* прогресс: 2px, без блеска */
 .progress {
   margin-top: 10px;
   height: 2px;
-  border-radius: 0;
+  border-radius: 999px;
   background: var(--glass-border);
   overflow: hidden;
 }
 
 .progress__bar {
   height: 100%;
-  border-radius: 0;
+  border-radius: 999px;
   background: var(--accent);
-  transition: width 0.2s var(--ease-liquid);
+  transition: width 0.3s var(--ease-liquid);
   position: relative;
 }
 
@@ -391,7 +478,7 @@ textarea {
   to { transform: translateX(100%); }
 }
 
-/* ── 按钮：平面，1px 位移作为按压反馈（微交互的因果，不是表演） ────── */
+/* ── кнопки: contrast-color + 1px press feedback ─────────────────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -406,14 +493,14 @@ textarea {
   gap: 8px;
   min-height: 44px;
   padding: 10px 20px;
-  border-radius: 0;
+  border-radius: 8px;
   font-weight: 500;
   font-size: 14px;
   letter-spacing: -0.005em;
-  transition: background 0.12s var(--ease-liquid),
-    color 0.12s var(--ease-liquid),
-    border-color 0.12s var(--ease-liquid),
-    transform 0.08s var(--ease-liquid);
+  transition: background 0.15s var(--ease-liquid),
+    color 0.15s var(--ease-liquid),
+    border-color 0.15s var(--ease-liquid),
+    transform 0.1s var(--ease-liquid);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -424,14 +511,23 @@ textarea {
 
 .btn--primary {
   color: var(--bg);
-  background: var(--ink);
+  background: var(--accent);
   box-shadow: none;
   border: 0;
 }
 
+/* экспериментально: contrast-color гарантирует читаемость на акценте */
+@supports (color: contrast-color(white)) {
+  .btn--primary {
+    color: contrast-color(var(--accent));
+  }
+  .btn--primary:hover {
+    color: contrast-color(var(--accent-2));
+  }
+}
+
 .btn--primary:hover {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--accent-2);
 }
 
 .btn--primary:active {
@@ -454,7 +550,7 @@ textarea {
 }
 
 .btn:disabled {
-  opacity: 0.3;
+  opacity: 0.35;
   cursor: default;
   transform: none !important;
   box-shadow: none;
@@ -466,7 +562,16 @@ textarea {
   border-color: var(--ok);
 }
 
-/* ── 结果 ───────────────────────────────────────────────────────────── */
+/* ── результат: изоляция через @scope ───────────────────────────────── */
+@scope (.glass) to (.actions) {
+  .result__title {
+    letter-spacing: -0.02em;
+  }
+  .result__text {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
 .result {
   margin-top: 20px;
 }
@@ -487,8 +592,8 @@ textarea {
 }
 
 .pill {
-  padding: 2px 7px;
-  border-radius: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -499,7 +604,7 @@ textarea {
 
 .pill--mid {
   color: var(--warn);
-  background: var(--accent-soft);
+  background: rgba(184, 166, 122, 0.1);
 }
 
 .pill__meta {
@@ -524,14 +629,14 @@ textarea {
   line-height: 1.65;
   font-size: 15px;
   outline: none;
-  transition: border-color 0.15s var(--ease-liquid);
+  transition: border-color 0.18s var(--ease-liquid);
 }
 
 .result__text:focus {
   border-color: var(--accent);
 }
 
-/* ── 错误 ───────────────────────────────────────────────────────────── */
+/* ── ошибка ─────────────────────────────────────────────────────────── */
 .error {
   margin-top: 20px;
   padding: 12px 0;
@@ -546,9 +651,9 @@ textarea {
   letter-spacing: 0.01em;
 }
 
-/* ── 页脚 ───────────────────────────────────────────────────────────── */
+/* ── подвал ─────────────────────────────────────────────────────────── */
 .footer {
-  margin-top: 56px;
+  margin-top: 48px;
   padding-top: 16px;
   border-top: 1px solid var(--glass-border);
   display: flex;
@@ -575,7 +680,7 @@ textarea {
   height: 12px;
 }
 
-/* ── 可访问性 ───────────────────────────────────────────────────────── */
+/* ── доступность и адаптив ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -619,5 +724,9 @@ textarea {
 
   .hero__title {
     letter-spacing: -0.04em;
+  }
+
+  .brand {
+    padding: 10px 0;
   }
 }
