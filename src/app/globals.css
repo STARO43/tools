@@ -148,11 +148,11 @@ textarea {
   width: var(--tap);
   height: var(--tap);
   flex: none;
-  border-radius: 8px;
-  background: #1a1a1a; /* Чёрная подложка для лого */
+  border-radius: calc(var(--tap) * 0.28);
+  background: linear-gradient(145deg, #005bff 0%, #3a7bff 100%);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.10),
-    0 4px 12px -4px rgba(0, 0, 0, 0.15);
+    0 2px 4px rgba(0, 91, 255, 0.18),
+    0 8px 20px -6px rgba(0, 91, 255, 0.28);
   display: grid;
   place-items: center;
   color: #ffffff;
