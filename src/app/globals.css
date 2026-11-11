@@ -1,61 +1,32 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barbour — Heritage Workshop</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-/* ── переменные ─────────────────────────────────────────────────────── */
 :root {
-  /* палитра Barbour: тёмный дуб, воск, латунь, тартан */
-  --bg: #1a1712;
-  --bg-2: #211d16;
-  --bg-3: #2a251c;
+  /* краски — обсидиан, слоновая кость, шампань-золото */
+  --bg: #0e0f12;
+  --ink: #f2efe9;
+  --ink-soft: #b6b3ac;
+  --ink-faint: #74716b;
+  --glass: rgba(255, 255, 255, 0.035);
+  --glass-strong: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 24px 60px -28px rgba(0, 0, 0, 0.7);
+  --accent: #c9a86a;
+  --accent-2: #e2c98f;
+  --accent-ink: #e2c98f;
+  --accent-soft: rgba(201, 168, 106, 0.12);
+  --ok: #8ba888;
+  --ok-soft: rgba(139, 168, 136, 0.12);
+  --warn: #d4a24e;
+  --bad: #c96b6b;
+  --bad-soft: rgba(201, 107, 107, 0.1);
 
-  --ink: #efe6d2;
-  --ink-soft: #bdb29a;
-  --ink-faint: #7d7463;
+  /* форма */
+  --r-card: 20px;
+  --r-zone: 16px;
+  --r-chip: 999px;
 
-  --surface: rgba(239, 230, 210, 0.035);
-  --surface-hi: rgba(239, 230, 210, 0.065);
-
-  --line: rgba(239, 230, 210, 0.09);
-  --line-hi: rgba(239, 230, 210, 0.16);
-
-  --brass: #c9a44c;
-  --brass-hi: #e0c073;
-  --brass-deep: #8f7430;
-  --brass-soft: rgba(201, 164, 76, 0.12);
-
-  --olive: #6b7347;
-  --olive-soft: rgba(107, 115, 71, 0.14);
-  --terracotta: #b06b45;
-  --tartan: #2f3e58;
-  --tartan-soft: rgba(47, 62, 88, 0.16);
-
-  --accent: var(--brass);
-  --accent-2: var(--brass-hi);
-  --accent-ink: var(--brass-hi);
-
-  --ok: var(--olive);
-  --ok-soft: var(--olive-soft);
-  --warn: var(--terracotta);
-  --bad: #a94a3d;
-  --bad-soft: rgba(169, 74, 61, 0.12);
-
-  --r-card: 6px;
-  --r-zone: 4px;
-  --r-chip: 3px;
-  --r-btn: 4px;
-
-  --ease-wax: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-
-  --font-serif: "EB Garamond", Georgia, serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  /* движение */
+  --ease-liquid: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ── база ───────────────────────────────────────────────────────────── */
@@ -75,18 +46,12 @@ body {
   color: var(--ink);
   background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(201, 164, 76, 0.1), transparent 62%),
-    repeating-linear-gradient(
-      135deg,
-      transparent 0 3px,
-      rgba(239, 230, 210, 0.012) 3px 4px
-    ),
-    radial-gradient(ellipse 60% 45% at 100% 100%, rgba(47, 62, 88, 0.12), transparent 65%);
-  font-family: var(--font-serif);
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201, 168, 106, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(139, 168, 136, 0.05), transparent 60%);
+  font-family: var(--font-manrope), "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
   font-size: 17px;
-  line-height: 1.62;
-  letter-spacing: 0.002em;
-  font-feature-settings: "liga" 1, "kern" 1, "onum" 1, "pnum" 1;
+  line-height: 1.6;
+  letter-spacing: -0.011em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -113,11 +78,11 @@ textarea {
 }
 
 ::selection {
-  background: rgba(201, 164, 76, 0.28);
+  background: rgba(201, 168, 106, 0.3);
   color: var(--ink);
 }
 
-/* ── живой фон ──────────────────────────────────────────────────────── */
+/* ── живой фон: плавающие пятна ─────────────────────────────────────── */
 .blobs {
   position: fixed;
   inset: 0;
@@ -130,7 +95,7 @@ textarea {
   position: absolute;
   border-radius: 50%;
   filter: blur(140px);
-  opacity: 0.28;
+  opacity: 0.22;
   will-change: transform;
 }
 
@@ -139,8 +104,8 @@ textarea {
   height: 55vmax;
   left: -18vmax;
   top: -18vmax;
-  background: radial-gradient(circle at 40% 40%, rgba(201, 164, 76, 0.5), transparent 65%);
-  animation: drift-a 44s var(--ease-wax) infinite alternate;
+  background: radial-gradient(circle at 40% 40%, rgba(201, 168, 106, 0.45), transparent 65%);
+  animation: drift-a 42s ease-in-out infinite alternate;
 }
 
 .blob--aqua {
@@ -148,8 +113,8 @@ textarea {
   height: 48vmax;
   right: -16vmax;
   top: 20vh;
-  background: radial-gradient(circle at 55% 45%, rgba(107, 115, 71, 0.4), transparent 65%);
-  animation: drift-b 50s var(--ease-wax) infinite alternate;
+  background: radial-gradient(circle at 55% 45%, rgba(139, 168, 136, 0.35), transparent 65%);
+  animation: drift-b 48s ease-in-out infinite alternate;
 }
 
 .blob--peach {
@@ -157,8 +122,8 @@ textarea {
   height: 44vmax;
   left: 22vw;
   bottom: -20vmax;
-  background: radial-gradient(circle at 50% 55%, rgba(176, 107, 69, 0.35), transparent 65%);
-  animation: drift-c 42s var(--ease-wax) infinite alternate;
+  background: radial-gradient(circle at 50% 55%, rgba(212, 162, 78, 0.3), transparent 65%);
+  animation: drift-c 40s ease-in-out infinite alternate;
 }
 
 .blob--sky {
@@ -166,170 +131,150 @@ textarea {
   height: 38vmax;
   right: 14vw;
   bottom: -10vmax;
-  background: radial-gradient(circle at 45% 45%, rgba(47, 62, 88, 0.4), transparent 65%);
-  animation: drift-a 54s var(--ease-wax) infinite alternate-reverse;
+  background: radial-gradient(circle at 45% 45%, rgba(180, 190, 210, 0.25), transparent 65%);
+  animation: drift-a 52s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes drift-a {
-  from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(4vmax, 3vmax) scale(1.1); }
-}
-@keyframes drift-b {
-  from { transform: translate(0, 0) scale(1.04); }
-  to { transform: translate(-3vmax, 4vmax) scale(0.96); }
-}
-@keyframes drift-c {
-  from { transform: translate(0, 0) scale(0.97); }
-  to { transform: translate(5vmax, -3vmax) scale(1.08); }
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(4vmax, 3vmax) scale(1.1);
+  }
 }
 
-/* ── каркас ─────────────────────────────────────────────────────────── */
+@keyframes drift-b {
+  from {
+    transform: translate(0, 0) scale(1.04) rotate(0deg);
+  }
+  to {
+    transform: translate(-3vmax, 4vmax) scale(0.96) rotate(10deg);
+  }
+}
+
+@keyframes drift-c {
+  from {
+    transform: translate(0, 0) scale(0.97);
+  }
+  to {
+    transform: translate(5vmax, -3vmax) scale(1.08);
+  }
+}
+
+/* ── каркас страницы ────────────────────────────────────────────────── */
 .shell {
   max-width: 760px;
   margin: 0 auto;
-  padding: clamp(28px, 5vw, 64px) clamp(20px, 4vw, 32px) 80px;
-  position: relative;
+  padding: clamp(20px, 4vw, 44px) clamp(16px, 4vw, 28px) 60px;
 }
 
 /* шапка */
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--line);
-  position: relative;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.brand::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -4px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--line-hi), transparent);
-}
-
+/* ЛОГОТИП — НЕ ТРОНУТ, подхватывает новые --accent / --accent-2 */
 .brand__mark {
   width: 46px;
   height: 46px;
   flex: none;
-  border-radius: 3px;
-  background:
-    radial-gradient(circle at 35% 30%, #2a251c, #1a1712 75%);
-  border: 1px solid var(--brass-deep);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
-    0 4px 14px -6px rgba(201, 164, 76, 0.35);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 10px 24px -8px rgba(201, 168, 106, 0.45);
   display: grid;
   place-items: center;
-  color: var(--brass-hi);
+  color: #1a1408;
 }
 
 .brand__mark svg {
-  width: 32px;
-  height: 32px;
-  display: block;
+  width: 24px;
+  height: 24px;
 }
 
 .brand__name {
   font-size: 24px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink);
-  font-family: var(--font-serif);
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .brand__name em {
   font-style: normal;
-  font-weight: 400;
-  color: var(--brass-hi);
-  letter-spacing: 0.18em;
-  font-size: 0.82em;
-  margin-left: 4px;
+  background: linear-gradient(120deg, var(--accent-2), var(--accent) 60%, #9a7f4a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .hero {
-  margin-bottom: 42px;
-  position: relative;
-}
-
-.hero::before {
-  content: "Est. · Heritage · Waxed Cotton";
-  display: block;
-  font-size: 12px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--brass);
-  opacity: 0.8;
-  margin-bottom: 18px;
-  font-weight: 500;
-  font-family: var(--font-sans);
+  margin-bottom: 26px;
 }
 
 .hero__title {
-  font-size: clamp(34px, 5.6vw, 56px);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: -0.012em;
-  color: var(--ink);
-  max-width: 16ch;
+  font-size: clamp(30px, 5.4vw, 44px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
 }
 
 .hero__title em {
-  font-style: italic;
-  font-weight: 500;
-  color: var(--brass-hi);
+  font-style: normal;
+  background: linear-gradient(120deg, var(--accent-2), var(--accent) 60%, #9a7f4a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .hero__subtitle {
-  margin-top: 20px;
+  margin-top: 10px;
   max-width: 34em;
-  font-size: clamp(16px, 2.2vw, 19px);
+  font-size: clamp(16px, 2.4vw, 19px);
   color: var(--ink-soft);
-  font-weight: 400;
-  line-height: 1.6;
 }
 
-/* ── карточка ───────────────────────────────────────────────────────── */
+/* ── стеклянная карточка ────────────────────────────────────────────── */
 .glass {
-  background: linear-gradient(180deg, var(--surface-hi), var(--surface));
-  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--glass-strong), var(--glass));
+  border: 1px solid var(--glass-border);
   border-radius: var(--r-card);
   box-shadow:
-    inset 0 1px 0 rgba(239, 230, 210, 0.05),
-    0 1px 2px rgba(0, 0, 0, 0.35),
-    0 26px 60px -30px rgba(0, 0, 0, 0.75);
-  -webkit-backdrop-filter: blur(18px) saturate(1.15);
-  backdrop-filter: blur(18px) saturate(1.15);
-  padding: clamp(22px, 3.8vw, 36px);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    var(--glass-shadow);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  backdrop-filter: blur(24px) saturate(1.2);
+  padding: clamp(18px, 3.4vw, 30px);
   position: relative;
-  animation: rise 0.8s var(--ease-out) both;
+  animation: rise 0.8s var(--ease-soft) both;
 }
 
 .glass::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 28px;
-  right: 28px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--brass), transparent);
-  opacity: 0.55;
+  left: 32px;
+  right: 32px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.6;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .glass + .glass {
-  margin-top: 20px;
-  animation-delay: 0.1s;
+  margin-top: 18px;
+  animation-delay: 0.12s;
 }
 
 /* ── зона загрузки ──────────────────────────────────────────────────── */
@@ -339,81 +284,65 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: clamp(32px, 5.5vw, 52px) 24px;
+  gap: 12px;
+  padding: clamp(28px, 5vw, 44px) 20px;
   border-radius: var(--r-zone);
-  border: 1.5px dashed rgba(201, 164, 76, 0.28);
+  border: 1.5px dashed rgba(201, 168, 106, 0.3);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(201, 164, 76, 0.07), transparent 70%),
-    repeating-linear-gradient(
-      135deg,
-      transparent 0 6px,
-      rgba(239, 230, 210, 0.015) 6px 7px
-    ),
-    var(--surface);
+    radial-gradient(ellipse at 50% 0%, rgba(201, 168, 106, 0.06), transparent 70%),
+    var(--glass);
   overflow: hidden;
   transition:
-    border-color 0.5s var(--ease-wax),
-    background 0.5s var(--ease-wax),
-    transform 0.5s var(--ease-wax),
-    box-shadow 0.5s var(--ease-wax);
+    border-color 0.5s var(--ease-liquid),
+    background 0.5s var(--ease-liquid),
+    transform 0.5s var(--ease-liquid),
+    box-shadow 0.5s var(--ease-soft);
 }
 
 .zone:hover,
 .zone--over {
-  border-color: rgba(201, 164, 76, 0.65);
+  border-color: rgba(201, 168, 106, 0.7);
   border-style: solid;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(201, 164, 76, 0.14), transparent 70%),
-    repeating-linear-gradient(
-      135deg,
-      transparent 0 6px,
-      rgba(239, 230, 210, 0.02) 6px 7px
-    ),
-    var(--surface-hi);
+    radial-gradient(ellipse at 50% 0%, rgba(201, 168, 106, 0.12), transparent 70%),
+    var(--glass-strong);
   transform: translateY(-2px);
-  box-shadow: 0 20px 48px -24px rgba(201, 164, 76, 0.35);
+  box-shadow: 0 20px 48px -24px rgba(201, 168, 106, 0.35);
 }
 
 .zone__icon {
   width: 60px;
   height: 60px;
-  border-radius: 50%;
+  border-radius: 18px;
   display: grid;
   place-items: center;
-  color: var(--brass-hi);
-  background:
-    radial-gradient(circle at 35% 30%, rgba(201, 164, 76, 0.2), rgba(201, 164, 76, 0.05) 75%);
-  border: 1px solid rgba(201, 164, 76, 0.25);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 0 0 4px rgba(201, 164, 76, 0.04);
-  transition: transform 0.6s var(--ease-wax), box-shadow 0.6s var(--ease-wax);
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, rgba(201, 168, 106, 0.16), rgba(201, 168, 106, 0.06));
+  border: 1px solid rgba(201, 168, 106, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.6s var(--ease-liquid), box-shadow 0.6s var(--ease-liquid);
 }
 
 .zone:hover .zone__icon {
   transform: translateY(-3px) scale(1.04);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 12px 28px -12px rgba(201, 164, 76, 0.4),
-    0 0 0 4px rgba(201, 164, 76, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 28px -12px rgba(201, 168, 106, 0.4);
 }
 
 .zone__icon svg {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
 }
 
 .zone__title {
   font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .zone__hint {
-  font-size: 15px;
-  font-style: italic;
+  font-size: 15.5px;
   color: var(--ink-faint);
 }
 
@@ -421,25 +350,24 @@ textarea {
   font: inherit;
   font-size: 13px;
   font-weight: 600;
-  font-family: var(--font-sans);
   padding: 3px 9px;
-  border-radius: 3px;
-  color: var(--brass-hi);
-  background: rgba(201, 164, 76, 0.12);
-  border: 1px solid rgba(201, 164, 76, 0.22);
+  border-radius: 6px;
+  color: var(--accent-ink);
+  background: rgba(201, 168, 106, 0.12);
+  border: 1px solid rgba(201, 168, 106, 0.2);
 }
 
-/* превью */
+/* превью изображения */
 .preview {
   position: relative;
-  margin-top: 20px;
-  border-radius: 4px;
+  margin-top: 18px;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-border);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.35),
-    0 16px 40px -20px rgba(0, 0, 0, 0.65);
-  background: var(--bg-2);
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 16px 40px -20px rgba(0, 0, 0, 0.6);
+  background: #16181d;
 }
 
 .preview img {
@@ -454,9 +382,9 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(26, 23, 18, 0.62);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: rgba(14, 15, 18, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 /* ── переключатель языков ───────────────────────────────────────────── */
@@ -465,54 +393,44 @@ textarea {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  margin-top: 24px;
+  margin-top: 18px;
 }
 
 .langs__label {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--ink-faint);
-  margin-right: 8px;
-  font-family: var(--font-sans);
+  margin-right: 6px;
 }
 
 .chip {
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: var(--r-chip);
   font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.04em;
+  font-size: 15px;
   color: var(--ink-soft);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  font-family: var(--font-sans);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
   transition:
-    color 0.35s var(--ease-wax),
-    border-color 0.35s var(--ease-wax),
-    background 0.35s var(--ease-wax),
-    transform 0.35s var(--ease-wax);
+    color 0.35s var(--ease-liquid),
+    border-color 0.35s var(--ease-liquid),
+    background 0.35s var(--ease-liquid),
+    transform 0.35s var(--ease-liquid);
 }
 
 .chip:hover {
   color: var(--ink);
-  border-color: var(--line-hi);
-  background: var(--surface-hi);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: var(--glass-strong);
   transform: translateY(-1px);
 }
 
 .chip--on {
-  color: #1a1712;
-  background: linear-gradient(135deg, var(--brass-hi), var(--brass));
+  color: #1a1408;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
   border-color: transparent;
-  box-shadow: 0 8px 20px -8px rgba(201, 164, 76, 0.5);
+  box-shadow: 0 8px 20px -8px rgba(201, 168, 106, 0.5);
   font-weight: 600;
-}
-
-.chip--on:hover {
-  color: #1a1712;
-  transform: translateY(-1px);
 }
 
 .chip__dot {
@@ -521,14 +439,9 @@ textarea {
   height: 6px;
   margin-left: 8px;
   border-radius: 50%;
-  background: var(--olive);
-  box-shadow: 0 0 8px rgba(107, 115, 71, 0.6);
+  background: var(--ok);
+  box-shadow: 0 0 8px rgba(139, 168, 136, 0.6);
   vertical-align: 1px;
-}
-
-.chip--on .chip__dot {
-  background: #1a1712;
-  box-shadow: none;
 }
 
 /* ── статусы и прогресс ─────────────────────────────────────────────── */
@@ -536,14 +449,14 @@ textarea {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 22px;
+  margin-top: 18px;
   padding: 15px 20px;
-  border-radius: 4px;
-  font-weight: 400;
+  border-radius: 14px;
+  font-weight: 500;
   font-size: 15.5px;
   color: var(--ink-soft);
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
 }
 
 .status__spinner {
@@ -551,29 +464,31 @@ textarea {
   height: 18px;
   flex: none;
   border-radius: 50%;
-  border: 2px solid rgba(201, 164, 76, 0.18);
-  border-top-color: var(--brass);
+  border: 2px solid rgba(201, 168, 106, 0.18);
+  border-top-color: var(--accent);
   animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .progress {
   margin-top: 14px;
   height: 6px;
   border-radius: 999px;
-  background: rgba(239, 230, 210, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   overflow: hidden;
 }
 
 .progress__bar {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--brass-deep), var(--brass), var(--brass-hi));
-  box-shadow: 0 0 12px rgba(201, 164, 76, 0.45);
-  transition: width 0.5s var(--ease-wax);
+  background: linear-gradient(90deg, #9a7f4a, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px rgba(201, 168, 106, 0.5);
+  transition: width 0.5s var(--ease-liquid);
   position: relative;
 }
 
@@ -581,13 +496,18 @@ textarea {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  animation: sheen 2.4s var(--ease-wax) infinite;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: sheen 2.2s linear infinite;
 }
 
 @keyframes sheen {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 /* ── кнопки ─────────────────────────────────────────────────────────── */
@@ -595,7 +515,7 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 18px;
 }
 
 .btn {
@@ -605,57 +525,56 @@ textarea {
   gap: 9px;
   min-height: 50px;
   padding: 13px 26px;
-  border-radius: var(--r-btn);
-  font-weight: 500;
+  border-radius: 12px;
+  font-weight: 600;
   font-size: 16px;
-  letter-spacing: 0.02em;
-  font-family: var(--font-serif);
+  letter-spacing: -0.005em;
   transition:
-    transform 0.35s var(--ease-wax),
-    box-shadow 0.35s var(--ease-wax),
-    background 0.35s var(--ease-wax),
+    transform 0.35s var(--ease-liquid),
+    box-shadow 0.35s var(--ease-liquid),
+    background 0.35s var(--ease-liquid),
     opacity 0.25s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .btn svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
 }
 
 .btn--primary {
-  color: #1a1712;
-  background: linear-gradient(135deg, var(--brass-hi) 0%, var(--brass) 55%, var(--brass-deep) 100%);
+  color: #1a1408;
+  background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent) 50%, #9a7f4a 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
     inset 0 -1px 0 rgba(0, 0, 0, 0.15),
-    0 10px 26px -10px rgba(201, 164, 76, 0.55);
+    0 10px 26px -10px rgba(201, 168, 106, 0.55);
 }
 
 .btn--primary:hover {
   transform: translateY(-2px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
     inset 0 -1px 0 rgba(0, 0, 0, 0.15),
-    0 16px 32px -10px rgba(201, 164, 76, 0.65);
+    0 16px 32px -10px rgba(201, 168, 106, 0.65);
 }
 
 .btn--primary:active {
   transform: translateY(0);
   box-shadow:
     inset 0 1px 2px rgba(0, 0, 0, 0.2),
-    0 4px 12px -6px rgba(201, 164, 76, 0.4);
+    0 4px 12px -6px rgba(201, 168, 106, 0.4);
 }
 
 .btn--ghost {
   color: var(--ink);
-  background: var(--surface);
-  border: 1px solid var(--line-hi);
+  background: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .btn--ghost:hover {
-  background: var(--surface-hi);
-  border-color: rgba(239, 230, 210, 0.22);
+  background: var(--glass-strong);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 12px 28px -16px rgba(0, 0, 0, 0.7);
 }
@@ -664,60 +583,56 @@ textarea {
   opacity: 0.4;
   cursor: not-allowed;
   transform: none !important;
-  box-shadow: none !important;
+  box-shadow: none;
 }
 
 .btn--done {
-  color: #12150d;
-  background: linear-gradient(135deg, #8a9464, var(--olive));
+  color: #0f1a12;
+  background: linear-gradient(135deg, #a8c4a4, var(--ok));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 10px 26px -10px rgba(107, 115, 71, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 26px -10px rgba(139, 168, 136, 0.5);
 }
 
 /* ── результат ──────────────────────────────────────────────────────── */
 .result {
-  margin-top: 28px;
+  margin-top: 22px;
 }
 
 .result__head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 16px;
-  margin-bottom: 14px;
+  gap: 10px 14px;
+  margin-bottom: 12px;
 }
 
 .result__title {
-  font-size: 21px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
 .pill {
   padding: 5px 14px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--olive);
-  background: var(--olive-soft);
-  border: 1px solid rgba(107, 115, 71, 0.25);
-  font-family: var(--font-sans);
+  border-radius: var(--r-chip);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ok);
+  background: var(--ok-soft);
+  border: 1px solid rgba(139, 168, 136, 0.22);
 }
 
 .pill--mid {
-  color: var(--terracotta);
-  background: rgba(176, 107, 69, 0.1);
-  border-color: rgba(176, 107, 69, 0.25);
+  color: var(--warn);
+  background: rgba(212, 162, 78, 0.1);
+  border-color: rgba(212, 162, 78, 0.22);
 }
 
 .pill__meta {
   margin-left: auto;
   font-size: 14px;
-  font-style: italic;
   font-weight: 400;
   color: var(--ink-faint);
 }
@@ -727,33 +642,32 @@ textarea {
   min-height: 150px;
   resize: vertical;
   padding: 18px 22px;
-  border-radius: 4px;
-  border: 1px solid var(--line);
-  background: var(--bg-2);
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: #16181d;
   color: var(--ink);
   line-height: 1.65;
   font-size: 16.5px;
-  font-family: inherit;
   outline: none;
-  transition: border-color 0.35s var(--ease-wax), box-shadow 0.35s var(--ease-wax),
-    background 0.35s var(--ease-wax);
+  transition: border-color 0.35s var(--ease-liquid), box-shadow 0.35s var(--ease-liquid),
+    background 0.35s var(--ease-liquid);
 }
 
 .result__text:focus {
-  border-color: rgba(201, 164, 76, 0.5);
-  background: var(--bg-3);
-  box-shadow: 0 0 0 4px rgba(201, 164, 76, 0.1);
+  border-color: rgba(201, 168, 106, 0.5);
+  background: #1a1c21;
+  box-shadow: 0 0 0 4px rgba(201, 168, 106, 0.1);
 }
 
 /* ── ошибка ─────────────────────────────────────────────────────────── */
 .error {
-  margin-top: 20px;
+  margin-top: 18px;
   padding: 16px 22px;
-  border-radius: 4px;
+  border-radius: 14px;
   color: var(--bad);
   background: var(--bad-soft);
-  border: 1px solid rgba(169, 74, 61, 0.28);
-  font-weight: 400;
+  border: 1px solid rgba(201, 107, 107, 0.24);
+  font-weight: 500;
   font-size: 15.5px;
 }
 
@@ -766,24 +680,21 @@ textarea {
   justify-content: center;
   gap: 10px 20px;
   text-align: center;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--ink-faint);
-  font-family: var(--font-sans);
 }
 
 .footer__lock {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: var(--olive);
+  color: var(--ok);
 }
 
 .footer__lock svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
 }
 
 /* ── доступность и адаптив ──────────────────────────────────────────── */
@@ -803,11 +714,11 @@ textarea {
   }
 
   .zone {
-    padding: 28px 16px;
+    padding: 26px 14px;
   }
 
   .chip {
-    padding: 9px 16px;
+    padding: 10px 16px;
   }
 
   .btn {
@@ -818,151 +729,8 @@ textarea {
     margin-left: 0;
   }
 
-  .brand__name {
-    font-size: 20px;
-    letter-spacing: 0.1em;
-  }
-
-  .hero::before {
-    letter-spacing: 0.22em;
-    font-size: 10.5px;
+  .glass::before {
+    left: 20px;
+    right: 20px;
   }
 }
-</style>
-</head>
-<body>
-
-<!-- фоновые пятна -->
-<div class="blobs" aria-hidden="true">
-  <div class="blob blob--lavender"></div>
-  <div class="blob blob--aqua"></div>
-  <div class="blob blob--peach"></div>
-  <div class="blob blob--sky"></div>
-</div>
-
-<main class="shell">
-
-  <!-- шапка: лого-глаз + имя -->
-  <header class="brand">
-    <div class="brand__mark" aria-hidden="true">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- внешнее веко -->
-        <path d="M4 24C10.5 14.5 17 10.5 24 10.5C31 10.5 37.5 14.5 44 24"
-              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        <path d="M4 24C10.5 33.5 17 37.5 24 37.5C31 37.5 37.5 33.5 44 24"
-              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        <!-- внутреннее веко -->
-        <path d="M9 24C14 17.5 19 14.8 24 14.8C29 14.8 34 17.5 39 24"
-              stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.55"/>
-        <path d="M9 24C14 30.5 19 33.2 24 33.2C29 33.2 34 30.5 39 24"
-              stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.55"/>
-        <!-- радужка -->
-        <circle cx="24" cy="24" r="7.2" stroke="currentColor" stroke-width="1.4"/>
-        <!-- зрачок -->
-        <circle cx="24" cy="24" r="2.6" fill="currentColor"/>
-        <!-- блик -->
-        <circle cx="22.2" cy="22.2" r="0.9" fill="#fff" opacity="0.85"/>
-        <!-- ресничные насечки -->
-        <g stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.7">
-          <path d="M24 6.5V9"/>
-          <path d="M15.5 8.6L16.6 11"/>
-          <path d="M32.5 8.6L31.4 11"/>
-          <path d="M24 41.5V39"/>
-          <path d="M15.5 39.4L16.6 37"/>
-          <path d="M32.5 39.4L31.4 37"/>
-        </g>
-        <!-- угловые засечки -->
-        <path d="M3 21.4V24M3 24H5.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M45 21.4V24M45 24H42.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="brand__name">Barbour<em>Heritage</em></div>
-  </header>
-
-  <!-- заголовок -->
-  <section class="hero">
-    <h1 class="hero__title">Вощёная <em>ткань</em>, проверенная временем</h1>
-    <p class="hero__subtitle">
-      Загрузите фотографию изделия — мы опишем материал, крой и состояние
-      в духе каталога мастерской.
-    </p>
-  </section>
-
-  <!-- карточка загрузки -->
-  <section class="glass">
-    <button class="zone" type="button" aria-label="Загрузить изображение">
-      <span class="zone__icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 16V4"/>
-          <path d="M6 10l6-6 6 6"/>
-          <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
-        </svg>
-      </span>
-      <span class="zone__title">Перетащите изображение сюда</span>
-      <span class="zone__hint">или нажмите <kbd>Ctrl</kbd> + <kbd>V</kbd>, чтобы вставить</span>
-    </button>
-
-    <!-- переключатель языков -->
-    <div class="langs">
-      <span class="langs__label">Язык описания</span>
-      <button class="chip chip--on" type="button">
-        Русский<span class="chip__dot"></span>
-      </button>
-      <button class="chip" type="button">English</button>
-      <button class="chip" type="button">Français</button>
-    </div>
-
-    <!-- статус + прогресс (пример) -->
-    <div class="status">
-      <span class="status__spinner" aria-hidden="true"></span>
-      Обрабатываем изображение…
-    </div>
-    <div class="progress" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
-      <div class="progress__bar" style="width:45%"></div>
-    </div>
-
-    <!-- кнопки -->
-    <div class="actions">
-      <button class="btn btn--primary" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14"/>
-          <path d="M13 6l6 6-6 6"/>
-        </svg>
-        Сгенерировать описание
-      </button>
-      <button class="btn btn--ghost" type="button">Очистить</button>
-    </div>
-  </section>
-
-  <!-- результат -->
-  <section class="glass">
-    <div class="result">
-      <div class="result__head">
-        <h2 class="result__title">Описание изделия</h2>
-        <span class="pill">Готово</span>
-        <span class="pill__meta">18 слов · 2.4 с</span>
-      </div>
-      <textarea class="result__text" spellcheck="false"
-        placeholder="Здесь появится описание…">Куртка из вощёного хлопка оливкового оттенка. Плотная ткань с характерным блеском, двойной кант по вороту, латунные пуговицы. Крой свободный, длина до середины бедра. Состояние — бережное, патина времени на манжетах.</textarea>
-    </div>
-  </section>
-
-  <!-- подвал -->
-  <footer class="footer">
-    <span>© Barbour Heritage Workshop</span>
-    <span class="footer__lock">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-           stroke-linecap="round" stroke-linejoin="round">
-        <rect x="4" y="11" width="16" height="9" rx="1.5"/>
-        <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
-      </svg>
-      Изображения не покидают браузер
-    </span>
-  </footer>
-
-</main>
-
-</body>
-</html>
