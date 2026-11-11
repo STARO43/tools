@@ -115,38 +115,34 @@ const IconScanner = () => (
       </clipPath>
     </defs>
 
-    <g fill="#6a7280">
-      <rect x="2" y="2"  width="28" height="1" />
-      <rect x="2" y="4"  width="26" height="1" />
-      <rect x="2" y="6"  width="28" height="1" />
-      <rect x="2" y="8"  width="20" height="1" />
-      <rect x="4" y="12" width="26" height="1" />
-      <rect x="4" y="14" width="28" height="1" />
-      <rect x="4" y="16" width="24" height="1" />
-      <rect x="4" y="18" width="28" height="1" />
-      <rect x="4" y="20" width="18" height="1" />
-      <rect x="2" y="24" width="28" height="1" />
-      <rect x="2" y="26" width="22" height="1" />
-      <rect x="2" y="28" width="28" height="1" />
-      <rect x="2" y="30" width="26" height="1" />
+    {/* бумажный фон — занимает всю плитку */}
+    <rect width="32" height="32" fill="#f2ede4" />
+
+    {/* текст до лазера — приглушённый серый */}
+    <g fill="#8a8f99">
+      <rect x="3" y="3"  width="26" height="1.6" />
+      <rect x="3" y="6"  width="22" height="1.6" />
+      <rect x="3" y="9"  width="26" height="1.6" />
+      <rect x="5" y="13" width="24" height="1.6" />
+      <rect x="5" y="16" width="26" height="1.6" />
+      <rect x="5" y="19" width="18" height="1.6" />
+      <rect x="3" y="23" width="26" height="1.6" />
+      <rect x="3" y="26" width="22" height="1.6" />
     </g>
 
-    <g fill="#b0b8c4" clipPath="url(#scanner-after-clip)">
-      <rect x="2" y="2"  width="28" height="1" />
-      <rect x="2" y="4"  width="26" height="1" />
-      <rect x="2" y="6"  width="28" height="1" />
-      <rect x="2" y="8"  width="20" height="1" />
-      <rect x="4" y="12" width="26" height="1" />
-      <rect x="4" y="14" width="28" height="1" />
-      <rect x="4" y="16" width="24" height="1" />
-      <rect x="4" y="18" width="28" height="1" />
-      <rect x="4" y="20" width="18" height="1" />
-      <rect x="2" y="24" width="28" height="1" />
-      <rect x="2" y="26" width="22" height="1" />
-      <rect x="2" y="28" width="28" height="1" />
-      <rect x="2" y="30" width="26" height="1" />
+    {/* текст после лазера — темнее и четче */}
+    <g fill="#2a2e36" clipPath="url(#scanner-after-clip)">
+      <rect x="3" y="3"  width="26" height="1.6" />
+      <rect x="3" y="6"  width="22" height="1.6" />
+      <rect x="3" y="9"  width="26" height="1.6" />
+      <rect x="5" y="13" width="24" height="1.6" />
+      <rect x="5" y="16" width="26" height="1.6" />
+      <rect x="5" y="19" width="18" height="1.6" />
+      <rect x="3" y="23" width="26" height="1.6" />
+      <rect x="3" y="26" width="22" height="1.6" />
     </g>
 
+    {/* лазер */}
     <g>
       <animateTransform
         attributeName="transform"
@@ -156,9 +152,8 @@ const IconScanner = () => (
         dur="4s"
         repeatCount="indefinite"
       />
-      <rect x="0" y="0" width="32" height="1" fill="#5ce1ff" opacity="0.20" />
-      <rect x="0" y="1" width="32" height="1" fill="#5ce1ff" opacity="0.08" />
-      <rect x="0" y="0" width="32" height="1" fill="#ff3636" />
+      <rect x="0" y="0" width="32" height="1.6" fill="#5ce1ff" opacity="0.35" />
+      <rect x="0" y="0" width="32" height="0.8" fill="#ff3636" />
     </g>
   </svg>
 );
