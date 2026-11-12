@@ -671,7 +671,7 @@ export default function Page() {
         {result && (
           <section className="glass result">
             <div className="result__head">
-              <h2 className="result__title">ГОТОВО!</h2>
+              <h2 className="result__title"></h2>
               {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
             </div>
             <textarea
