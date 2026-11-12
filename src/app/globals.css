@@ -95,6 +95,7 @@ textarea { font: inherit; color: inherit; }
 /* Жесткий каркас */
 .shell {
   width: 100%;
+ min-height: 100dvh
   max-inline-size: 80ch;
   margin: 0 auto;
   padding: var(--sp-4);
