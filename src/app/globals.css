@@ -278,15 +278,15 @@ textarea { font: inherit; color: inherit; }
   height: 100%;
   background: var(--ink);
   transform-origin: 100% 100%;
-  animation: cube-fold 9s infinite linear both;
+  animation: cube-fold 4.8s infinite ease-in-out both;
 }
 
 .cube i:nth-child(2) { transform: scale(1.1) rotateZ(90deg); }
-.cube i:nth-child(2)::before { animation-delay: 1s; }
+.cube i:nth-child(2)::before { animation-delay: 0.6s; }
 .cube i:nth-child(3) { transform: scale(1.1) rotateZ(180deg); }
-.cube i:nth-child(3)::before { animation-delay: 2s; }
+.cube i:nth-child(3)::before { animation-delay: 1.2s; }
 .cube i:nth-child(4) { transform: scale(1.1) rotateZ(270deg); }
-.cube i:nth-child(4)::before { animation-delay: 3s; }
+.cube i:nth-child(4)::before { animation-delay: 1.8s; }
 
 @keyframes cube-fold {
  0%, 12%   { transform: perspective(320px) rotateX(-180deg); opacity: 0; }
