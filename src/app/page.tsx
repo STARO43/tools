@@ -164,8 +164,8 @@ const IconScanner = () => (
         dur="4s"
         repeatCount="indefinite"
       />
-      <rect x="0" y="0" width="32" height="1.6" fill="#121214" opacity="0.4" />
-      <rect x="0" y="0" width="32" height="1" fill="#121214" />
+<rect x="0" y="0" width="32" height="1.6" fill="#ff2b2b" opacity="0.35" />
+<rect x="0" y="0" width="32" height="1" fill="#ff2b2b" />
     </g>
   </svg>
 );
