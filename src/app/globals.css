@@ -179,7 +179,7 @@ textarea { font: inherit; color: inherit; }
   position: relative;
   width: 100%;
   flex: 1 1 auto;
-  min-height: clamp(180px, 30dvh, 400px);
+min-height: clamp(180px, 20vw, 300px);
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
