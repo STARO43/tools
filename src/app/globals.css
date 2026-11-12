@@ -121,16 +121,17 @@ textarea {
   color: #ffffff;
 }
 
-/* ── КАРКАС ─────────────────────────────────────────────────── */
+/* ── КАРКАС (Жестко по высоте экрана) ───────────────────────── */
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  min-height: 100dvh; 
+  height: 100dvh; /* Занимает ровно высоту экрана */
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
+  overflow: hidden; /* Страница не скроллится, все внутри */
 }
 
 /* Шапка (Лого не менял) */
@@ -139,6 +140,7 @@ textarea {
   align-items: center;
   gap: var(--sp-2);
   margin-bottom: var(--sp-1);
+  flex-shrink: 0;
   animation: fade-up 0.8s var(--ease-soft) both;
 }
 
@@ -177,6 +179,7 @@ textarea {
 /* Заголовок */
 .hero {
   margin-bottom: var(--sp-2);
+  flex-shrink: 0;
   animation: fade-up 0.9s var(--ease-soft) 0.1s both;
 }
 
@@ -199,9 +202,10 @@ textarea {
   text-wrap: pretty;
 }
 
-/* ── КАРТОЧКИ (премиум-стекло) ──────────────────────────────── */
+/* ── КАРТОЧКИ (резиновые) ───────────────────────────────────── */
 .glass {
-  flex: 1 1 auto;
+  flex: 1 1 auto; /* Растягивается на всё свободное место */
+  min-height: 0; /* Разрешает сжатие внутри flex */
   background: var(--surface);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
@@ -210,6 +214,9 @@ textarea {
   display: flex;
   flex-direction: column;
   animation: appear-from-fog 1s var(--ease-soft) both;
+  /* Если контента (превью или текста) станет слишком много — скролл будет внутри карточки */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .glass + .glass {
@@ -220,13 +227,11 @@ textarea {
 .dz {
   position: relative;
   width: 100%;
-  flex: 1 1 auto;
-  min-height: clamp(180px, 30dvh, 400px); 
-  max-height: 60dvh;
+  flex: 1 1 auto; /* Растягивается на всё свободное место в карточке */
+  min-height: 120px; /* Минимальный размер, чтобы не схлопнулась */
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
-  }
   cursor: pointer;
   overflow: hidden;
   isolation: isolate;
@@ -237,6 +242,7 @@ textarea {
     box-shadow 0.4s var(--ease-ozon),
     background 0.4s var(--ease-ozon);
 }
+
 .dz:active { transform: scale(.99); }
 
 .dz__icon {
@@ -336,7 +342,7 @@ textarea {
 .preview img {
   display: block;
   width: 100%;
-  max-height: 40dvh; 
+  max-height: 40dvh; /* Ограничиваем превью, чтобы не выдавливало */
   object-fit: contain;
 }
 
@@ -357,6 +363,7 @@ textarea {
   align-items: center;
   gap: var(--sp-1) var(--sp-2);
   margin-top: var(--sp-3);
+  flex-shrink: 0;
 }
 
 .langs__label {
@@ -428,6 +435,7 @@ textarea {
   color: var(--ink-soft);
   background: rgba(0,0,0,0.02);
   border: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .progress {
@@ -436,6 +444,7 @@ textarea {
   border-radius: 999px;
   background: rgba(0,0,0,0.06);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .progress__bar {
@@ -451,6 +460,7 @@ textarea {
   flex-wrap: wrap;
   gap: var(--sp-2);
   margin-top: var(--sp-3);
+  flex-shrink: 0;
 }
 
 .btn {
@@ -520,7 +530,8 @@ textarea {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 0 0 auto;
+  flex: 1 1 auto; /* Занимает свободное место под дропзоной */
+  min-height: 0;
   animation: appear-from-fog 0.8s var(--ease-soft) both;
 }
 
@@ -530,6 +541,7 @@ textarea {
   align-items: center;
   gap: var(--sp-1) var(--sp-2);
   margin-bottom: var(--sp-2);
+  flex-shrink: 0;
 }
 
 .result__title {
@@ -565,11 +577,11 @@ textarea {
 
 .result__text {
   width: 100%;
-  min-height: auto;
+  flex: 1 1 auto; /* Растягивает текстовое поле */
+  min-height: 120px;
   max-height: none;
-  field-sizing: content;
-  resize: vertical;
-  overflow-y: hidden;
+  resize: none; /* Отключаем ручное изменение размера, чтобы не ломать сетку */
+  overflow-y: auto; /* Внутренний скролл, если текста много */
   padding: var(--sp-3);
   border-radius: var(--r-input);
   border: 1px solid var(--border);
@@ -602,7 +614,7 @@ textarea {
 
 /* ── ПОДВАЛ ─────────────────────────────────────────────────── */
 .footer {
-  margin-top: auto;
+  margin-top: auto; /* Прижимается к низу */
   padding-top: var(--sp-3);
   display: flex;
   flex-wrap: wrap;
@@ -614,6 +626,7 @@ textarea {
   font-weight: 400;
   color: var(--ink-faint);
   letter-spacing: -0.005em;
+  flex-shrink: 0;
   animation: fade-up 1s var(--ease-soft) 0.2s both;
 }
 
@@ -633,8 +646,8 @@ textarea {
 @keyframes appear-from-fog {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.98);
-    filter: blur(12px);
+    transform: translateY(10px) scale(0.99);
+    filter: blur(8px);
   }
   100% {
     opacity: 1;
@@ -683,7 +696,6 @@ textarea {
 @media (max-width: 720px) {
   .shell { padding: var(--sp-3); gap: var(--sp-2); }
   .glass { padding: var(--sp-3); border-radius: var(--r-zone); }
-  .dz { min-height: 180px; }
   .btn { width: 100%; min-height: var(--tap); }
   .pill__meta { margin-left: 0; }
   .hero__title { font-size: clamp(28px, 9vw, 40px); }
@@ -691,7 +703,6 @@ textarea {
 
 @media (max-height: 560px) and (orientation: landscape) {
   .hero { margin-bottom: var(--sp-1); }
-  .dz { min-height: 120px; }
   .glass { padding: var(--sp-2) var(--sp-3); }
 }
 
