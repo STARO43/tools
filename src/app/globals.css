@@ -1,25 +1,25 @@
 :root {
-  /* ── глубокий премиум-фон ───────────────────────────────────── */
-  --bg-deep: #121212;
-  --bg-surface: #1a1a1a;
-  --bg-surface-2: #222222;
-  
-  /* ── текст и линии ──────────────────────────────────────────── */
-  --ink: #ededed;
-  --ink-soft: #a1a1a1;
-  --ink-faint: #666666;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.18);
+  /* ── светлая палитра (бумага, графит) ───────────────────────── */
+  --bg: #f4f4f2;
+  --bg-2: #ececea;
+  --bg-3: #e2e2df;
+  --bg-4: #d5d5d2;
 
-  /* ── акценты ────────────────────────────────────────────────── */
+  --ink: #1a1a1a;
+  --ink-soft: #555555;
+  --ink-faint: #888888;
+
   --ok: #2e7d32;
-  --ok-soft: rgba(46, 125, 50, 0.15);
+  --ok-soft: rgba(46, 125, 50, 0.10);
   --bad: #c62828;
-  --bad-soft: rgba(198, 40, 40, 0.15);
+  --bad-soft: rgba(198, 40, 40, 0.08);
 
-  --surface: #1e1e1e;
-  
-  /* ── типографика (fluid-движок оставляем) ───────────────────── */
+  --surface: #ffffff;
+  --surface-2: #f4f4f2;
+  --border: #cccccc;
+  --border-strong: #999999;
+
+  /* ── fluid-движок ───────────────────────────────────────────── */
   --fs-xs:   clamp(12px, 0.82vw + 0.48vh, 14px);
   --fs-sm:   clamp(13px, 0.95vw + 0.55vh, 16px);
   --fs-md:   clamp(15px, 1.05vw + 0.65vh, 18px);
@@ -33,22 +33,23 @@
   --sp-4: clamp(24px, 2.4vw, 40px);
   --sp-5: clamp(32px, 3.5vw, 56px);
 
-  /* ── скругления ─────────────────────────────────────────────── */
-  --r-card:  clamp(12px, 1.2vw, 16px);
-  --r-zone:  clamp(10px, 1vw, 14px);
-  --r-input: 8px;
-  --r-chip:  6px;
+  /* ── строгие скругления (резиновые) ─────────────────────────── */
+  --r-card:  clamp(8px, 1vw, 12px);
+  --r-zone:  clamp(6px, 0.8vw, 10px);
+  --r-input: clamp(6px, 0.5vw, 8px);
+  --r-chip:  clamp(4px, 0.4vw, 6px);
 
   --tap: clamp(44px, 5.5vh, 56px);
 
-  /* ── плавные пружинистые анимации ───────────────────────────── */
+  /* ── премиум-пружины ────────────────────────────────────────── */
   --ease-ozon: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* ── глубокие тени ──────────────────────────────────────────── */
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.3);
-  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  /* ── многослойные тени для света ────────────────────────────── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px -8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 32px -16px rgba(0, 0, 0, 0.08);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 *, *::before, *::after {
@@ -59,12 +60,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* ── БАЗА ───────────────────────────────────────────────────── */
 body {
   margin: 0;
   min-height: 100dvh;
   color: var(--ink);
-  background: var(--bg-deep);
+  background: var(--bg);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: var(--fs-md);
   line-height: 1.5;
@@ -72,16 +72,19 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   overflow-x: hidden;
 }
 
-/* Глубокий фон: виньетка + едва заметная сетка */
+/* ── фон: глубокая бумага ───────────────────────────────────── */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
-  background: radial-gradient(circle at 50% 0%, #1c1c1e 0%, #0a0a0a 100%);
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255, 255, 255, 0.5) 0%, transparent 55%),
+    linear-gradient(180deg, #f6f6f4 0%, #ececea 100%);
 }
 
 body::after {
@@ -91,11 +94,11 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 10%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 10%, transparent 100%);
+    linear-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.028) 1px, transparent 1px);
+  background-size: clamp(48px, 6vw, 96px) clamp(48px, 6vw, 96px);
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 20%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 20%, black 20%, transparent 80%);
 }
 
 h1, h2, p { margin: 0; }
@@ -115,7 +118,7 @@ textarea {
 
 ::selection {
   background: var(--ink);
-  color: var(--bg-deep);
+  color: #ffffff;
 }
 
 /* ── КАРКАС ─────────────────────────────────────────────────── */
@@ -130,7 +133,7 @@ textarea {
   gap: var(--sp-3);
 }
 
-/* Шапка (логотип не тронут) */
+/* Шапка (Лого не менял) */
 .brand {
   display: flex;
   align-items: center;
@@ -144,7 +147,6 @@ textarea {
   height: var(--tap);
   flex: none;
   border-radius: calc(var(--tap) * 0.28);
-  /* Логотип оставлен как был: с его синим свечением */
   box-shadow:
     0 2px 4px rgba(0, 91, 255, 0.18),
     0 8px 20px -6px rgba(0, 91, 255, 0.28);
@@ -197,17 +199,16 @@ textarea {
   text-wrap: pretty;
 }
 
-/* ── КАРТОЧКИ (Появление из тумана) ─────────────────────────── */
+/* ── КАРТОЧКИ (премиум-стекло) ──────────────────────────────── */
 .glass {
   flex: 1 1 auto;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-md), var(--shadow-inset);
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
-  /* Премиальная анимация: из размытия в фокус */
   animation: appear-from-fog 1s var(--ease-soft) both;
 }
 
@@ -215,7 +216,7 @@ textarea {
   animation-delay: 0.15s;
 }
 
-/* ── ДРОПЗОНА (Премиальный слот) ────────────────────────────── */
+/* ── ДРОПЗОНА (резиновая) ───────────────────────────────────── */
 .dz {
   position: relative;
   width: 100%;
@@ -235,7 +236,6 @@ textarea {
 }
 .dz:active { transform: scale(.99); }
 
-/* Иконка */
 .dz__icon {
   position: relative;
   display: grid;
@@ -245,27 +245,25 @@ textarea {
 }
 .dz__icon svg { width: 40%; height: 40%; display: block; }
 
-/* Парящая дропзона */
+/* Парящая */
 .dz--float {
-  background: var(--bg-surface-2);
-  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  border: 1px solid var(--border);
   box-shadow: 
-    inset 0 1px 0 rgba(255,255,255,0.05),
-    0 10px 30px -10px rgba(0,0,0,0.5);
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    0 4px 12px -4px rgba(0,0,0,0.05);
 }
 
-/* Тонкая подсветка внутри */
 .dz--float::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.04), transparent 60%);
+  background: radial-gradient(circle at 50% 0%, rgba(0,0,0,0.02), transparent 60%);
   opacity: 1;
   transition: opacity 0.5s;
 }
 
-/* Внутренняя обводка при ховере */
 .dz--float::after {
   content: "";
   position: absolute;
@@ -278,14 +276,14 @@ textarea {
 
 .dz--float:hover {
   transform: translateY(-2px);
-  background: #282828;
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #fbfbfa;
+  border-color: var(--border-strong);
   box-shadow: 
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    0 20px 40px -15px rgba(0,0,0,0.6);
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 12px 28px -10px rgba(0,0,0,0.1);
 }
 .dz--float:hover::after {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.03);
 }
 
 .dz--float:hover .dz__icon {
@@ -296,24 +294,25 @@ textarea {
   width: clamp(60px, 5.5vw + 3vh, 84px);
   height: clamp(60px, 5.5vw + 3vh, 84px);
   border-radius: 50%;
-  color: var(--ink);
-  background: #333333;
+  color: var(--ink-soft);
+  background: var(--bg-2);
   box-shadow:
-    0 2px 4px rgba(0,0,0,.2),
-    inset 0 1px 0 rgba(255,255,255,0.1);
+    0 2px 4px rgba(0,0,0,.04),
+    inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 .dz--float:hover .dz__icon {
-  background: #444444;
+  background: var(--bg-3);
+  color: var(--ink);
 }
 
 /* Drag-over */
 .dz--float.is-over {
   border-color: var(--ok) !important;
-  background: #1f2a20 !important;
+  background: #f2faf2 !important;
   box-shadow:
-    0 0 0 4px rgba(46,125,50,.15),
-    0 16px 32px -18px rgba(46,125,50,.3) !important;
+    0 0 0 4px rgba(46,125,50,.1),
+    0 16px 32px -18px rgba(46,125,50,.2) !important;
 }
 .dz--float.is-over .dz__icon {
   color: var(--ok);
@@ -327,8 +326,8 @@ textarea {
   border-radius: var(--r-zone);
   overflow: hidden;
   border: 1px solid var(--border);
-  background: var(--bg-deep);
-  box-shadow: var(--shadow-sm);
+  background: var(--bg-2);
+  box-shadow: var(--shadow-xs);
 }
 
 .preview img {
@@ -343,7 +342,7 @@ textarea {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(18, 18, 18, 0.65);
+  background: rgba(250, 250, 250, 0.72);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
   backdrop-filter: blur(16px) saturate(1.2);
 }
@@ -384,21 +383,21 @@ textarea {
 
 .chip:hover {
   color: var(--ink);
-  background: rgba(255,255,255,0.03);
+  background: rgba(0,0,0,0.03);
   border-color: var(--border-strong);
 }
 
 .chip:active { transform: scale(0.96); }
 
 .chip--on {
-  color: var(--bg-deep);
+  color: #ffffff;
   background: var(--ink);
   border-color: var(--ink);
 }
 
 .chip--on:hover {
-  background: #ffffff;
-  border-color: #ffffff;
+  background: #000000;
+  border-color: #000000;
 }
 
 .chip__dot {
@@ -424,7 +423,7 @@ textarea {
   font-size: var(--fs-sm);
   letter-spacing: -0.01em;
   color: var(--ink-soft);
-  background: rgba(255,255,255,0.02);
+  background: rgba(0,0,0,0.02);
   border: 1px solid var(--border);
 }
 
@@ -432,7 +431,7 @@ textarea {
   margin-top: var(--sp-2);
   height: 3px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.06);
   overflow: hidden;
 }
 
@@ -474,14 +473,14 @@ textarea {
 .btn svg { width: clamp(16px, 1.3vw, 19px); height: clamp(16px, 1.3vw, 19px); }
 
 .btn--primary {
-  color: var(--bg-deep);
+  color: #ffffff;
   background: var(--ink);
   border: 1px solid var(--ink);
 }
 
 .btn--primary:hover {
-  background: #ffffff;
-  border-color: #ffffff;
+  background: #000000;
+  border-color: #000000;
 }
 
 .btn--ghost {
@@ -492,7 +491,7 @@ textarea {
 
 .btn--ghost:hover {
   color: var(--ink);
-  background: rgba(255,255,255,0.04);
+  background: rgba(0,0,0,0.03);
   border-color: var(--ink);
 }
 
@@ -544,13 +543,13 @@ textarea {
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--bg-deep);
+  color: #ffffff;
   background: var(--ink);
 }
 
 .pill--mid {
   color: var(--ink);
-  background: rgba(255,255,255,0.1);
+  background: var(--bg-4);
 }
 
 .pill__meta {
@@ -571,7 +570,7 @@ textarea {
   padding: var(--sp-3);
   border-radius: var(--r-input);
   border: 1px solid var(--border);
-  background: var(--bg-surface);
+  background: var(--surface);
   font-size: 0.875em;
   line-height: 1.6;
   letter-spacing: -0.01em;
@@ -582,7 +581,7 @@ textarea {
 
 .result__text:focus {
   border-color: var(--border-strong);
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
 }
 
 /* ── ОШИБКА ─────────────────────────────────────────────────── */
@@ -590,8 +589,8 @@ textarea {
   margin-top: var(--sp-2);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-input);
-  color: #ff6b6b;
-  background: rgba(198, 40, 40, 0.1);
+  color: var(--bad);
+  background: var(--bad-soft);
   border: 1px solid rgba(198, 40, 40, 0.2);
   font-weight: 500;
   font-size: var(--fs-sm);
@@ -628,7 +627,6 @@ textarea {
 }
 
 /* ── АНИМАЦИИ ───────────────────────────────────────────────── */
-/* Появление из тумана */
 @keyframes appear-from-fog {
   0% {
     opacity: 0;
@@ -642,13 +640,11 @@ textarea {
   }
 }
 
-/* Всплытие снизу */
 @keyframes fade-up {
   0% { opacity: 0; transform: translateY(12px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Анимация точек загрузки */
 .status__dots {
   display: inline-flex;
   align-items: center;
@@ -683,9 +679,24 @@ textarea {
 
 @media (max-width: 720px) {
   .shell { padding: var(--sp-3); gap: var(--sp-2); }
-  .glass { padding: var(--sp-3); }
+  .glass { padding: var(--sp-3); border-radius: var(--r-zone); }
   .dz { min-height: 180px; }
   .btn { width: 100%; min-height: var(--tap); }
   .pill__meta { margin-left: 0; }
   .hero__title { font-size: clamp(28px, 9vw, 40px); }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  .hero { margin-bottom: var(--sp-1); }
+  .dz { min-height: 120px; }
+  .glass { padding: var(--sp-2) var(--sp-3); }
+}
+
+@media (min-width: 1200px) {
+  .shell { padding: var(--sp-5) clamp(48px, 7vw, 120px); }
+  .glass { padding: var(--sp-5) clamp(40px, 4vw, 64px); }
+}
+
+@media (min-width: 1800px) {
+  .shell { max-width: 1600px; }
 }
