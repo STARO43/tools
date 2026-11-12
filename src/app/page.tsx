@@ -691,7 +691,7 @@ export default function Page() {
       <footer className="foot">
         <span className="foot__lock">
           <IconLock />
-          Локально на вашем устройстве
+          Оптическое распознавание символов локально на вашем устройстве
         </span>
         <span>Навайбкодил @vnvax</span>
       </footer>
