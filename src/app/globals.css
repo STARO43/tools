@@ -297,7 +297,7 @@ textarea { font: inherit; color: inherit; }
 .chip:hover { color: var(--ink); background: rgba(0, 0, 0, 0.03); border-color: var(--border-strong); }
 .chip:active { transform: scale(0.96); }
 .chip--on { color: #ffffff; background: var(--ink); border-color: var(--ink); }
-.chip--on:hover { background: #000000; border-color: #000000; }
+.chip--on:hover { background: #000000; border-color: #000000; color: #ffffff; }
 .chip__dot { display: inline-block; width: 5px; height: 5px; margin-left: 7px; border-radius: 50%; background: currentColor; opacity: 0.8; vertical-align: 1px; }
 
 .status {
@@ -339,14 +339,14 @@ textarea { font: inherit; color: inherit; }
 .btn svg { width: clamp(16px, 1.3vw, 19px); height: clamp(16px, 1.3vw, 19px); }
 
 .btn--primary { color: #ffffff; background: var(--ink); border: 1px solid var(--ink); }
-.btn--primary:hover { background: #000000; border-color: #000000; }
+.btn--primary:hover { color: #ffffff; background: #000000; border-color: #000000; }
 
 .btn--ghost { color: var(--ink-soft); background: transparent; border: 1px solid var(--border-strong); }
 .btn--ghost:hover { color: var(--ink); background: rgba(0, 0, 0, 0.03); border-color: var(--ink); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 
 .btn--done { color: #ffffff; background: var(--ok); border: 1px solid var(--ok); }
-.btn--done:hover { background: #1b5e20; border-color: #1b5e20; }
+.btn--done:hover { color: #ffffff; background: #1b5e20; border-color: #1b5e20; }
 
 .result { margin-top: var(--sp-3); display: flex; flex-direction: column; flex: 0 0 auto; animation: appear-from-fog 0.8s var(--ease-soft) both; }
 .result__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-2); margin-bottom: var(--sp-2); flex-shrink: 0; }
