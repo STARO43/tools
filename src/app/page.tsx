@@ -77,7 +77,7 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 /* Документ вместо «горки» — скруглённая рамка + строки */
 const IconImage = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M17.5 10.5 11 17a3.2 3.2 0 0 1-4.5-4.5l7.5-7.5a2.2 2.2 0 0 1 3.1 3.1l-7.4 7.4a1.1 1.1 0 0 1-1.6-1.6l6.4-6.4" />
+   <path d="M18.5 9.5 10.8 17.2a3.4 3.4 0 0 1-4.8-4.8l8.2-8.2a2.4 2.4 0 0 1 3.4 3.4l-8.1 8.1a1.2 1.2 0 0 1-1.7-1.7l7-7" />
   </svg>
 );
 
