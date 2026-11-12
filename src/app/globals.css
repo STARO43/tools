@@ -336,7 +336,7 @@ textarea {
 .preview img {
   display: block;
   width: 100%;
-  max-height: 45dvh;
+  max-height: 40dvh; 
   object-fit: contain;
 }
 
