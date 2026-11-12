@@ -196,8 +196,9 @@ textarea { font: inherit; color: inherit; }
 .dz {
   position: relative;
   width: 100%;
-  flex: 1 1 auto; /* Растягивается на свободное место внутри .glass */
-  min-height: 120px; /* Минимум, чтобы не схлопнулась в ноль */
+  flex: 1 1 auto;
+  min-height: clamp(180px, 30dvh, 400px); 
+  max-height: 60dvh; /* <-- ВОТ ЭТО вернет адекватный размер */
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
