@@ -1,4 +1,5 @@
 :root {
+  /* ── светлая палитра (бумага, графит) ───────────────────────── */
   --bg: #f4f4f2;
   --bg-2: #ececea;
   --bg-3: #e2e2df;
@@ -14,9 +15,11 @@
   --bad-soft: rgba(198, 40, 40, 0.08);
 
   --surface: #ffffff;
+  --surface-2: #f4f4f2;
   --border: #cccccc;
   --border-strong: #999999;
 
+  /* ── fluid-движок ───────────────────────────────────────────── */
   --fs-xs:   clamp(12px, 0.82vw + 0.48vh, 14px);
   --fs-sm:   clamp(13px, 0.95vw + 0.55vh, 16px);
   --fs-md:   clamp(15px, 1.05vw + 0.65vh, 18px);
@@ -30,6 +33,7 @@
   --sp-4: clamp(24px, 2.4vw, 40px);
   --sp-5: clamp(32px, 3.5vw, 56px);
 
+  /* ── строгие скругления (резиновые) ─────────────────────────── */
   --r-card:  clamp(8px, 1vw, 12px);
   --r-zone:  clamp(6px, 0.8vw, 10px);
   --r-input: clamp(6px, 0.5vw, 8px);
@@ -37,9 +41,11 @@
 
   --tap: clamp(44px, 5.5vh, 56px);
 
+  /* ── премиум-пружины ────────────────────────────────────────── */
   --ease-ozon: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* ── многослойные тени для света ────────────────────────────── */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px -8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 32px -16px rgba(0, 0, 0, 0.08);
@@ -59,16 +65,18 @@ body {
   min-height: 100dvh;
   color: var(--ink);
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: var(--fs-md);
   line-height: 1.5;
   letter-spacing: -0.01em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   overflow-x: hidden;
 }
 
+/* ── фон: глубокая бумага ───────────────────────────────────── */
 body::before {
   content: "";
   position: fixed;
@@ -94,29 +102,43 @@ body::after {
 }
 
 h1, h2, p { margin: 0; }
-button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
-textarea { font: inherit; color: inherit; }
-::selection { background: var(--ink); color: #ffffff; }
 
-/* Убираем лишние отступы, чтобы всё влезло в экран */
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+/* ── КАРКАС (как в старом коде) ─────────────────────────────── */
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  height: 100dvh;
+  min-height: 100dvh; /* Возвращаем min-height, чтобы страница дышала */
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
-  overflow: hidden;
+  gap: var(--sp-3);
 }
 
+/* Шапка (Лого не менял) */
 .brand {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  margin-bottom: 0; /* Убрали лишний отступ */
-  flex-shrink: 0;
+  margin-bottom: var(--sp-1);
   animation: fade-up 0.8s var(--ease-soft) both;
 }
 
@@ -152,10 +174,10 @@ textarea { font: inherit; color: inherit; }
   color: var(--ink-soft);
 }
 
-/* Пустые заголовки больше не занимают место */
+/* Заголовок */
 .hero {
-  margin: 0;
-  flex-shrink: 0;
+  margin-bottom: var(--sp-2);
+  animation: fade-up 0.9s var(--ease-soft) 0.1s both;
 }
 
 .hero__title {
@@ -168,7 +190,7 @@ textarea { font: inherit; color: inherit; }
 }
 
 .hero__subtitle {
-  margin-top: var(--sp-1);
+  margin-top: var(--sp-2);
   max-width: 42em;
   font-size: var(--fs-md);
   color: var(--ink-soft);
@@ -177,10 +199,9 @@ textarea { font: inherit; color: inherit; }
   text-wrap: pretty;
 }
 
-/* Белая карточка: забирает всё свободное место и ничего не скроллит внутри */
+/* ── КАРТОЧКИ (как в старом коде) ───────────────────────────── */
 .glass {
   flex: 1 1 auto;
-  min-height: 0;
   background: var(--surface);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
@@ -189,18 +210,18 @@ textarea { font: inherit; color: inherit; }
   display: flex;
   flex-direction: column;
   animation: appear-from-fog 1s var(--ease-soft) both;
-  overflow: hidden; /* Жестко скрываем любой внутренний скролл */
 }
 
 .glass + .glass {
   animation-delay: 0.15s;
 }
 
-/* Дропзона: резиновая, без скроллов */
+/* ── ДРОПЗОНА (как в старом коде) ───────────────────────────── */
 .dz {
   position: relative;
   width: 100%;
   flex: 1 1 auto;
+  min-height: clamp(180px, 30dvh, 400px); /* Вот он, секрет адекватного размера */
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
@@ -215,33 +236,33 @@ textarea { font: inherit; color: inherit; }
     background 0.4s var(--ease-ozon);
 }
 
-.dz:active {
-  transform: scale(.99);
-}
+.dz:active { transform: scale(.99); }
 
+/* Иконка (как в старом коде) */
 .dz__icon {
   position: relative;
   display: grid;
   place-items: center;
   z-index: 3;
   transition: transform 0.6s var(--ease-soft);
-  width: clamp(60px, 4vw + 2vh, 96px);
-  height: clamp(60px, 4vw + 2vh, 96px);
-  flex: none; 
+  width: clamp(60px, 5.5vw + 3vh, 84px);
+  height: clamp(60px, 5.5vw + 3vh, 84px);
+  flex: none;
 }
 
-.dz__icon svg {
-  width: 40%;
-  height: 40%;
-  display: block;
+.dz__icon svg { 
+  width: 40%; 
+  height: 40%; 
+  display: block; 
 }
 
+/* Парящая */
 .dz--float {
   background: var(--surface);
   border: 1px solid var(--border);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 4px 12px -4px rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    0 4px 12px -4px rgba(0,0,0,0.05);
 }
 
 .dz--float::before {
@@ -249,7 +270,7 @@ textarea { font: inherit; color: inherit; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.02), transparent 60%);
+  background: radial-gradient(circle at 50% 0%, rgba(0,0,0,0.02), transparent 60%);
   opacity: 1;
   transition: opacity 0.5s;
 }
@@ -268,11 +289,10 @@ textarea { font: inherit; color: inherit; }
   transform: translateY(-2px);
   background: #fbfbfa;
   border-color: var(--border-strong);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 12px 28px -10px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 12px 28px -10px rgba(0,0,0,0.1);
 }
-
 .dz--float:hover::after {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.03);
 }
@@ -286,8 +306,8 @@ textarea { font: inherit; color: inherit; }
   color: var(--ink-soft);
   background: var(--bg-2);
   box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    0 2px 4px rgba(0,0,0,.04),
+    inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 .dz--float:hover .dz__icon {
@@ -295,19 +315,20 @@ textarea { font: inherit; color: inherit; }
   color: var(--ink);
 }
 
+/* Drag-over */
 .dz--float.is-over {
   border-color: var(--ok) !important;
   background: #f2faf2 !important;
   box-shadow:
-    0 0 0 4px rgba(46, 125, 50, 0.1),
-    0 16px 32px -18px rgba(46, 125, 50, 0.2) !important;
+    0 0 0 4px rgba(46,125,50,.1),
+    0 16px 32px -18px rgba(46,125,50,.2) !important;
 }
-
 .dz--float.is-over .dz__icon {
   color: var(--ok);
-  background: rgba(46, 125, 50, 0.1);
+  background: rgba(46,125,50,.1);
 }
 
+/* ── ПРЕВЬЮ ─────────────────────────────────────────────────── */
 .preview {
   position: relative;
   margin-top: var(--sp-2);
@@ -321,7 +342,7 @@ textarea { font: inherit; color: inherit; }
 .preview img {
   display: block;
   width: 100%;
-  max-height: 40dvh;
+  max-height: 45dvh; /* Как в старом коде */
   object-fit: contain;
 }
 
@@ -335,13 +356,13 @@ textarea { font: inherit; color: inherit; }
   backdrop-filter: blur(16px) saturate(1.2);
 }
 
+/* ── ЯЗЫКИ ──────────────────────────────────────────────────── */
 .langs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-1) var(--sp-2);
   margin-top: var(--sp-3);
-  flex-shrink: 0;
 }
 
 .langs__label {
@@ -371,13 +392,11 @@ textarea { font: inherit; color: inherit; }
 
 .chip:hover {
   color: var(--ink);
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0,0,0,0.03);
   border-color: var(--border-strong);
 }
 
-.chip:active {
-  transform: scale(0.96);
-}
+.chip:active { transform: scale(0.96); }
 
 .chip--on {
   color: #ffffff;
@@ -401,6 +420,7 @@ textarea { font: inherit; color: inherit; }
   vertical-align: 1px;
 }
 
+/* ── СТАТУС И ПРОГРЕСС ──────────────────────────────────────── */
 .status {
   display: flex;
   align-items: center;
@@ -412,18 +432,16 @@ textarea { font: inherit; color: inherit; }
   font-size: var(--fs-sm);
   letter-spacing: -0.01em;
   color: var(--ink-soft);
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(0,0,0,0.02);
   border: 1px solid var(--border);
-  flex-shrink: 0;
 }
 
 .progress {
   margin-top: var(--sp-2);
   height: 3px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(0,0,0,0.06);
   overflow: hidden;
-  flex-shrink: 0;
 }
 
 .progress__bar {
@@ -433,12 +451,12 @@ textarea { font: inherit; color: inherit; }
   transition: width 0.5s var(--ease-soft);
 }
 
+/* ── КНОПКИ ─────────────────────────────────────────────────── */
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
   margin-top: var(--sp-3);
-  flex-shrink: 0;
 }
 
 .btn {
@@ -460,14 +478,8 @@ textarea { font: inherit; color: inherit; }
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn:active {
-  transform: scale(0.97);
-}
-
-.btn svg {
-  width: clamp(16px, 1.3vw, 19px);
-  height: clamp(16px, 1.3vw, 19px);
-}
+.btn:active { transform: scale(0.97); }
+.btn svg { width: clamp(16px, 1.3vw, 19px); height: clamp(16px, 1.3vw, 19px); }
 
 .btn--primary {
   color: #ffffff;
@@ -488,7 +500,7 @@ textarea { font: inherit; color: inherit; }
 
 .btn--ghost:hover {
   color: var(--ink);
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0,0,0,0.03);
   border-color: var(--ink);
 }
 
@@ -509,11 +521,12 @@ textarea { font: inherit; color: inherit; }
   border-color: #1b5e20;
 }
 
+/* ── РЕЗУЛЬТАТ ──────────────────────────────────────────────── */
 .result {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 0 0 auto;
+  flex: 0 0 auto; 
   animation: appear-from-fog 0.8s var(--ease-soft) both;
 }
 
@@ -523,7 +536,6 @@ textarea { font: inherit; color: inherit; }
   align-items: center;
   gap: var(--sp-1) var(--sp-2);
   margin-bottom: var(--sp-2);
-  flex-shrink: 0;
 }
 
 .result__title {
@@ -578,9 +590,10 @@ textarea { font: inherit; color: inherit; }
 
 .result__text:focus {
   border-color: var(--border-strong);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
 }
 
+/* ── ОШИБКА ─────────────────────────────────────────────────── */
 .error {
   margin-top: var(--sp-2);
   padding: var(--sp-2) var(--sp-3);
@@ -593,9 +606,10 @@ textarea { font: inherit; color: inherit; }
   letter-spacing: -0.008em;
 }
 
-/* Футер прижат к низу */
+/* ── ПОДВАЛ ─────────────────────────────────────────────────── */
 .footer {
   margin-top: auto;
+  padding-top: var(--sp-3);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -606,7 +620,6 @@ textarea { font: inherit; color: inherit; }
   font-weight: 400;
   color: var(--ink-faint);
   letter-spacing: -0.005em;
-  flex-shrink: 0;
   animation: fade-up 1s var(--ease-soft) 0.2s both;
 }
 
@@ -622,6 +635,7 @@ textarea { font: inherit; color: inherit; }
   height: clamp(12px, 1vw, 15px);
 }
 
+/* ── АНИМАЦИИ ───────────────────────────────────────────────── */
 @keyframes appear-from-fog {
   0% {
     opacity: 0;
@@ -636,14 +650,8 @@ textarea { font: inherit; color: inherit; }
 }
 
 @keyframes fade-up {
-  0% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 .status__dots {
@@ -661,25 +669,15 @@ textarea { font: inherit; color: inherit; }
   animation: status-bounce 1.2s infinite ease-in-out both;
 }
 
-.status__dots i:nth-child(1) {
-  animation-delay: -0.32s;
-}
-
-.status__dots i:nth-child(2) {
-  animation-delay: -0.16s;
-}
+.status__dots i:nth-child(1) { animation-delay: -0.32s; }
+.status__dots i:nth-child(2) { animation-delay: -0.16s; }
 
 @keyframes status-bounce {
-  0%, 80%, 100% {
-    transform: scale(0.4);
-    opacity: 0.3;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0%, 80%, 100% { transform: scale(0.4); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
 }
 
+/* ── АДАПТИВ ────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -689,46 +687,24 @@ textarea { font: inherit; color: inherit; }
 }
 
 @media (max-width: 720px) {
-  .shell {
-    padding: var(--sp-3);
-    gap: var(--sp-2);
-  }
-  .glass {
-    padding: var(--sp-3);
-    border-radius: var(--r-zone);
-  }
-  .btn {
-    width: 100%;
-    min-height: var(--tap);
-  }
-  .pill__meta {
-    margin-left: 0;
-  }
-  .hero__title {
-    font-size: clamp(28px, 9vw, 40px);
-  }
+  .shell { padding: var(--sp-3); gap: var(--sp-2); }
+  .glass { padding: var(--sp-3); border-radius: var(--r-zone); }
+  .btn { width: 100%; min-height: var(--tap); }
+  .pill__meta { margin-left: 0; }
+  .hero__title { font-size: clamp(28px, 9vw, 40px); }
 }
 
 @media (max-height: 560px) and (orientation: landscape) {
-  .hero {
-    margin-bottom: 0;
-  }
-  .glass {
-    padding: var(--sp-2) var(--sp-3);
-  }
+  .hero { margin-bottom: var(--sp-1); }
+  .dz { min-height: 120px; }
+  .glass { padding: var(--sp-2) var(--sp-3); }
 }
 
 @media (min-width: 1200px) {
-  .shell {
-    padding: var(--sp-5) clamp(48px, 7vw, 120px);
-  }
-  .glass {
-    padding: var(--sp-5) clamp(40px, 4vw, 64px);
-  }
+  .shell { padding: var(--sp-5) clamp(48px, 7vw, 120px); }
+  .glass { padding: var(--sp-5) clamp(40px, 4vw, 64px); }
 }
 
 @media (min-width: 1800px) {
-  .shell {
-    max-width: 1600px;
-  }
+  .shell { max-width: 1600px; }
 }
