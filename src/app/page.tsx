@@ -61,27 +61,19 @@ interface LoadedImage {
 
 interface Result {
   confidence: number;
+  elapsedMs: number;
+  lang: ModelId;
 }
 
 type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
-/* ────────────────────────── иконки (инлайн, без библиотек) ────────────────────────── */
+/* ────────────────────────── иконки ────────────────────────── */
 
-const IconDocument = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-  >
-    <path d="M14 3H7a2.5 2.5 0 0 0-2.5 2.5v13A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V8.5z" />
-    <path d="M14 3v5.5h5.5" />
-    <path d="M8.5 12.5h7" />
-    <path d="M8.5 15.5h7" />
-    <path d="M8.5 18h4.5" />
+const IconImage = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="3" y="4" width="18" height="16" rx="3.5" />
+    <circle cx="9" cy="10" r="1.7" fill="currentColor" stroke="none" />
+    <path d="M3.5 17.5 9 12.4l4.2 3.8 3.1-2.7 4.2 3.6" />
   </svg>
 );
 
@@ -112,7 +104,8 @@ const IconLock = () => (
   </svg>
 );
 
-const IconScanner = () => (
+/* Пиксельный документ, который «проявляется» лазером */
+const IconDocument = () => (
   <svg
     width="100%"
     height="100%"
@@ -135,28 +128,33 @@ const IconScanner = () => (
       </clipPath>
     </defs>
 
+    {/* Слой 1: до лазера — светло-серый документ с загнутым углом */}
+    <g fill="none" stroke="#8a8f99" strokeWidth="1.5" strokeLinejoin="miter">
+      <path d="M7 3 H19 L25 9 V29 H7 Z" />
+    </g>
     <g fill="#8a8f99">
-      <rect x="0" y="3" width="32" height="1.8" />
-      <rect x="0" y="6.5" width="26" height="1.8" />
-      <rect x="0" y="10" width="32" height="1.8" />
-      <rect x="0" y="13.5" width="20" height="1.8" />
-      <rect x="0" y="17" width="32" height="1.8" />
-      <rect x="0" y="20.5" width="24" height="1.8" />
-      <rect x="0" y="24" width="32" height="1.8" />
-      <rect x="0" y="27.5" width="18" height="1.8" />
+      <rect x="10" y="11" width="12" height="1.5" />
+      <rect x="10" y="14.5" width="12" height="1.5" />
+      <rect x="10" y="18" width="9" height="1.5" />
+      <rect x="10" y="21.5" width="12" height="1.5" />
+      <rect x="10" y="25" width="6" height="1.5" />
     </g>
 
-    <g fill="#1a1d24" clipPath="url(#scanner-after-clip)">
-      <rect x="0" y="3" width="32" height="1.8" />
-      <rect x="0" y="6.5" width="26" height="1.8" />
-      <rect x="0" y="10" width="32" height="1.8" />
-      <rect x="0" y="13.5" width="20" height="1.8" />
-      <rect x="0" y="17" width="32" height="1.8" />
-      <rect x="0" y="20.5" width="24" height="1.8" />
-      <rect x="0" y="24" width="32" height="1.8" />
-      <rect x="0" y="27.5" width="18" height="1.8" />
+    {/* Слой 2: после лазера — тёмный, обрезан по clipPath */}
+    <g clipPath="url(#scanner-after-clip)">
+      <g fill="none" stroke="#1a1d24" strokeWidth="1.5" strokeLinejoin="miter">
+        <path d="M7 3 H19 L25 9 V29 H7 Z" />
+      </g>
+      <g fill="#1a1d24">
+        <rect x="10" y="11" width="12" height="1.5" />
+        <rect x="10" y="14.5" width="12" height="1.5" />
+        <rect x="10" y="18" width="9" height="1.5" />
+        <rect x="10" y="21.5" width="12" height="1.5" />
+        <rect x="10" y="25" width="6" height="1.5" />
+      </g>
     </g>
 
+    {/* Лазер */}
     <g>
       <animateTransform
         attributeName="transform"
@@ -200,7 +198,6 @@ export default function Page() {
   const pendingFileRef = useRef<{ file: File | Blob; name?: string } | null>(null);
   const handleFileRef = useRef<((f: File | Blob, n?: string) => Promise<void>) | null>(null);
 
-  /* ── worker ── */
   const getWorker = useCallback((): Worker => {
     if (!workerRef.current) {
       const w = new Worker(`${BASE}/ocr.worker.js`, { type: "module" });
@@ -223,7 +220,6 @@ export default function Page() {
     [getWorker],
   );
 
-  /* ── подготовка движка ── */
   const ensureEngine = useCallback(
     async (target: ModelId): Promise<boolean> => {
       setPhase("prep");
@@ -235,7 +231,7 @@ export default function Page() {
               ? "Настраиваю распознавание…"
               : `Загружаю языковой пакет «${MODEL_CATALOG[target].short}»…`,
           );
-          await loadModelFiles(MODEL_CATALOG[target], (p) => setProgress(p));
+          const files = await loadModelFiles(MODEL_CATALOG[target], (p) => setProgress(p));
 
           setStatus("Запускаю движок…");
           const buffers = await freshBuffers(target);
@@ -268,7 +264,6 @@ export default function Page() {
     [workerCall],
   );
 
-  /* ── распознавание ── */
   const runOcr = useCallback(
     async (target: ModelId): Promise<string> => {
       const img = imageRef.current;
@@ -293,6 +288,7 @@ export default function Page() {
         if (resp.type === "error") throw new Error(resp.message);
         if (resp.type !== "result") throw new Error("Неожиданный ответ воркера");
 
+        const elapsedMs = performance.now() - started;
         if (!resp.text.trim()) {
           setPhase("error");
           setResult(null);
@@ -301,7 +297,7 @@ export default function Page() {
           return "";
         }
 
-        setResult({ confidence: resp.confidence });
+        setResult({ confidence: resp.confidence, elapsedMs, lang: target });
         setPhase("done");
         setStatus("");
         return resp.text;
@@ -327,7 +323,6 @@ export default function Page() {
     [ensureEngine, workerCall],
   );
 
-  /* ── загрузка файла ── */
   const handleFile = useCallback(
     async (file: File | Blob, name?: string) => {
       const fname = name ?? (file as File).name ?? "файл";
@@ -340,6 +335,8 @@ export default function Page() {
         return;
       }
 
+      setIsPdfFile(isPdf);
+
       if (file.size > 30 * 1024 * 1024) {
         setError(`Файл слишком большой (${fmtBytes(file.size)}). До 30 МБ, пожалуйста.`);
         return;
@@ -351,8 +348,6 @@ export default function Page() {
         window.setTimeout(() => setBusyFlash(false), 1600);
         return;
       }
-
-      setIsPdfFile(isPdf);
 
       try {
         const buffer = await file.arrayBuffer();
@@ -416,7 +411,16 @@ export default function Page() {
 
   handleFileRef.current = handleFile;
 
-  /* ── события: выбор файла, вставка, перетаскивание ── */
+  const loadSample = useCallback(async () => {
+    try {
+      const resp = await fetch(`${BASE}/sample/report-ru.png`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      await handleFile(await resp.blob(), "report-ru.png");
+    } catch {
+      setError("Пример временно недоступен.");
+    }
+  }, [handleFile]);
+
   const pickFile = useCallback(() => fileInputRef.current?.click(), []);
 
   const onInputChange = useCallback(
@@ -443,6 +447,7 @@ export default function Page() {
         }
       }
     };
+    const preventNav = (e: DragEvent) => e.preventDefault();
     const onDrop = (e: DragEvent) => {
       e.preventDefault();
       setDragOver(false);
@@ -468,7 +473,6 @@ export default function Page() {
     };
   }, [handleFile]);
 
-  /* отметки о закэшированных пакетах при старте */
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -483,14 +487,6 @@ export default function Page() {
     };
   }, []);
 
-  /* очистка blob-url при размонтировании */
-  useEffect(() => {
-    return () => {
-      if (imageRef.current) URL.revokeObjectURL(imageRef.current.url);
-    };
-  }, []);
-
-  /* смена языка */
   const switchLang = useCallback(
     (id: ModelId) => {
       if (id === lang || busyRef.current) return;
@@ -504,7 +500,6 @@ export default function Page() {
     [lang, runOcr],
   );
 
-  /* ── копирование и скачивание ── */
   const copyResult = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(text);
@@ -531,169 +526,151 @@ export default function Page() {
     URL.revokeObjectURL(a.href);
   }, [text, image]);
 
-  /* ── вычисляемое ── */
   const busy = phase === "prep" || phase === "ocr";
-  const percent =
-    progress && progress.total > 0
-      ? Math.min(100, Math.floor((progress.received / progress.total) * 100))
-      : null;
+  const percent = progress && progress.total > 0 ? Math.min(100, Math.floor((progress.received / progress.total) * 100)) : null;
   const pill = result ? qualityPill(result.confidence) : null;
 
   return (
-    <main className="shell">
-      <header className="brand">
-        <div className="brand__mark">
-          <IconScanner />
-        </div>
-        <div className="brand__name">
-          Сканер<em>иньо</em>
-        </div>
-      </header>
-
-      {/* ── шаг 1: картинка ── */}
-      <section className="glass">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*,.pdf"
-          onChange={onInputChange}
-          hidden
-          aria-hidden
-          tabIndex={-1}
-        />
-        <button
-          type="button"
-          className={`dz dz--float${dragOver ? " is-over" : ""}`}
-          onClick={pickFile}
-          aria-label="Выбрать файл"
-        >
-          <span className="dz__icon">
+    <>
+      <main className="shell">
+        <header className="brand">
+          <div className="brand__mark">
             <IconDocument />
-          </span>
-        </button>
-
-        {image && !isPdfFile && (
-          <figure className="preview">
-            <img src={image.url} alt={`Загружено: ${image.name}`} />
-            {busy && (
-              <div className="preview__scrim">
-                <span className="status" style={{ margin: 0 }}>
-                  <span className="status__dots">
-                    <i></i>
-                    <i></i>
-                    <i></i>
-                  </span>
-                  {status}
-                  {phase === "ocr" && ` ${fmtSec(elapsed)}`}
-                </span>
-              </div>
-            )}
-          </figure>
-        )}
-
-        {busy && (!image || isPdfFile) && (
-          <div className="status">
-            <span className="status__dots">
-              <i></i>
-              <i></i>
-              <i></i>
-            </span>
-            <span>
-              {status}
-              {percent !== null ? ` ${percent}%` : ""}
-              {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
-            </span>
           </div>
-        )}
-
-        {busy && percent !== null && (!image || isPdfFile) && (
-          <div
-            className="progress"
-            role="progressbar"
-            aria-valuenow={percent}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
-            <div className="progress__bar" style={{ width: `${percent}%` }} />
+          <div className="brand__name">
+            Сканер<em>иньо</em>
           </div>
-        )}
+        </header>
 
-        {busy && !image && percent !== null && (
-          <p className="zone__hint">
-            {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — тут первый
-            раз — долго
-          </p>
-        )}
-
-        {busyFlash && (
-          <p className="zone__hint">
-            Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
-          </p>
-        )}
-
-        <div className="langs">
-          {MODEL_ORDER.map((id) => (
-            <button
-              key={id}
-              type="button"
-              className={`chip${lang === id ? " chip--on" : ""}`}
-              onClick={() => switchLang(id)}
-              title={MODEL_CATALOG[id].hint}
-            >
-              {MODEL_CATALOG[id].short}
-              {cached.includes(id) && lang !== id && (
-                <span className="chip__dot" title="Уже загружен" />
-              )}
-            </button>
-          ))}
-        </div>
-
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
-        )}
-      </section>
-
-      {/* ── шаг 2: результат ── */}
-      {result && (
-        <section className="glass result">
-          <div className="result__head">
-            {pill && (
-              <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>
-            )}
-          </div>
-          <textarea
-            className="result__text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            spellCheck={false}
-            aria-label="Распознанный текст"
+        <section className="glass">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,.pdf"
+            onChange={onInputChange}
+            hidden
+            aria-hidden
+            tabIndex={-1}
           />
-          <div className="actions">
-            <button
-              type="button"
-              className={`btn btn--primary${copied ? " btn--done" : ""}`}
-              onClick={copyResult}
-            >
-              {copied ? <IconCheck /> : <IconCopy />}
-              {copied ? "ЕСТЬ!" : "КОПИРОВАТЬ"}
-            </button>
-            <button type="button" className="btn btn--ghost" onClick={downloadTxt}>
-              <IconDownload />
-              СКАЧАТЬ
-            </button>
-          </div>
-        </section>
-      )}
+          <button
+            type="button"
+            className={`zone${dragOver ? " zone--over" : ""}`}
+            onClick={pickFile}
+            aria-label="Выбрать файл"
+          >
+            <span className="zone__icon">
+              <IconImage />
+            </span>
+            {dragOver && <span className="zone__title">Поймаю!</span>}
+          </button>
 
-      <footer className="footer">
-        <span className="footer__lock">
-          <IconLock />
-          Локально на вашем устройстве
-        </span>
-        <span>Навайбкодил @vnvax</span>
-      </footer>
-    </main>
+          {image && !isPdfFile && (
+            <figure className="preview" style={{ margin: "18px 0 0" }}>
+              <img src={image.url} alt={`Загружено: ${image.name}`} />
+              {busy && (
+                <div className="preview__scrim">
+                  <span className="status" style={{ margin: 0 }}>
+                    <span className="status__dots">
+                      <i></i><i></i><i></i>
+                    </span>
+                    {status}
+                    {phase === "ocr" && ` ${fmtSec(elapsed)}`}
+                  </span>
+                </div>
+              )}
+            </figure>
+          )}
+
+          {busy && (!image || isPdfFile) && (
+            <div className="status">
+              <span className="status__dots">
+                <i></i><i></i><i></i>
+              </span>
+              <span>
+                {status}
+                {percent !== null ? ` ${percent}%` : ""}
+                {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
+              </span>
+            </div>
+          )}
+
+          {busy && percent !== null && (!image || isPdfFile) && (
+            <div className="progress" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
+              <div className="progress__bar" style={{ width: `${percent}%` }} />
+            </div>
+          )}
+
+          {busy && !image && percent !== null && (
+            <p className="zone__hint" style={{ marginTop: 8 }}>
+              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — тут первый раз — долго
+            </p>
+          )}
+
+          {busyFlash && (
+            <p className="zone__hint" style={{ marginTop: 10 }}>
+              Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
+            </p>
+          )}
+
+          <div className="langs">
+            {MODEL_ORDER.map((id) => (
+              <button
+                key={id}
+                type="button"
+                className={`chip${lang === id ? " chip--on" : ""}`}
+                onClick={() => switchLang(id)}
+                title={MODEL_CATALOG[id].hint}
+              >
+                {MODEL_CATALOG[id].short}
+                {cached.includes(id) && lang !== id && <span className="chip__dot" title="Уже загружен" />}
+              </button>
+            ))}
+          </div>
+
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+        </section>
+
+        {result && (
+          <section className="glass result">
+            <div className="result__head">
+              {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
+            </div>
+            <textarea
+              className="result__text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              spellCheck={false}
+              aria-label="Распознанный текст"
+            />
+            <div className="actions">
+              <button
+                type="button"
+                className={`btn btn--primary${copied ? " btn--done" : ""}`}
+                onClick={copyResult}
+              >
+                {copied ? <IconCheck /> : <IconCopy />}
+                {copied ? "ЕСТЬ!" : "КОПИРОВАТЬ"}
+              </button>
+              <button type="button" className="btn btn--ghost" onClick={downloadTxt}>
+                <IconDownload />
+                СКАЧАТЬ
+              </button>
+            </div>
+          </section>
+        )}
+
+        <footer className="footer">
+          <span className="footer__lock">
+            <IconLock />
+            Локально на вашем устройстве
+          </span>
+          <span>Навайбкодил @vnvax</span>
+        </footer>
+      </main>
+    </>
   );
 }
