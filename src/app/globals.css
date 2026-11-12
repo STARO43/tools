@@ -339,7 +339,7 @@ textarea { font: inherit; color: inherit; }
 .btn svg { width: clamp(16px, 1.3vw, 19px); height: clamp(16px, 1.3vw, 19px); }
 
 .btn--primary { color: #ffffff; background: var(--ink); border: 1px solid var(--ink); }
-.btn--primary:hover { background: #002900; border-color: #000000; }
+.btn--primary:hover { background: #110000; border-color: #000000; }
 
 .btn--ghost { color: var(--ink-soft); background: transparent; border: 1px solid var(--border-strong); }
 .btn--ghost:hover { color: var(--ink); background: rgba(0, 0, 0, 0.03); border-color: var(--ink); }
