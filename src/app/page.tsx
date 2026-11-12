@@ -285,7 +285,7 @@ export default function Page() {
         if (imgNow !== img) return ""; // пользователь уже выбрал другое фото
 
         setPhase("ocr");
-        setStatus("Читаю текст…");
+        setStatus("Сканирую…");
         const copy = imgNow.buffer.slice(0);
         const id = ++reqId.current;
         const resp = await workerCall({ type: "recognize", id, image: copy }, [copy]);
@@ -338,7 +338,7 @@ export default function Page() {
       const isImage = type.startsWith("image/") || /\.(png|jpe?g|webp|bmp|gif|avif)$/i.test(fname);
 
       if (!isPdf && !isImage) {
-        setError("Подойдут PDF, PNG, JPEG, WEBP или скриншот.");
+        setError("PDF, PNG, JPEG, WEBP или скриншот.");
         return;
       }
 
@@ -540,7 +540,6 @@ export default function Page() {
   }, [text, image]);
 
   /* ── вычисляемое ── */
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   const busy = phase === "prep" || phase === "ocr";
   const percent = progress && progress.total > 0 ? Math.min(100, Math.floor((progress.received / progress.total) * 100)) : null;
   const pill = result ? qualityPill(result.confidence) : null;
@@ -674,9 +673,6 @@ export default function Page() {
             <div className="result__head">
               <h2 className="result__title">ГОТОВО!</h2>
               {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
-              <span className="pill__meta">
-                {words} {plural(words)} · за {fmtSec(result.elapsedMs)}
-              </span>
             </div>
             <textarea
               className="result__text"
