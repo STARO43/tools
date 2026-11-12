@@ -13,7 +13,7 @@ import {
   type WorkerResponse,
 } from "@/lib/engine";
 import { PdfReaderLegacyWeb } from "ppu-pdf/web";
-
+import * as pdfjsLib from "pdfjs-dist";
 
 /* ────────────────────────── утилиты ────────────────────────── */
 
@@ -30,6 +30,7 @@ function fmtSec(ms: number): string {
 }
 
 async function pdfToImageBuffers(buffer: ArrayBuffer): Promise<ArrayBuffer[]> {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
   const reader = new PdfReaderLegacyWeb();
   const pdf = await reader.open(buffer);
   const canvasMap = await reader.renderAll(pdf);
@@ -66,28 +67,7 @@ interface Result {
 
 type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
-async function pdfToImageBlobs(buffer: ArrayBuffer): Promise<Blob[]> {
-  const reader = new PdfReaderLegacyWeb();
-  const pdf = await reader.open(buffer);
-  const canvasMap = await reader.renderAll(pdf); // Map<number, HTMLCanvasElement>
-  const blobs: Blob[] = [];
-  for (const canvas of canvasMap.values()) {
-    const blob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("canvas.toBlob failed"))), "image/png");
-    });
-    blobs.push(blob);
-  }
-  await reader.destroy(pdf);
-  return blobs;
-}
-
 /* ────────────────────────── иконки (инлайн, без библиотек) ────────────────────────── */
-
-const IconEye = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M12 4.2c-4.4 0-8.1 2.6-10.4 6.4a2.9 2.9 0 0 0 0 2.8c2.3 3.8 6 6.4 10.4 6.4s8.1-2.6 10.4-6.4a2.9 2.9 0 0 0 0-2.8C20.1 6.8 16.4 4.2 12 4.2zm0 12.6a4.8 4.8 0 1 1 0-9.6 4.8 4.8 0 0 1 0 9.6zm0-1.9a2.9 2.9 0 1 0 0-5.8 2.9 2.9 0 0 0 0 5.8z" />
-  </svg>
-);
 
 const IconImage = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -186,6 +166,7 @@ const IconScanner = () => (
     </g>
   </svg>
 );
+
 /* ────────────────────────── компонент ────────────────────────── */
 
 export default function Page() {
@@ -203,6 +184,7 @@ export default function Page() {
   const [dragOver, setDragOver] = useState(false);
   const [busyFlash, setBusyFlash] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPdfFile, setIsPdfFile] = useState(false);
 
   /* движок и ссылки */
   const workerRef = useRef<Worker | null>(null);
@@ -289,9 +271,9 @@ export default function Page() {
 
   /* ── распознавание ── */
   const runOcr = useCallback(
-    async (target: ModelId) => {
+    async (target: ModelId): Promise<string> => {
       const img = imageRef.current;
-      if (!img || busyRef.current) return;
+      if (!img || busyRef.current) return "";
 
       busyRef.current = true;
       setCopied(false);
@@ -300,14 +282,14 @@ export default function Page() {
       try {
         await ensureEngine(target);
         const imgNow = imageRef.current;
-        if (imgNow !== img) return; // пользователь уже выбрал другое фото
+        if (imgNow !== img) return ""; // пользователь уже выбрал другое фото
 
         setPhase("ocr");
         setStatus("Читаю текст…");
         const copy = imgNow.buffer.slice(0);
         const id = ++reqId.current;
         const resp = await workerCall({ type: "recognize", id, image: copy }, [copy]);
-        if (imageRef.current !== imgNow) return;
+        if (imageRef.current !== imgNow) return "";
 
         if (resp.type === "error") throw new Error(resp.message);
         if (resp.type !== "result") throw new Error("Неожиданный ответ воркера");
@@ -316,29 +298,29 @@ export default function Page() {
         if (!resp.text.trim()) {
           setPhase("error");
           setResult(null);
-          setText("");
           setStatus("");
-          setError("На этой картинке не нашлось текста. Попробуйте снимок чётче, без наклона и размытия.");
-          return;
+          setError("На этой странице не нашлось текста.");
+          return "";
         }
-        setText(resp.text);
+
         setResult({ confidence: resp.confidence, elapsedMs, lang: target });
         setPhase("done");
         setStatus("");
+        return resp.text;
       } catch (err) {
-        if (imageRef.current !== img) return;
+        if (imageRef.current !== img) return "";
         setPhase("error");
         setResult(null);
         setStatus("");
         setError(
           err instanceof Error
             ? `Не получилось: ${err.message}`
-            : "Не получилось распознать текст. Попробуйте ещё раз.",
+            : "Не получилось распознать текст.",
         );
+        return "";
       } finally {
         clearInterval(tick);
         busyRef.current = false;
-        /* если за время работы успело прийти новое фото — обрабатываем его */
         const queued = pendingFileRef.current;
         pendingFileRef.current = null;
         if (queued) void handleFileRef.current?.(queued.file, queued.name);
@@ -347,18 +329,21 @@ export default function Page() {
     [ensureEngine, workerCall],
   );
 
-  /* ── загрузка изображения ── */
- const handleFile = useCallback(
-  async (file: File | Blob, name?: string) => {
-    const fname = name ?? (file as File).name ?? "файл";
-    const type = (file as File).type || "";
-    const isPdf = type === "application/pdf" || /\.pdf$/i.test(fname);
-    const isImage = type.startsWith("image/") || /\.(png|jpe?g|webp|bmp|gif|avif)$/i.test(fname);
+  /* ── загрузка файла ── */
+  const handleFile = useCallback(
+    async (file: File | Blob, name?: string) => {
+      const fname = name ?? (file as File).name ?? "файл";
+      const type = (file as File).type || "";
+      const isPdf = type === "application/pdf" || /\.pdf$/i.test(fname);
+      const isImage = type.startsWith("image/") || /\.(png|jpe?g|webp|bmp|gif|avif)$/i.test(fname);
 
-    if (!isPdf && !isImage) {
-      setError("PDF, PNG, JPEG, WEBP или скриншот");
-      return;
-    }
+      if (!isPdf && !isImage) {
+        setError("Подойдут PDF, PNG, JPEG, WEBP или скриншот.");
+        return;
+      }
+
+      setIsPdfFile(isPdf);
+
       if (file.size > 30 * 1024 * 1024) {
         setError(`Файл слишком большой (${fmtBytes(file.size)}). До 30 МБ, пожалуйста.`);
         return;
@@ -371,7 +356,7 @@ export default function Page() {
         return;
       }
 
-            try {
+      try {
         const buffer = await file.arrayBuffer();
         let imageBuffers: ArrayBuffer[];
 
@@ -382,6 +367,8 @@ export default function Page() {
         } else {
           imageBuffers = [buffer];
         }
+
+        let fullText = "";
 
         for (let i = 0; i < imageBuffers.length; i++) {
           const imgBuffer = imageBuffers[i];
@@ -400,12 +387,23 @@ export default function Page() {
           bitmap.close?.();
           imageRef.current = img;
           setImage(img);
-          setResult(null);
-          setText("");
           setError(null);
           setPhase("empty");
+          setText(""); // очищаем перед новой страницей
 
-          await runOcr(lang);
+          const pageText = await runOcr(lang);
+          
+          if (pageText) {
+            if (fullText) fullText += "\n\n"; 
+            fullText += pageText;
+          }
+          
+          if (imageRef.current !== img) break; 
+        }
+
+        if (imageRef.current && fullText) {
+          setText(fullText);
+          setPhase("done");
         }
       } catch (err) {
         setError(
@@ -559,20 +557,17 @@ export default function Page() {
 
       <main className="shell">
         <header className="brand">
-       <div className="brand__mark">
-  <IconScanner />
-</div>
+          <div className="brand__mark">
+            <IconScanner />
+          </div>
           <div className="brand__name">
             Сканер<em>иньо</em>
           </div>
         </header>
 
         <section className="hero">
-          <h1 className="hero__title">
-        
-          </h1>
-          <p className="hero__subtitle">
-          </p>
+          <h1 className="hero__title"></h1>
+          <p className="hero__subtitle"></p>
         </section>
 
         {/* ── шаг 1: картинка ── */}
@@ -598,19 +593,18 @@ export default function Page() {
             <span className="zone__title">
               {dragOver ? "Поймаю!" : ""}
             </span>
-            <span className="zone__hint">
-             
-            </span>
+            <span className="zone__hint"></span>
           </button>
 
-          {image && (
+          {image && !isPdfFile && (
             <figure className="preview" style={{ margin: "18px 0 0" }}>
               <img src={image.url} alt={`Загружено: ${image.name}`} />
               {busy && (
                 <div className="preview__scrim">
                   <span className="status" style={{ margin: 0 }}>
-                    <span className="status__spinner" />
-                    {status}
+<span className="status__dots">
+  <i></i><i></i><i></i>
+</span>                    {status}
                     {phase === "ocr" && ` ${fmtSec(elapsed)}`}
                   </span>
                 </div>
@@ -619,27 +613,31 @@ export default function Page() {
           )}
 
           {/* статус + прогресс первой загрузки пакета */}
-          {busy && !image && (
+          {busy && (!image || isPdfFile) && (
             <div className="status">
-              <span className="status__spinner" />
-              <span>
+<span className="status__dots">
+  <i></i><i></i><i></i>
+</span>              <span>
                 {status}
                 {percent !== null ? ` ${percent}%` : ""}
                 {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
               </span>
             </div>
           )}
-          {busy && percent !== null && (
+
+          {busy && percent !== null && (!image || isPdfFile) && (
             <div className="progress" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
               <div className="progress__bar" style={{ width: `${percent}%` }} />
             </div>
           )}
+
           {busy && !image && percent !== null && (
             <p className="zone__hint" style={{ marginTop: 8 }}>
               {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — 
               тут первый раз — долго
             </p>
           )}
+
           {busyFlash && (
             <p className="zone__hint" style={{ marginTop: 10 }}>
               Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
@@ -663,7 +661,6 @@ export default function Page() {
             ))}
           </div>
 
-         
           {error && (
             <p className="error" role="alert">
               {error}
