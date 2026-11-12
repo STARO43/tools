@@ -76,28 +76,8 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* Документ вместо «горки» — скруглённая рамка + строки */
 const IconImage = () => (
-  <svg
-    viewBox="0 0 32 32"
-    shapeRendering="crispEdges"
-    style={{ display: "block", imageRendering: "pixelated" }}
-    aria-hidden
-  >
-    <g fill="#8a8f99">
-      {/* внешняя скоба */}
-      <rect x="11" y="4"  width="10" height="2" />
-      <rect x="21" y="6"  width="2"  height="20" />
-      <rect x="11" y="26" width="10" height="2" />
-      <rect x="9"  y="6"  width="2"  height="20" />
-      {/* скругление углов */}
-      <rect x="11" y="6"  width="2" height="2" />
-      <rect x="19" y="6"  width="2" height="2" />
-      <rect x="11" y="24" width="2" height="2" />
-      <rect x="19" y="24" width="2" height="2" />
-      {/* внутренний язычок */}
-      <rect x="13" y="6"  width="2" height="14" />
-      <rect x="17" y="6"  width="2" height="14" />
-      <rect x="13" y="20" width="6" height="2" />
-    </g>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M17.5 10.5 11 17a3.2 3.2 0 0 1-4.5-4.5l7.5-7.5a2.2 2.2 0 0 1 3.1 3.1l-7.4 7.4a1.1 1.1 0 0 1-1.6-1.6l6.4-6.4" />
   </svg>
 );
 
