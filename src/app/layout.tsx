@@ -1,11 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Unbounded, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+/* Два семейства, оба вариативные → минимум файлов.
+   Unbounded — дисплейный гротеск (кириллица), JetBrains Mono — технический моно. */
+const unbounded = Unbounded({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const jbMono = JetBrains_Mono({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -17,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#eef1f8",
+  themeColor: "#f4f4f2",
 };
 
 export default function RootLayout({
@@ -26,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" suppressHydrationWarning>
-      <body className={`${manrope.variable}`}>{children}</body>
+    <html lang="ru" suppressHydrationWarning className={`${unbounded.variable} ${jbMono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

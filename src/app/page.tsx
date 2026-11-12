@@ -29,6 +29,11 @@ function fmtSec(ms: number): string {
   return `${(ms / 1000).toFixed(1).replace(".", ",")} с`;
 }
 
+/* счётчик в стиле metic: 000% */
+function fmtPercent(p: number | null): string {
+  return p === null ? "" : ` ${String(p).padStart(3, "0")}%`;
+}
+
 async function pdfToImageBuffers(buffer: ArrayBuffer): Promise<ArrayBuffer[]> {
   pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
   const reader = new PdfReaderLegacyWeb();
@@ -71,7 +76,7 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* Документ вместо «горки» — скруглённая рамка + строки */
 const IconImage = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <rect x="3" y="4" width="18" height="16" rx="3.5" />
     <path d="M7.5 9.5h9M7.5 13h9M7.5 16.5h5.5" />
   </svg>
@@ -104,7 +109,7 @@ const IconLock = () => (
   </svg>
 );
 
-/* Оригинальный пиксельный сканер — для лого */
+/* Оригинальный пиксельный сканер — для лого. Ч/б: лазер стал чернильным. */
 const IconScanner = () => (
   <svg
     width="100%"
@@ -139,7 +144,7 @@ const IconScanner = () => (
       <rect x="0" y="27.5" width="18" height="1.8" />
     </g>
 
-    <g fill="#1a1d24" clipPath="url(#scanner-after-clip)">
+    <g fill="#121214" clipPath="url(#scanner-after-clip)">
       <rect x="0" y="3"  width="32" height="1.8" />
       <rect x="0" y="6.5"  width="26" height="1.8" />
       <rect x="0" y="10" width="32" height="1.8" />
@@ -159,10 +164,17 @@ const IconScanner = () => (
         dur="4s"
         repeatCount="indefinite"
       />
-      <rect x="0" y="0" width="32" height="1.6" fill="#ff3636" opacity="0.4" />
-      <rect x="0" y="0" width="32" height="1" fill="#ff3636" />
+      <rect x="0" y="0" width="32" height="1.6" fill="#121214" opacity="0.4" />
+      <rect x="0" y="0" width="32" height="1" fill="#121214" />
     </g>
   </svg>
+);
+
+/* Folding cube — адаптация codepen.io/oddtito/pen/MKOwXb, цвет — чернила */
+const FoldingCube = ({ size = 96 }: { size?: number }) => (
+  <div className="cube" style={{ width: size, height: size }} aria-hidden>
+    <i /><i /><i /><i />
+  </div>
 );
 
 /* ────────────────────────── компонент ────────────────────────── */
@@ -182,6 +194,7 @@ export default function Page() {
   const [busyFlash, setBusyFlash] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPdfFile, setIsPdfFile] = useState(false);
+  const [now, setNow] = useState<Date | null>(null);
 
   const workerRef = useRef<Worker | null>(null);
   const engineRef = useRef<{ modelId: ModelId } | null>(null);
@@ -192,6 +205,19 @@ export default function Page() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pendingFileRef = useRef<{ file: File | Blob; name?: string } | null>(null);
   const handleFileRef = useRef<((f: File | Blob, n?: string) => Promise<void>) | null>(null);
+
+  /* живая строка: время · день недели · дата */
+  useEffect(() => {
+    const tick = () => setNow(new Date());
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const p2 = (n: number) => String(n).padStart(2, "0");
+  const timeStr = now ? `${p2(now.getHours())}:${p2(now.getMinutes())}:${p2(now.getSeconds())}` : "--:--:--";
+  const dayStr = now ? now.toLocaleDateString("ru-RU", { weekday: "long" }) : "";
+  const dateStr = now ? `${p2(now.getDate())}.${p2(now.getMonth() + 1)}.${now.getFullYear()}` : "";
 
   const getWorker = useCallback((): Worker => {
     if (!workerRef.current) {
@@ -406,16 +432,6 @@ export default function Page() {
 
   handleFileRef.current = handleFile;
 
-  const loadSample = useCallback(async () => {
-    try {
-      const resp = await fetch(`${BASE}/sample/report-ru.png`);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      await handleFile(await resp.blob(), "report-ru.png");
-    } catch {
-      setError("Пример временно недоступен.");
-    }
-  }, [handleFile]);
-
   const pickFile = useCallback(() => fileInputRef.current?.click(), []);
 
   const onInputChange = useCallback(
@@ -524,90 +540,26 @@ export default function Page() {
   const busy = phase === "prep" || phase === "ocr";
   const percent = progress && progress.total > 0 ? Math.min(100, Math.floor((progress.received / progress.total) * 100)) : null;
   const pill = result ? qualityPill(result.confidence) : null;
+  const showZone = !image || isPdfFile;
 
   return (
-    <>
-      <main className="shell">
-        <header className="brand">
-          <div className="brand__mark">
+    <div className="page">
+      {/* ─── шапка: время · день · дата, затем лого и языки ─── */}
+      <header className="head">
+        <div className="head__clock" suppressHydrationWarning>
+          <span className="head__time">{timeStr}</span>
+          {now && <span className="head__date">{dayStr} · {dateStr}</span>}
+        </div>
+
+        <div className="head__brand">
+          <span className="head__mark">
             <IconScanner />
-          </div>
-          <div className="brand__name">
+          </span>
+          <span className="head__name">
             Сканер<em>иньо</em>
-          </div>
-        </header>
+          </span>
 
-        <section className="glass">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*,.pdf"
-            onChange={onInputChange}
-            hidden
-            aria-hidden
-            tabIndex={-1}
-          />
-          <button
-            type="button"
-            className={`zone${dragOver ? " zone--over" : ""}`}
-            onClick={pickFile}
-            aria-label="Выбрать файл"
-          >
-            <span className="zone__icon">
-              <IconImage />
-            </span>
-            {dragOver && <span className="zone__title">Поймаю!</span>}
-          </button>
-
-          {image && !isPdfFile && (
-            <figure className="preview" style={{ margin: "18px 0 0" }}>
-              <img src={image.url} alt={`Загружено: ${image.name}`} />
-              {busy && (
-                <div className="preview__scrim">
-                  <span className="status" style={{ margin: 0 }}>
-                    <span className="status__dots">
-                      <i></i><i></i><i></i>
-                    </span>
-                    {status}
-                    {phase === "ocr" && ` ${fmtSec(elapsed)}`}
-                  </span>
-                </div>
-              )}
-            </figure>
-          )}
-
-          {busy && (!image || isPdfFile) && (
-            <div className="status">
-              <span className="status__dots">
-                <i></i><i></i><i></i>
-              </span>
-              <span>
-                {status}
-                {percent !== null ? ` ${percent}%` : ""}
-                {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
-              </span>
-            </div>
-          )}
-
-          {busy && percent !== null && (!image || isPdfFile) && (
-            <div className="progress" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
-              <div className="progress__bar" style={{ width: `${percent}%` }} />
-            </div>
-          )}
-
-          {busy && !image && percent !== null && (
-            <p className="zone__hint" style={{ marginTop: 8 }}>
-              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — тут первый раз — долго
-            </p>
-          )}
-
-          {busyFlash && (
-            <p className="zone__hint" style={{ marginTop: 10 }}>
-              Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
-            </p>
-          )}
-
-          <div className="langs">
+          <nav className="langs" aria-label="Язык распознавания">
             {MODEL_ORDER.map((id) => (
               <button
                 key={id}
@@ -620,17 +572,88 @@ export default function Page() {
                 {cached.includes(id) && lang !== id && <span className="chip__dot" title="Уже загружен" />}
               </button>
             ))}
-          </div>
+          </nav>
+        </div>
+      </header>
 
-          {error && (
-            <p className="error" role="alert">
-              {error}
+      <main className="main">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,.pdf"
+          onChange={onInputChange}
+          hidden
+          aria-hidden
+          tabIndex={-1}
+        />
+
+        {showZone ? (
+          <button
+            type="button"
+            className="zone"
+            onClick={pickFile}
+            aria-label="Выбрать файл"
+          >
+            <IconImage />
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="preview"
+            onClick={pickFile}
+            aria-label={`Загружено: ${image?.name}. Выбрать другой файл`}
+          >
+            <img src={image?.url} alt={`Загружено: ${image?.name}`} />
+            <span className="preview__tool">
+              <IconImage />
+            </span>
+            {busy && (
+              <span className="preview__scrim">
+                <FoldingCube size={72} />
+                <span className="load__status" style={{ margin: 0 }}>
+                  {status}
+                  {phase === "ocr" && ` ${fmtSec(elapsed)}`}
+                </span>
+              </span>
+            )}
+          </button>
+        )}
+
+        {busy && showZone && (
+          <div className="load">
+            <FoldingCube size={96} />
+            <p className="load__status">
+              {status}
+              {fmtPercent(percent)}
+              {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
             </p>
-          )}
-        </section>
+            {percent !== null && (
+              <div className="progress" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
+                <div className="progress__bar" style={{ width: `${percent}%` }} />
+              </div>
+            )}
+            {percent !== null && (
+              <p className="load__hint">
+                {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — тут первый раз — долго
+              </p>
+            )}
+          </div>
+        )}
+
+        {busyFlash && (
+          <p className="hint">
+            Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
+          </p>
+        )}
+
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
 
         {result && (
-          <section className="glass result">
+          <section className="result">
             <div className="result__head">
               {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
             </div>
@@ -644,7 +667,7 @@ export default function Page() {
             <div className="actions">
               <button
                 type="button"
-                className={`btn btn--primary${copied ? " btn--done" : ""}`}
+                className="btn btn--primary"
                 onClick={copyResult}
               >
                 {copied ? <IconCheck /> : <IconCopy />}
@@ -657,15 +680,22 @@ export default function Page() {
             </div>
           </section>
         )}
-
-        <footer className="footer">
-          <span className="footer__lock">
-            <IconLock />
-            Локально на вашем устройстве
-          </span>
-          <span>Навайбкодил @vnvax</span>
-        </footer>
       </main>
-    </>
+
+      {/* «Поймаю!» — на всё окно при перетаскивании */}
+      {dragOver && (
+        <div className="catch" aria-hidden>
+          <span>Поймаю!</span>
+        </div>
+      )}
+
+      <footer className="foot">
+        <span className="foot__lock">
+          <IconLock />
+          Локально на вашем устройстве
+        </span>
+        <span>Навайбкодил @vnvax</span>
+      </footer>
+    </div>
   );
 }
