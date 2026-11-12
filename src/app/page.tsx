@@ -61,19 +61,27 @@ interface LoadedImage {
 
 interface Result {
   confidence: number;
-  elapsedMs: number;
-  lang: ModelId;
 }
 
 type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* ────────────────────────── иконки (инлайн, без библиотек) ────────────────────────── */
 
-const IconImage = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="3" y="4" width="18" height="16" rx="3.5" />
-    <circle cx="9" cy="10" r="1.7" fill="currentColor" stroke="none" />
-    <path d="M3.5 17.5 9 12.4l4.2 3.8 3.1-2.7 4.2 3.6" />
+const IconDocument = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden
+  >
+    <path d="M14 3H7a2.5 2.5 0 0 0-2.5 2.5v13A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V8.5z" />
+    <path d="M14 3v5.5h5.5" />
+    <path d="M8.5 12.5h7" />
+    <path d="M8.5 15.5h7" />
+    <path d="M8.5 18h4.5" />
   </svg>
 );
 
@@ -127,10 +135,9 @@ const IconScanner = () => (
       </clipPath>
     </defs>
 
-    {/* Слой 1: до лазера — серый */}
     <g fill="#8a8f99">
-      <rect x="0" y="3"  width="32" height="1.8" />
-      <rect x="0" y="6.5"  width="26" height="1.8" />
+      <rect x="0" y="3" width="32" height="1.8" />
+      <rect x="0" y="6.5" width="26" height="1.8" />
       <rect x="0" y="10" width="32" height="1.8" />
       <rect x="0" y="13.5" width="20" height="1.8" />
       <rect x="0" y="17" width="32" height="1.8" />
@@ -139,10 +146,9 @@ const IconScanner = () => (
       <rect x="0" y="27.5" width="18" height="1.8" />
     </g>
 
-    {/* Слой 2: после лазера — тёмно-серый / почти чёрный */}
     <g fill="#1a1d24" clipPath="url(#scanner-after-clip)">
-      <rect x="0" y="3"  width="32" height="1.8" />
-      <rect x="0" y="6.5"  width="26" height="1.8" />
+      <rect x="0" y="3" width="32" height="1.8" />
+      <rect x="0" y="6.5" width="26" height="1.8" />
       <rect x="0" y="10" width="32" height="1.8" />
       <rect x="0" y="13.5" width="20" height="1.8" />
       <rect x="0" y="17" width="32" height="1.8" />
@@ -151,7 +157,6 @@ const IconScanner = () => (
       <rect x="0" y="27.5" width="18" height="1.8" />
     </g>
 
-    {/* Лазер */}
     <g>
       <animateTransform
         attributeName="transform"
@@ -170,7 +175,6 @@ const IconScanner = () => (
 /* ────────────────────────── компонент ────────────────────────── */
 
 export default function Page() {
-  /* состояние интерфейса */
   const [lang, setLang] = useState<ModelId>("ru");
   const [cached, setCached] = useState<ModelId[]>([]);
   const [image, setImage] = useState<LoadedImage | null>(null);
@@ -186,7 +190,6 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [isPdfFile, setIsPdfFile] = useState(false);
 
-  /* движок и ссылки */
   const workerRef = useRef<Worker | null>(null);
   const engineRef = useRef<{ modelId: ModelId } | null>(null);
   const reqId = useRef(0);
@@ -195,13 +198,11 @@ export default function Page() {
   const imageRef = useRef<LoadedImage | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pendingFileRef = useRef<{ file: File | Blob; name?: string } | null>(null);
-  /* вызов handleFile из runOcr без петли зависимостей */
   const handleFileRef = useRef<((f: File | Blob, n?: string) => Promise<void>) | null>(null);
 
   /* ── worker ── */
   const getWorker = useCallback((): Worker => {
     if (!workerRef.current) {
-      // воркер пре-компилируется scripts/build-worker.sh в public/ocr.worker.js
       const w = new Worker(`${BASE}/ocr.worker.js`, { type: "module" });
       w.onmessage = (e: MessageEvent<WorkerResponse>) => {
         const resolver = pendingRef.current.get(e.data.id);
@@ -222,22 +223,20 @@ export default function Page() {
     [getWorker],
   );
 
-  /* ── подготовка движка (пакет языка + сессии) ── */
+  /* ── подготовка движка ── */
   const ensureEngine = useCallback(
     async (target: ModelId): Promise<boolean> => {
       setPhase("prep");
       setProgress(null);
       try {
         if (engineRef.current?.modelId !== target) {
-          /* 1. файлы пакета: из кэша или из сети */
           setStatus(
             (await hasCachedModels(target))
               ? "Настраиваю распознавание…"
               : `Загружаю языковой пакет «${MODEL_CATALOG[target].short}»…`,
           );
-          const files = await loadModelFiles(MODEL_CATALOG[target], (p) => setProgress(p));
+          await loadModelFiles(MODEL_CATALOG[target], (p) => setProgress(p));
 
-          /* 2. сессии ONNX в воркере */
           setStatus("Запускаю движок…");
           const buffers = await freshBuffers(target);
           const id = ++reqId.current;
@@ -282,7 +281,7 @@ export default function Page() {
       try {
         await ensureEngine(target);
         const imgNow = imageRef.current;
-        if (imgNow !== img) return ""; // пользователь уже выбрал другое фото
+        if (imgNow !== img) return "";
 
         setPhase("ocr");
         setStatus("Сканирую…");
@@ -294,7 +293,6 @@ export default function Page() {
         if (resp.type === "error") throw new Error(resp.message);
         if (resp.type !== "result") throw new Error("Неожиданный ответ воркера");
 
-        const elapsedMs = performance.now() - started;
         if (!resp.text.trim()) {
           setPhase("error");
           setResult(null);
@@ -303,7 +301,7 @@ export default function Page() {
           return "";
         }
 
-        setResult({ confidence: resp.confidence, elapsedMs, lang: target });
+        setResult({ confidence: resp.confidence });
         setPhase("done");
         setStatus("");
         return resp.text;
@@ -342,8 +340,6 @@ export default function Page() {
         return;
       }
 
-      setIsPdfFile(isPdf);
-
       if (file.size > 30 * 1024 * 1024) {
         setError(`Файл слишком большой (${fmtBytes(file.size)}). До 30 МБ, пожалуйста.`);
         return;
@@ -355,6 +351,8 @@ export default function Page() {
         window.setTimeout(() => setBusyFlash(false), 1600);
         return;
       }
+
+      setIsPdfFile(isPdf);
 
       try {
         const buffer = await file.arrayBuffer();
@@ -389,16 +387,16 @@ export default function Page() {
           setImage(img);
           setError(null);
           setPhase("empty");
-          setText(""); // очищаем перед новой страницей
+          setText("");
 
           const pageText = await runOcr(lang);
-          
+
           if (pageText) {
-            if (fullText) fullText += "\n\n"; 
+            if (fullText) fullText += "\n\n";
             fullText += pageText;
           }
-          
-          if (imageRef.current !== img) break; 
+
+          if (imageRef.current !== img) break;
         }
 
         if (imageRef.current && fullText) {
@@ -417,17 +415,6 @@ export default function Page() {
   );
 
   handleFileRef.current = handleFile;
-
-  /* ── пример ── */
-  const loadSample = useCallback(async () => {
-    try {
-      const resp = await fetch(`${BASE}/sample/report-ru.png`);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      await handleFile(await resp.blob(), "report-ru.png");
-    } catch {
-      setError("Пример временно недоступен.");
-    }
-  }, [handleFile]);
 
   /* ── события: выбор файла, вставка, перетаскивание ── */
   const pickFile = useCallback(() => fileInputRef.current?.click(), []);
@@ -456,7 +443,6 @@ export default function Page() {
         }
       }
     };
-    const preventNav = (e: DragEvent) => e.preventDefault();
     const onDrop = (e: DragEvent) => {
       e.preventDefault();
       setDragOver(false);
@@ -497,7 +483,14 @@ export default function Page() {
     };
   }, []);
 
-  /* смена языка: если картинка уже есть — распознаём заново */
+  /* очистка blob-url при размонтировании */
+  useEffect(() => {
+    return () => {
+      if (imageRef.current) URL.revokeObjectURL(imageRef.current.url);
+    };
+  }, []);
+
+  /* смена языка */
   const switchLang = useCallback(
     (id: ModelId) => {
       if (id === lang || busyRef.current) return;
@@ -518,7 +511,6 @@ export default function Page() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      /* старые браузеры: выделение */
       const ta = document.createElement("textarea");
       ta.value = text;
       document.body.appendChild(ta);
@@ -541,12 +533,14 @@ export default function Page() {
 
   /* ── вычисляемое ── */
   const busy = phase === "prep" || phase === "ocr";
-  const percent = progress && progress.total > 0 ? Math.min(100, Math.floor((progress.received / progress.total) * 100)) : null;
+  const percent =
+    progress && progress.total > 0
+      ? Math.min(100, Math.floor((progress.received / progress.total) * 100))
+      : null;
   const pill = result ? qualityPill(result.confidence) : null;
 
   return (
     <>
-      {/* живой фон */}
       <div className="blobs" aria-hidden>
         <div className="blob blob--lavender" />
         <div className="blob blob--aqua" />
@@ -564,7 +558,7 @@ export default function Page() {
           </div>
         </header>
 
-            {/* ── шаг 1: картинка ── */}
+        {/* ── шаг 1: картинка ── */}
         <section className="glass">
           <input
             ref={fileInputRef}
@@ -577,15 +571,12 @@ export default function Page() {
           />
           <button
             type="button"
-            className={`zone${dragOver ? " zone--over" : ""}`}
+            className={`dz dz--float${dragOver ? " is-over" : ""}`}
             onClick={pickFile}
-            aria-label="Выбрать"
+            aria-label="Выбрать файл"
           >
-            <span className="zone__icon">
-              <IconImage />
-            </span>
-            <span className="zone__title">
-              {dragOver ? "Поймаю!" : ""}
+            <span className="dz__icon">
+              <IconDocument />
             </span>
           </button>
 
@@ -595,9 +586,12 @@ export default function Page() {
               {busy && (
                 <div className="preview__scrim">
                   <span className="status" style={{ margin: 0 }}>
-<span className="status__dots">
-  <i></i><i></i><i></i>
-</span>                    {status}
+                    <span className="status__dots">
+                      <i></i>
+                      <i></i>
+                      <i></i>
+                    </span>
+                    {status}
                     {phase === "ocr" && ` ${fmtSec(elapsed)}`}
                   </span>
                 </div>
@@ -605,12 +599,14 @@ export default function Page() {
             </figure>
           )}
 
-          {/* статус + прогресс первой загрузки пакета */}
           {busy && (!image || isPdfFile) && (
             <div className="status">
-<span className="status__dots">
-  <i></i><i></i><i></i>
-</span>              <span>
+              <span className="status__dots">
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+              <span>
                 {status}
                 {percent !== null ? ` ${percent}%` : ""}
                 {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
@@ -619,15 +615,21 @@ export default function Page() {
           )}
 
           {busy && percent !== null && (!image || isPdfFile) && (
-            <div className="progress" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
+            <div
+              className="progress"
+              role="progressbar"
+              aria-valuenow={percent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
               <div className="progress__bar" style={{ width: `${percent}%` }} />
             </div>
           )}
 
           {busy && !image && percent !== null && (
             <p className="zone__hint" style={{ marginTop: 8 }}>
-              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — 
-              тут первый раз — долго
+              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — тут первый
+              раз — долго
             </p>
           )}
 
@@ -637,7 +639,6 @@ export default function Page() {
             </p>
           )}
 
-          {/* язык */}
           <div className="langs">
             {MODEL_ORDER.map((id) => (
               <button
@@ -648,7 +649,9 @@ export default function Page() {
                 title={MODEL_CATALOG[id].hint}
               >
                 {MODEL_CATALOG[id].short}
-                {cached.includes(id) && lang !== id && <span className="chip__dot" title="Уже загружен" />}
+                {cached.includes(id) && lang !== id && (
+                  <span className="chip__dot" title="Уже загружен" />
+                )}
               </button>
             ))}
           </div>
@@ -664,7 +667,9 @@ export default function Page() {
         {result && (
           <section className="glass result">
             <div className="result__head">
-                      {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
+              {pill && (
+                <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>
+              )}
             </div>
             <textarea
               className="result__text"
@@ -700,13 +705,4 @@ export default function Page() {
       </main>
     </>
   );
-}
-
-/* 1 слово, 2 слова, 5 слов… */
-function plural(n: number): string {
-  const mod10 = n % 10;
-  const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return "слово";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "слова";
-  return "слов";
 }
