@@ -121,17 +121,16 @@ textarea {
   color: #ffffff;
 }
 
-/* ── КАРКАС (Жестко по высоте экрана) ───────────────────────── */
+/* ── КАРКАС ─────────────────────────────────────────────────── */
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  height: 100dvh; /* Занимает ровно высоту экрана */
+  min-height: 100dvh; 
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-  overflow: hidden; /* Страница не скроллится, все внутри */
 }
 
 /* Шапка (Лого не менял) */
@@ -204,8 +203,8 @@ textarea {
 
 /* ── КАРТОЧКИ (резиновые) ───────────────────────────────────── */
 .glass {
-  flex: 1 1 auto; /* Растягивается на всё свободное место */
-  min-height: 0; /* Разрешает сжатие внутри flex */
+  flex: 1 1 auto; 
+  min-height: 0; 
   background: var(--surface);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
@@ -214,9 +213,6 @@ textarea {
   display: flex;
   flex-direction: column;
   animation: appear-from-fog 1s var(--ease-soft) both;
-  /* Если контента (превью или текста) станет слишком много — скролл будет внутри карточки */
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .glass + .glass {
@@ -228,7 +224,7 @@ textarea {
   position: relative;
   width: 100%;
   flex: 1 1 auto; /* Растягивается на всё свободное место в карточке */
-  min-height: 120px; /* Минимальный размер, чтобы не схлопнулась */
+  min-height: clamp(180px, 30dvh, 400px); /* Как в оригинале, чтобы не сжималась в ноль */
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
@@ -245,6 +241,7 @@ textarea {
 
 .dz:active { transform: scale(.99); }
 
+/* Иконка */
 .dz__icon {
   position: relative;
   display: grid;
@@ -252,7 +249,11 @@ textarea {
   z-index: 3;
   transition: transform 0.6s var(--ease-soft);
 }
-.dz__icon svg { width: 40%; height: 40%; display: block; }
+.dz__icon svg { 
+  width: 40%; 
+  height: 40%; 
+  display: block; 
+}
 
 /* Парящая */
 .dz--float {
@@ -342,7 +343,7 @@ textarea {
 .preview img {
   display: block;
   width: 100%;
-  max-height: 40dvh; /* Ограничиваем превью, чтобы не выдавливало */
+  max-height: 45dvh; /* Оригинальное значение */
   object-fit: contain;
 }
 
@@ -530,8 +531,7 @@ textarea {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto; /* Занимает свободное место под дропзоной */
-  min-height: 0;
+  flex: 0 0 auto; /* Возвращаем, чтобы блок не растягивался насильно */
   animation: appear-from-fog 0.8s var(--ease-soft) both;
 }
 
@@ -577,11 +577,11 @@ textarea {
 
 .result__text {
   width: 100%;
-  flex: 1 1 auto; /* Растягивает текстовое поле */
   min-height: 120px;
   max-height: none;
-  resize: none; /* Отключаем ручное изменение размера, чтобы не ломать сетку */
-  overflow-y: auto; /* Внутренний скролл, если текста много */
+  field-sizing: content; /* Растет под текст */
+  resize: vertical;
+  overflow-y: hidden;
   padding: var(--sp-3);
   border-radius: var(--r-input);
   border: 1px solid var(--border);
@@ -703,6 +703,7 @@ textarea {
 
 @media (max-height: 560px) and (orientation: landscape) {
   .hero { margin-bottom: var(--sp-1); }
+  .dz { min-height: 120px; padding: var(--sp-2) var(--sp-3); }
   .glass { padding: var(--sp-2) var(--sp-3); }
 }
 
