@@ -69,14 +69,13 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* ────────────────────────── иконки ────────────────────────── */
 
+/* Документ вместо «горки» — скруглённая рамка + строки */
 const IconImage = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <rect x="3" y="4" width="18" height="16" rx="3.5" />
-    <circle cx="9" cy="10" r="1.7" fill="currentColor" stroke="none" />
-    <path d="M3.5 17.5 9 12.4l4.2 3.8 3.1-2.7 4.2 3.6" />
+    <path d="M7.5 9.5h9M7.5 13h9M7.5 16.5h5.5" />
   </svg>
 );
-
 
 const IconCopy = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -92,10 +91,9 @@ const IconCheck = () => (
 );
 
 const IconDownload = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="3" y="4" width="18" height="16" rx="3.5" />
-    <circle cx="9" cy="10" r="1.7" fill="currentColor" stroke="none" />
-    <path d="M3.5 17.5 9 12.4l4.2 3.8 3.1-2.7 4.2 3.6" />
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5" />
+    <path d="M4 17.5v1A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-1" />
   </svg>
 );
 
@@ -106,8 +104,8 @@ const IconLock = () => (
   </svg>
 );
 
-/* Пиксельный документ, который «проявляется» лазером */
-const IconDocument = () => (
+/* Оригинальный пиксельный сканер — для лого */
+const IconScanner = () => (
   <svg
     width="100%"
     height="100%"
@@ -130,33 +128,28 @@ const IconDocument = () => (
       </clipPath>
     </defs>
 
-    {/* Слой 1: до лазера — светло-серый документ с загнутым углом */}
-    <g fill="none" stroke="#8a8f99" strokeWidth="1.5" strokeLinejoin="miter">
-      <path d="M7 3 H19 L25 9 V29 H7 Z" />
-    </g>
     <g fill="#8a8f99">
-      <rect x="10" y="11" width="12" height="1.5" />
-      <rect x="10" y="14.5" width="12" height="1.5" />
-      <rect x="10" y="18" width="9" height="1.5" />
-      <rect x="10" y="21.5" width="12" height="1.5" />
-      <rect x="10" y="25" width="6" height="1.5" />
+      <rect x="0" y="3"  width="32" height="1.8" />
+      <rect x="0" y="6.5"  width="26" height="1.8" />
+      <rect x="0" y="10" width="32" height="1.8" />
+      <rect x="0" y="13.5" width="20" height="1.8" />
+      <rect x="0" y="17" width="32" height="1.8" />
+      <rect x="0" y="20.5" width="24" height="1.8" />
+      <rect x="0" y="24" width="32" height="1.8" />
+      <rect x="0" y="27.5" width="18" height="1.8" />
     </g>
 
-    {/* Слой 2: после лазера — тёмный, обрезан по clipPath */}
-    <g clipPath="url(#scanner-after-clip)">
-      <g fill="none" stroke="#1a1d24" strokeWidth="1.5" strokeLinejoin="miter">
-        <path d="M7 3 H19 L25 9 V29 H7 Z" />
-      </g>
-      <g fill="#1a1d24">
-        <rect x="10" y="11" width="12" height="1.5" />
-        <rect x="10" y="14.5" width="12" height="1.5" />
-        <rect x="10" y="18" width="9" height="1.5" />
-        <rect x="10" y="21.5" width="12" height="1.5" />
-        <rect x="10" y="25" width="6" height="1.5" />
-      </g>
+    <g fill="#1a1d24" clipPath="url(#scanner-after-clip)">
+      <rect x="0" y="3"  width="32" height="1.8" />
+      <rect x="0" y="6.5"  width="26" height="1.8" />
+      <rect x="0" y="10" width="32" height="1.8" />
+      <rect x="0" y="13.5" width="20" height="1.8" />
+      <rect x="0" y="17" width="32" height="1.8" />
+      <rect x="0" y="20.5" width="24" height="1.8" />
+      <rect x="0" y="24" width="32" height="1.8" />
+      <rect x="0" y="27.5" width="18" height="1.8" />
     </g>
 
-    {/* Лазер */}
     <g>
       <animateTransform
         attributeName="transform"
@@ -537,7 +530,7 @@ export default function Page() {
       <main className="shell">
         <header className="brand">
           <div className="brand__mark">
-            <IconDocument />
+            <IconScanner />
           </div>
           <div className="brand__name">
             Сканер<em>иньо</em>
