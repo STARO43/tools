@@ -96,7 +96,6 @@ textarea { font: inherit; color: inherit; }
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  min-height: 100dvh;
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
