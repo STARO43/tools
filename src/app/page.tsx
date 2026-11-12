@@ -69,7 +69,7 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* ────────────────────────── иконки ────────────────────────── */
 
-/* Документ вместо «горки» в дропбоксе */
+/* Документ вместо «горки» — скруглённая рамка + строки */
 const IconImage = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <rect x="3" y="4" width="18" height="16" rx="3.5" />
@@ -101,6 +101,67 @@ const IconLock = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <rect x="5" y="10.5" width="14" height="9.5" rx="2.5" />
     <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
+  </svg>
+);
+
+/* Оригинальный пиксельный сканер — для лого */
+const IconScanner = () => (
+  <svg
+    width="100%"
+    height="100%"
+    viewBox="0 0 32 32"
+    shapeRendering="crispEdges"
+    style={{ display: "block", imageRendering: "pixelated" }}
+    aria-hidden
+  >
+    <defs>
+      <clipPath id="scanner-after-clip">
+        <rect x="0" y="0" width="32" height="0">
+          <animate
+            attributeName="height"
+            values="0;0;32;32"
+            keyTimes="0;0.06;0.86;1"
+            dur="4s"
+            repeatCount="indefinite"
+          />
+        </rect>
+      </clipPath>
+    </defs>
+
+    <g fill="#8a8f99">
+      <rect x="0" y="3"  width="32" height="1.8" />
+      <rect x="0" y="6.5"  width="26" height="1.8" />
+      <rect x="0" y="10" width="32" height="1.8" />
+      <rect x="0" y="13.5" width="20" height="1.8" />
+      <rect x="0" y="17" width="32" height="1.8" />
+      <rect x="0" y="20.5" width="24" height="1.8" />
+      <rect x="0" y="24" width="32" height="1.8" />
+      <rect x="0" y="27.5" width="18" height="1.8" />
+    </g>
+
+    <g fill="#1a1d24" clipPath="url(#scanner-after-clip)">
+      <rect x="0" y="3"  width="32" height="1.8" />
+      <rect x="0" y="6.5"  width="26" height="1.8" />
+      <rect x="0" y="10" width="32" height="1.8" />
+      <rect x="0" y="13.5" width="20" height="1.8" />
+      <rect x="0" y="17" width="32" height="1.8" />
+      <rect x="0" y="20.5" width="24" height="1.8" />
+      <rect x="0" y="24" width="32" height="1.8" />
+      <rect x="0" y="27.5" width="18" height="1.8" />
+    </g>
+
+    <g>
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="0 0; 0 0; 0 32; 0 32"
+        keyTimes="0;0.06;0.86;1"
+        dur="4s"
+        repeatCount="indefinite"
+      />
+      <rect x="0" y="0" width="32" height="1.6" fill="#ff3636" opacity="0.4" />
+      <rect x="0" y="0" width="32" height="1" fill="#ff3636" />
+    </g>
   </svg>
 );
 
@@ -467,12 +528,13 @@ export default function Page() {
   return (
     <>
       <main className="shell">
-        {/* Логотип: просто серый текст + лазер при загрузке */}
-        <header className={`brand${busy ? " brand--scanning" : ""}`}>
+        <header className="brand">
+          <div className="brand__mark">
+            <IconScanner />
+          </div>
           <div className="brand__name">
             Сканер<em>иньо</em>
           </div>
-          <div className="brand__laser" />
         </header>
 
         <section className="glass">
@@ -503,6 +565,9 @@ export default function Page() {
               {busy && (
                 <div className="preview__scrim">
                   <span className="status" style={{ margin: 0 }}>
+                    <span className="status__dots">
+                      <i></i><i></i><i></i>
+                    </span>
                     {status}
                     {phase === "ocr" && ` ${fmtSec(elapsed)}`}
                   </span>
@@ -513,6 +578,9 @@ export default function Page() {
 
           {busy && (!image || isPdfFile) && (
             <div className="status">
+              <span className="status__dots">
+                <i></i><i></i><i></i>
+              </span>
               <span>
                 {status}
                 {percent !== null ? ` ${percent}%` : ""}
