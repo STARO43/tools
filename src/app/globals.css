@@ -125,7 +125,7 @@ textarea {
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  min-height: 100dvh;
+  min-height: 100dvh; 
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
@@ -220,10 +220,13 @@ textarea {
 .dz {
   position: relative;
   width: 100%;
-  min-height: clamp(220px, 30dvh, 320px);
+  flex: 1 1 auto;
+  min-height: clamp(180px, 30dvh, 400px); 
+  max-height: 60dvh;
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
+  }
   cursor: pointer;
   overflow: hidden;
   isolation: isolate;
