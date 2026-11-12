@@ -33,7 +33,6 @@
   --sp-4: clamp(24px, 2.4vw, 40px);
   --sp-5: clamp(32px, 3.5vw, 56px);
 
-  /* ── строгие скругления (резиновые) ─────────────────────────── */
   --r-card:  clamp(8px, 1vw, 12px);
   --r-zone:  clamp(6px, 0.8vw, 10px);
   --r-input: clamp(6px, 0.5vw, 8px);
@@ -41,11 +40,9 @@
 
   --tap: clamp(44px, 5.5vh, 56px);
 
-  /* ── премиум-пружины ────────────────────────────────────────── */
   --ease-ozon: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* ── многослойные тени для света ────────────────────────────── */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px -8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 32px -16px rgba(0, 0, 0, 0.08);
@@ -72,11 +69,9 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   overflow-x: hidden;
 }
 
-/* ── фон: глубокая бумага ───────────────────────────────────── */
 body::before {
   content: "";
   position: fixed;
@@ -102,38 +97,24 @@ body::after {
 }
 
 h1, h2, p { margin: 0; }
-
-button {
-  font: inherit;
-  color: inherit;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-textarea {
-  font: inherit;
-  color: inherit;
-}
-
-::selection {
-  background: var(--ink);
-  color: #ffffff;
-}
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+textarea { font: inherit; color: inherit; }
+::selection { background: var(--ink); color: #ffffff; }
 
 /* ── КАРКАС ─────────────────────────────────────────────────── */
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  min-height: 100dvh; 
+  height: 100dvh; /* Жестко фиксируем высоту экрана, чтобы страница не росла */
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
+  overflow: hidden; /* Убираем скролл у всей страницы */
 }
 
-/* Шапка (Лого не менял) */
+/* Шапка */
 .brand {
   display: flex;
   align-items: center;
@@ -156,11 +137,7 @@ textarea {
   color: #ffffff;
 }
 
-.brand__mark svg {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-}
+.brand__mark svg { width: 100%; height: 100%; border-radius: inherit; }
 
 .brand__name {
   font-size: var(--fs-xl);
@@ -169,11 +146,7 @@ textarea {
   color: var(--ink);
 }
 
-.brand__name em {
-  font-style: normal;
-  font-weight: 400;
-  color: var(--ink-soft);
-}
+.brand__name em { font-style: normal; font-weight: 400; color: var(--ink-soft); }
 
 /* Заголовок */
 .hero {
@@ -201,10 +174,10 @@ textarea {
   text-wrap: pretty;
 }
 
-/* ── КАРТОЧКИ (резиновые) ───────────────────────────────────── */
+/* ── КАРТОЧКИ ───────────────────────────────────────────────── */
 .glass {
-  flex: 1 1 auto; 
-  min-height: 0; 
+  flex: 1 1 auto;
+  min-height: 0; /* Обязательно, чтобы flex-элемент мог сжиматься */
   background: var(--surface);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
@@ -213,18 +186,18 @@ textarea {
   display: flex;
   flex-direction: column;
   animation: appear-from-fog 1s var(--ease-soft) both;
+  overflow-y: auto; /* Внутренний скролл, если контента слишком много */
+  overflow-x: hidden;
 }
 
-.glass + .glass {
-  animation-delay: 0.15s;
-}
+.glass + .glass { animation-delay: 0.15s; }
 
-/* ── ДРОПЗОНА (резиновая) ───────────────────────────────────── */
+/* ── ДРОПЗОНА ───────────────────────────────────────────────── */
 .dz {
   position: relative;
   width: 100%;
-  flex: 1 1 auto; /* Растягивается на всё свободное место в карточке */
-  min-height: clamp(180px, 30dvh, 400px); /* Как в оригинале, чтобы не сжималась в ноль */
+  flex: 1 1 auto; /* Растягивается на свободное место внутри .glass */
+  min-height: 120px; /* Минимум, чтобы не схлопнулась в ноль */
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
@@ -241,17 +214,21 @@ textarea {
 
 .dz:active { transform: scale(.99); }
 
-/* Иконка */
+/* Иконка: никаких пикселей, только проценты от дропзоны */
 .dz__icon {
   position: relative;
   display: grid;
   place-items: center;
   z-index: 3;
   transition: transform 0.6s var(--ease-soft);
+  width: 25%; /* Задает пропорциональный размер */
+  aspect-ratio: 1; /* Делает её идеально круглой */
+  max-width: 84px; /* Ограничитель, чтобы на огромных экранах не была гигантской */
 }
+
 .dz__icon svg { 
-  width: 40%; 
-  height: 40%; 
+  width: 100%; 
+  height: 100%; 
   display: block; 
 }
 
@@ -300,9 +277,8 @@ textarea {
   transform: scale(1.05);
 }
 
+/* Круг под иконкой */
 .dz--float .dz__icon {
-  width: clamp(60px, 5.5vw + 3vh, 84px);
-  height: clamp(60px, 5.5vw + 3vh, 84px);
   border-radius: 50%;
   color: var(--ink-soft);
   background: var(--bg-2);
@@ -343,7 +319,7 @@ textarea {
 .preview img {
   display: block;
   width: 100%;
-  max-height: 45dvh; /* Оригинальное значение */
+  max-height: 40dvh; 
   object-fit: contain;
 }
 
@@ -392,12 +368,7 @@ textarea {
     transform 0.12s var(--ease-ozon);
 }
 
-.chip:hover {
-  color: var(--ink);
-  background: rgba(0,0,0,0.03);
-  border-color: var(--border-strong);
-}
-
+.chip:hover { color: var(--ink); background: rgba(0,0,0,0.03); border-color: var(--border-strong); }
 .chip:active { transform: scale(0.96); }
 
 .chip--on {
@@ -405,11 +376,7 @@ textarea {
   background: var(--ink);
   border-color: var(--ink);
 }
-
-.chip--on:hover {
-  background: #000000;
-  border-color: #000000;
-}
+.chip--on:hover { background: #000000; border-color: #000000; }
 
 .chip__dot {
   display: inline-block;
@@ -491,47 +458,31 @@ textarea {
   background: var(--ink);
   border: 1px solid var(--ink);
 }
-
-.btn--primary:hover {
-  background: #000000;
-  border-color: #000000;
-}
+.btn--primary:hover { background: #000000; border-color: #000000; }
 
 .btn--ghost {
   color: var(--ink-soft);
   background: transparent;
   border: 1px solid var(--border-strong);
 }
+.btn--ghost:hover { color: var(--ink); background: rgba(0,0,0,0.03); border-color: var(--ink); }
 
-.btn--ghost:hover {
-  color: var(--ink);
-  background: rgba(0,0,0,0.03);
-  border-color: var(--ink);
-}
-
-.btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
-}
+.btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 
 .btn--done {
   color: #ffffff;
   background: var(--ok);
   border: 1px solid var(--ok);
 }
-
-.btn--done:hover {
-  background: #1b5e20;
-  border-color: #1b5e20;
-}
+.btn--done:hover { background: #1b5e20; border-color: #1b5e20; }
 
 /* ── РЕЗУЛЬТАТ ──────────────────────────────────────────────── */
 .result {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 0 0 auto; /* Возвращаем, чтобы блок не растягивался насильно */
+  flex: 1 1 auto; /* Тянется, чтобы заполнить пустоту */
+  min-height: 0;
   animation: appear-from-fog 0.8s var(--ease-soft) both;
 }
 
@@ -577,11 +528,11 @@ textarea {
 
 .result__text {
   width: 100%;
-  min-height: 120px;
+  flex: 1 1 auto; /* Тянется внутри карточки, чтобы не ломать экран */
+  min-height: 120px; /* Нижний предел */
   max-height: none;
-  field-sizing: content; /* Растет под текст */
-  resize: vertical;
-  overflow-y: hidden;
+  resize: none; /* Отключаем ручное растягивание, чтобы не вылезло за экран */
+  overflow-y: auto; /* Скролл внутри поля, если текста много */
   padding: var(--sp-3);
   border-radius: var(--r-input);
   border: 1px solid var(--border);
@@ -703,7 +654,7 @@ textarea {
 
 @media (max-height: 560px) and (orientation: landscape) {
   .hero { margin-bottom: var(--sp-1); }
-  .dz { min-height: 120px; padding: var(--sp-2) var(--sp-3); }
+  .dz { min-height: 120px; }
   .glass { padding: var(--sp-2) var(--sp-3); }
 }
 
