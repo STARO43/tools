@@ -540,169 +540,160 @@ export default function Page() {
   const pill = result ? qualityPill(result.confidence) : null;
 
   return (
-    <>
-      <div className="blobs" aria-hidden>
-        <div className="blob blob--lavender" />
-        <div className="blob blob--aqua" />
-        <div className="blob blob--peach" />
-        <div className="blob blob--sky" />
-      </div>
+    <main className="shell">
+      <header className="brand">
+        <div className="brand__mark">
+          <IconScanner />
+        </div>
+        <div className="brand__name">
+          Сканер<em>иньо</em>
+        </div>
+      </header>
 
-      <main className="shell">
-        <header className="brand">
-          <div className="brand__mark">
-            <IconScanner />
-          </div>
-          <div className="brand__name">
-            Сканер<em>иньо</em>
-          </div>
-        </header>
+      {/* ── шаг 1: картинка ── */}
+      <section className="glass">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,.pdf"
+          onChange={onInputChange}
+          hidden
+          aria-hidden
+          tabIndex={-1}
+        />
+        <button
+          type="button"
+          className={`dz dz--float${dragOver ? " is-over" : ""}`}
+          onClick={pickFile}
+          aria-label="Выбрать файл"
+        >
+          <span className="dz__icon">
+            <IconDocument />
+          </span>
+        </button>
 
-        {/* ── шаг 1: картинка ── */}
-        <section className="glass">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*,.pdf"
-            onChange={onInputChange}
-            hidden
-            aria-hidden
-            tabIndex={-1}
-          />
-          <button
-            type="button"
-            className={`dz dz--float${dragOver ? " is-over" : ""}`}
-            onClick={pickFile}
-            aria-label="Выбрать файл"
-          >
-            <span className="dz__icon">
-              <IconDocument />
-            </span>
-          </button>
-
-          {image && !isPdfFile && (
-            <figure className="preview" style={{ margin: "18px 0 0" }}>
-              <img src={image.url} alt={`Загружено: ${image.name}`} />
-              {busy && (
-                <div className="preview__scrim">
-                  <span className="status" style={{ margin: 0 }}>
-                    <span className="status__dots">
-                      <i></i>
-                      <i></i>
-                      <i></i>
-                    </span>
-                    {status}
-                    {phase === "ocr" && ` ${fmtSec(elapsed)}`}
+        {image && !isPdfFile && (
+          <figure className="preview">
+            <img src={image.url} alt={`Загружено: ${image.name}`} />
+            {busy && (
+              <div className="preview__scrim">
+                <span className="status" style={{ margin: 0 }}>
+                  <span className="status__dots">
+                    <i></i>
+                    <i></i>
+                    <i></i>
                   </span>
-                </div>
-              )}
-            </figure>
-          )}
-
-          {busy && (!image || isPdfFile) && (
-            <div className="status">
-              <span className="status__dots">
-                <i></i>
-                <i></i>
-                <i></i>
-              </span>
-              <span>
-                {status}
-                {percent !== null ? ` ${percent}%` : ""}
-                {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
-              </span>
-            </div>
-          )}
-
-          {busy && percent !== null && (!image || isPdfFile) && (
-            <div
-              className="progress"
-              role="progressbar"
-              aria-valuenow={percent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <div className="progress__bar" style={{ width: `${percent}%` }} />
-            </div>
-          )}
-
-          {busy && !image && percent !== null && (
-            <p className="zone__hint" style={{ marginTop: 8 }}>
-              {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — тут первый
-              раз — долго
-            </p>
-          )}
-
-          {busyFlash && (
-            <p className="zone__hint" style={{ marginTop: 10 }}>
-              Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
-            </p>
-          )}
-
-          <div className="langs">
-            {MODEL_ORDER.map((id) => (
-              <button
-                key={id}
-                type="button"
-                className={`chip${lang === id ? " chip--on" : ""}`}
-                onClick={() => switchLang(id)}
-                title={MODEL_CATALOG[id].hint}
-              >
-                {MODEL_CATALOG[id].short}
-                {cached.includes(id) && lang !== id && (
-                  <span className="chip__dot" title="Уже загружен" />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {error && (
-            <p className="error" role="alert">
-              {error}
-            </p>
-          )}
-        </section>
-
-        {/* ── шаг 2: результат ── */}
-        {result && (
-          <section className="glass result">
-            <div className="result__head">
-              {pill && (
-                <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>
-              )}
-            </div>
-            <textarea
-              className="result__text"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              spellCheck={false}
-              aria-label="Распознанный текст"
-            />
-            <div className="actions">
-              <button
-                type="button"
-                className={`btn btn--primary${copied ? " btn--done" : ""}`}
-                onClick={copyResult}
-              >
-                {copied ? <IconCheck /> : <IconCopy />}
-                {copied ? "ЕСТЬ!" : "КОПИРОВАТЬ"}
-              </button>
-              <button type="button" className="btn btn--ghost" onClick={downloadTxt}>
-                <IconDownload />
-                СКАЧАТЬ
-              </button>
-            </div>
-          </section>
+                  {status}
+                  {phase === "ocr" && ` ${fmtSec(elapsed)}`}
+                </span>
+              </div>
+            )}
+          </figure>
         )}
 
-        <footer className="footer">
-          <span className="footer__lock">
-            <IconLock />
-            Локально на вашем устройстве
-          </span>
-          <span>Навайбкодил @vnvax</span>
-        </footer>
-      </main>
-    </>
+        {busy && (!image || isPdfFile) && (
+          <div className="status">
+            <span className="status__dots">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+            <span>
+              {status}
+              {percent !== null ? ` ${percent}%` : ""}
+              {phase === "ocr" ? ` ${fmtSec(elapsed)}` : ""}
+            </span>
+          </div>
+        )}
+
+        {busy && percent !== null && (!image || isPdfFile) && (
+          <div
+            className="progress"
+            role="progressbar"
+            aria-valuenow={percent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div className="progress__bar" style={{ width: `${percent}%` }} />
+          </div>
+        )}
+
+        {busy && !image && percent !== null && (
+          <p className="zone__hint">
+            {fmtBytes(progress?.received ?? 0)} из {fmtBytes(progress?.total ?? 0)} — тут первый
+            раз — долго
+          </p>
+        )}
+
+        {busyFlash && (
+          <p className="zone__hint">
+            Секунду — дораспознаю предыдущую картинку и возьмусь за эту.
+          </p>
+        )}
+
+        <div className="langs">
+          {MODEL_ORDER.map((id) => (
+            <button
+              key={id}
+              type="button"
+              className={`chip${lang === id ? " chip--on" : ""}`}
+              onClick={() => switchLang(id)}
+              title={MODEL_CATALOG[id].hint}
+            >
+              {MODEL_CATALOG[id].short}
+              {cached.includes(id) && lang !== id && (
+                <span className="chip__dot" title="Уже загружен" />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+      </section>
+
+      {/* ── шаг 2: результат ── */}
+      {result && (
+        <section className="glass result">
+          <div className="result__head">
+            {pill && (
+              <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>
+            )}
+          </div>
+          <textarea
+            className="result__text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            spellCheck={false}
+            aria-label="Распознанный текст"
+          />
+          <div className="actions">
+            <button
+              type="button"
+              className={`btn btn--primary${copied ? " btn--done" : ""}`}
+              onClick={copyResult}
+            >
+              {copied ? <IconCheck /> : <IconCopy />}
+              {copied ? "ЕСТЬ!" : "КОПИРОВАТЬ"}
+            </button>
+            <button type="button" className="btn btn--ghost" onClick={downloadTxt}>
+              <IconDownload />
+              СКАЧАТЬ
+            </button>
+          </div>
+        </section>
+      )}
+
+      <footer className="footer">
+        <span className="footer__lock">
+          <IconLock />
+          Локально на вашем устройстве
+        </span>
+        <span>Навайбкодил @vnvax</span>
+      </footer>
+    </main>
   );
 }
