@@ -564,12 +564,7 @@ export default function Page() {
           </div>
         </header>
 
-        <section className="hero">
-          <h1 className="hero__title"></h1>
-          <p className="hero__subtitle"></p>
-        </section>
-
-        {/* ── шаг 1: картинка ── */}
+            {/* ── шаг 1: картинка ── */}
         <section className="glass">
           <input
             ref={fileInputRef}
@@ -592,7 +587,6 @@ export default function Page() {
             <span className="zone__title">
               {dragOver ? "Поймаю!" : ""}
             </span>
-            <span className="zone__hint"></span>
           </button>
 
           {image && !isPdfFile && (
@@ -645,7 +639,6 @@ export default function Page() {
 
           {/* язык */}
           <div className="langs">
-            <span className="langs__label"></span>
             {MODEL_ORDER.map((id) => (
               <button
                 key={id}
@@ -671,8 +664,7 @@ export default function Page() {
         {result && (
           <section className="glass result">
             <div className="result__head">
-              <h2 className="result__title"></h2>
-              {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
+                      {pill && <span className={`pill${pill.mid ? " pill--mid" : ""}`}>{pill.label}</span>}
             </div>
             <textarea
               className="result__text"
