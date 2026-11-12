@@ -396,7 +396,7 @@ textarea {
 .dz--float:hover::after  { opacity: 1; }
 
 .dz--float .dz__icon {
-  width: clamp(50px, 4.5vw + 2vh, 64px);
+  width: clamp(60px, 5.5vw + 3vh, 84px);
   height: clamp(60px, 5.5vw + 3vh, 84px);
   border-radius: 50%;
   color: #fff;
