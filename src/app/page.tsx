@@ -76,16 +76,13 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* Документ вместо «горки» — скруглённая рамка + строки */
 const IconImage = () => (
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    {/* щит */}
-    <path d="M12 1.8 3.4 5.6v6.9c0 5.2 3.7 9.6 8.6 11 4.9-1.4 8.6-5.8 8.6-11V5.6L12 1.8Z" />
-    {/* лист с загнутым уголком */}
-    <path d="M9.4 7.6h3.2l2.4 2.4v6.4a1 1 0 0 1-1 1H9.4a1 1 0 0 1-1-1V8.6a1 1 0 0 1 1-1Z" />
-    <path d="M12.6 7.6v2.4h2.4" />
-    {/* строки-текст */}
-    <path d="M10.6 12h3.4" />
-    <path d="M10.6 14h3.4" />
-    <path d="M10.6 16h2.2" />
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    {/* лист */}
+    <path d="M9.9 2.2h3.1a1.5 1.5 0 0 1 1.06.44l6.6 6.6a1.5 1.5 0 0 1 .44 1.06v9.1A2.25 2.25 0 0 1 18.85 21.65H9.15A2.25 2.25 0 0 1 6.9 19.4V13.6" />
+    {/* загнутый уголок */}
+    <path d="M13.5 2.6v5.6a1.5 1.5 0 0 0 1.5 1.5h5.6" />
+    {/* скрепка */}
+    <path d="M7.5 3.75v7.1a1.1 1.1 0 0 1-1.12 1.12c-.56 0-1.13-.43-1.13-1.12V4.1c0-1.43.78-2.6 2.25-2.6s2.25 1.16 2.25 2.57v6.5c0 2.02-1.3 3.65-3.38 3.65s-3.38-1.63-3.38-3.65V6.75" />
   </svg>
 );
 
