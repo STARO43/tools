@@ -94,42 +94,28 @@ body::after {
 }
 
 h1, h2, p { margin: 0; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+textarea { font: inherit; color: inherit; }
+::selection { background: var(--ink); color: #ffffff; }
 
-button {
-  font: inherit;
-  color: inherit;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-textarea {
-  font: inherit;
-  color: inherit;
-}
-
-::selection {
-  background: var(--ink);
-  color: #ffffff;
-}
-
-/* Исправленный каркас: без жесткой высоты и скроллов */
+/* Убираем лишние отступы, чтобы всё влезло в экран */
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  min-height: 100dvh;
+  height: 100dvh;
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
+  overflow: hidden;
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  margin-bottom: var(--sp-1);
+  margin-bottom: 0; /* Убрали лишний отступ */
   flex-shrink: 0;
   animation: fade-up 0.8s var(--ease-soft) both;
 }
@@ -166,10 +152,10 @@ textarea {
   color: var(--ink-soft);
 }
 
+/* Пустые заголовки больше не занимают место */
 .hero {
-  margin-bottom: var(--sp-2);
+  margin: 0;
   flex-shrink: 0;
-  animation: fade-up 0.9s var(--ease-soft) 0.1s both;
 }
 
 .hero__title {
@@ -182,7 +168,7 @@ textarea {
 }
 
 .hero__subtitle {
-  margin-top: var(--sp-2);
+  margin-top: var(--sp-1);
   max-width: 42em;
   font-size: var(--fs-md);
   color: var(--ink-soft);
@@ -191,9 +177,10 @@ textarea {
   text-wrap: pretty;
 }
 
-/* Исправленная карточка: убираем min-height и overflow */
+/* Белая карточка: забирает всё свободное место и ничего не скроллит внутри */
 .glass {
   flex: 1 1 auto;
+  min-height: 0;
   background: var(--surface);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
@@ -202,19 +189,18 @@ textarea {
   display: flex;
   flex-direction: column;
   animation: appear-from-fog 1s var(--ease-soft) both;
+  overflow: hidden; /* Жестко скрываем любой внутренний скролл */
 }
 
 .glass + .glass {
   animation-delay: 0.15s;
 }
 
-/* Исправленная дропзона: без скроллов и ограничений */
+/* Дропзона: резиновая, без скроллов */
 .dz {
   position: relative;
   width: 100%;
   flex: 1 1 auto;
-  min-height: clamp(180px, 30dvh, 400px); 
-  max-height: 60dvh;
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
@@ -527,7 +513,7 @@ textarea {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 0 0 auto; 
+  flex: 0 0 auto;
   animation: appear-from-fog 0.8s var(--ease-soft) both;
 }
 
@@ -571,7 +557,6 @@ textarea {
   letter-spacing: -0.005em;
 }
 
-/* Возвращаем нормальное поведение поля ввода */
 .result__text {
   width: 100%;
   min-height: 120px;
@@ -608,9 +593,9 @@ textarea {
   letter-spacing: -0.008em;
 }
 
+/* Футер прижат к низу */
 .footer {
   margin-top: auto;
-  padding-top: var(--sp-3);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -726,10 +711,7 @@ textarea {
 
 @media (max-height: 560px) and (orientation: landscape) {
   .hero {
-    margin-bottom: var(--sp-1);
-  }
-  .dz {
-    min-height: 120px;
+    margin-bottom: 0;
   }
   .glass {
     padding: var(--sp-2) var(--sp-3);
