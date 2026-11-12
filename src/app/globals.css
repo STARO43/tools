@@ -95,8 +95,8 @@ textarea { font: inherit; color: inherit; }
 /* Жесткий каркас */
 .shell {
   width: 100%;
- min-height: 100dvh
   max-inline-size: 80ch;
+  min-height: 100dvh;
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
@@ -179,7 +179,7 @@ textarea { font: inherit; color: inherit; }
   position: relative;
   width: 100%;
   flex: 1 1 auto;
-height: clamp(200px, 25vh, 350px);
+  min-height: clamp(180px, 30dvh, 400px);
   display: grid;
   place-items: center;
   border-radius: var(--r-zone);
