@@ -113,16 +113,16 @@ textarea {
   color: #ffffff;
 }
 
+/* Исправленный каркас: без жесткой высоты и скроллов */
 .shell {
   width: 100%;
   max-inline-size: 80ch;
-  height: 100dvh;
+  min-height: 100dvh;
   margin: 0 auto;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-  overflow: hidden;
 }
 
 .brand {
@@ -191,9 +191,9 @@ textarea {
   text-wrap: pretty;
 }
 
+/* Исправленная карточка: убираем min-height и overflow */
 .glass {
   flex: 1 1 auto;
-  min-height: 0;
   background: var(--surface);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--r-card);
@@ -202,19 +202,18 @@ textarea {
   display: flex;
   flex-direction: column;
   animation: appear-from-fog 1s var(--ease-soft) both;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .glass + .glass {
   animation-delay: 0.15s;
 }
 
+/* Исправленная дропзона: без скроллов и ограничений */
 .dz {
   position: relative;
   width: 100%;
   flex: 1 1 auto;
-  min-height: clamp(180px, 30dvh, 400px);
+  min-height: clamp(180px, 30dvh, 400px); 
   max-height: 60dvh;
   display: grid;
   place-items: center;
@@ -528,8 +527,7 @@ textarea {
   margin-top: var(--sp-3);
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto; 
   animation: appear-from-fog 0.8s var(--ease-soft) both;
 }
 
@@ -573,13 +571,14 @@ textarea {
   letter-spacing: -0.005em;
 }
 
+/* Возвращаем нормальное поведение поля ввода */
 .result__text {
   width: 100%;
-  flex: 1 1 auto;
   min-height: 120px;
   max-height: none;
-  resize: none;
-  overflow-y: auto;
+  field-sizing: content;
+  resize: vertical;
+  overflow-y: hidden;
   padding: var(--sp-3);
   border-radius: var(--r-input);
   border: 1px solid var(--border);
