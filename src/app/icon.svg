@@ -1,54 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
   <defs>
-    <linearGradient id="cloudGrad" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#d4eefa"/>
-      <stop offset="0.5" stop-color="#bfe4f5"/>
-      <stop offset="1" stop-color="#a8d8ee"/>
-    </linearGradient>
-    <linearGradient id="cloudShine" x1="6" y1="3" x2="17" y2="13" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.45"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    <linearGradient id="cloudFill" x1="6" y1="8" x2="18" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="0.5" stop-color="#cbeafd"/>
+      <stop offset="1" stop-color="#b3e0f8"/>
     </linearGradient>
 
-    <!-- Маска: облако минус полоса по линии (справа налево) -->
     <mask id="cloudCut">
       <rect width="24" height="24" fill="black"/>
       <path fill="white" d="
-        M5 20.5
-        A5 5 0 0 1 5 10.5
-        A5.5 5.5 0 0 1 16 7
-        A4.5 4.5 0 0 1 21.5 15
-        A4.5 4.5 0 0 1 19 20.5
+        M6.5 17.5
+        H17.5
+        A4.5 4.5 0 0 0 17.5 8.5
+        A5.5 5.5 0 0 0 7 8.5
+        A4.5 4.5 0 0 0 6.5 17.5
         Z
       "/>
-      <!-- дырка справа налево -->
       <line x1="23" y1="1" x2="1" y2="23"
             stroke="black" stroke-width="4.5" stroke-linecap="round"/>
     </mask>
   </defs>
 
-  <!-- Крупное облако с вырезанной дыркой -->
   <g mask="url(#cloudCut)">
-    <path fill="url(#cloudGrad)" d="
-      M5 20.5
-      A5 5 0 0 1 5 10.5
-      A5.5 5.5 0 0 1 16 7
-      A4.5 4.5 0 0 1 21.5 15
-      A4.5 4.5 0 0 1 19 20.5
-      Z
-    "/>
-    <path fill="url(#cloudShine)" opacity="0.6" d="
-      M6 10.5
-      A4.5 4.5 0 0 1 13.5 8
-      A4 4 0 0 1 18 13
-      A3.5 3.5 0 0 1 16 17.5
-      L7.5 17.5
-      A4.5 4.5 0 0 1 6 10.5
-      Z
-    "/>
+    <path fill="url(#cloudFill)"
+          stroke="#000000"
+          stroke-width="2.5"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+          d="
+        M6.5 17.5
+        H17.5
+        A4.5 4.5 0 0 0 17.5 8.5
+        A5.5 5.5 0 0 0 7 8.5
+        A4.5 4.5 0 0 0 6.5 17.5
+        Z
+      "/>
   </g>
 
-  <!-- Тонкая красная линия поверх, справа налево -->
   <line x1="23" y1="1" x2="1" y2="23"
         stroke="#e02020" stroke-width="1.6" stroke-linecap="round"/>
 </svg>
