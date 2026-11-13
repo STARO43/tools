@@ -1,42 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" fill="none">
   <defs>
-    <linearGradient id="cloudFill" x1="6" y1="8" x2="18" y2="18" gradientUnits="userSpaceOnUse">
+    <linearGradient id="cloudFill" x1="12" y1="16" x2="36" y2="36" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#e0f2fe"/>
       <stop offset="0.5" stop-color="#cbeafd"/>
       <stop offset="1" stop-color="#b3e0f8"/>
     </linearGradient>
 
     <mask id="cloudCut">
-      <rect width="24" height="24" fill="black"/>
+      <rect width="48" height="48" fill="black"/>
+      <!-- Увеличенное облако -->
       <path fill="white" d="
-        M6.5 17.5
-        H17.5
-        A4.5 4.5 0 0 0 17.5 8.5
-        A5.5 5.5 0 0 0 7 8.5
-        A4.5 4.5 0 0 0 6.5 17.5
+        M13 35
+        H35
+        A9 9 0 0 0 35 17
+        A11 11 0 0 0 14 17
+        A9 9 0 0 0 13 35
         Z
       "/>
-      <line x1="23" y1="1" x2="1" y2="23"
-            stroke="black" stroke-width="4.5" stroke-linecap="round"/>
+      <!-- Широкая дырка справа налево -->
+      <line x1="46" y1="2" x2="2" y2="46"
+            stroke="black" stroke-width="9" stroke-linecap="round"/>
     </mask>
   </defs>
 
   <g mask="url(#cloudCut)">
     <path fill="url(#cloudFill)"
           stroke="#000000"
-          stroke-width="2.5"
+          stroke-width="5"
           stroke-linejoin="round"
           stroke-linecap="round"
           d="
-        M6.5 17.5
-        H17.5
-        A4.5 4.5 0 0 0 17.5 8.5
-        A5.5 5.5 0 0 0 7 8.5
-        A4.5 4.5 0 0 0 6.5 17.5
+        M13 35
+        H35
+        A9 9 0 0 0 35 17
+        A11 11 0 0 0 14 17
+        A9 9 0 0 0 13 35
         Z
       "/>
   </g>
 
-  <line x1="23" y1="1" x2="1" y2="23"
-        stroke="#e02020" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="46" y1="2" x2="2" y2="46"
+        stroke="#e02020" stroke-width="3.2" stroke-linecap="round"/>
 </svg>
