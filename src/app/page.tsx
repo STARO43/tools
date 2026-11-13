@@ -78,19 +78,16 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 const IconImage = () => (
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
   <defs>
-    {/* Маска: облако минус полоса по линии (справа налево) */}
     <mask id="cloudCut">
       <rect width="24" height="24" fill="black" />
-      {/* само облако — белым (видимо) */}
       <path fill="white" d="
-        M5 20.5
-        A5 5 0 0 1 5 10.5
-        A5.5 5.5 0 0 1 16 7
-        A4.5 4.5 0 0 1 21.5 15
-        A4.5 4.5 0 0 1 19 20.5
+        M6.5 17.5
+        H17.5
+        A4.5 4.5 0 0 0 17.5 8.5
+        A5.5 5.5 0 0 0 7 8.5
+        A4.5 4.5 0 0 0 6.5 17.5
         Z
       " />
-      {/* дырка справа налево */}
       <line x1="23" y1="1" x2="1" y2="23"
         stroke="black" 
         style={{ strokeWidth: 4.5, strokeLinecap: "round" }} 
@@ -98,22 +95,20 @@ const IconImage = () => (
     </mask>
   </defs>
 
-  {/* Прозрачное облако с жирным чёрным контуром и вырезанной дыркой */}
   <g mask="url(#cloudCut)">
     <path fill="none"
       stroke="#000000"
-      style={{ strokeWidth: 2.8, strokeLinejoin: "round" }}
+      style={{ strokeWidth: 2.5, strokeLinejoin: "round", strokeLinecap: "round" }}
       d="
-      M5 20.5
-      A5 5 0 0 1 5 10.5
-      A5.5 5.5 0 0 1 16 7
-      A4.5 4.5 0 0 1 21.5 15
-      A4.5 4.5 0 0 1 19 20.5
-      Z
-    " />
+        M6.5 17.5
+        H17.5
+        A4.5 4.5 0 0 0 17.5 8.5
+        A5.5 5.5 0 0 0 7 8.5
+        A4.5 4.5 0 0 0 6.5 17.5
+        Z
+      " />
   </g>
 
-  {/* Тонкая красная линия поверх, справа налево */}
   <line x1="23" y1="1" x2="1" y2="23"
     stroke="#e02020" 
     style={{ strokeWidth: 1.6, strokeLinecap: "round" }} 
