@@ -719,7 +719,7 @@ if (unsupported) {
           <IconLock />
           Оптическое распознавание символов локально
         </span>
-        <span>Завайбкодил @vnvax
+        <span>Завайбкодил @vnvax</span>
       </footer>
     </div>
   );
