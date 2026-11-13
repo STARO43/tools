@@ -82,7 +82,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" suppressHydrationWarning className={`${unbounded.variable} ${jbMono.variable}`}>
-      <body>{children}</body>
+    <script dangerouslySetInnerHTML={{ __html: UNSUPPORTED_CHECK }} />
+{children}
     </html>
   );
 }
