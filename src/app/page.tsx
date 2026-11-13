@@ -76,17 +76,47 @@ type Phase = "empty" | "prep" | "ocr" | "done" | "error";
 
 /* Документ вместо «горки» — скруглённая рамка + строки */
 const IconImage = () => (
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <path 
-    d="M114.61,162.85A16.07,16.07,0,0,0,128,149.6C140.09,76.17,193.63,32,256,32c57.93,0,96.62,37.75,112.2,77.74a15.84,15.84,0,0,0,12.2,9.87c50,8.15,91.6,41.54,91.6,99.59C472,278.6,423.4,320,364,320H130c-49.5,0-90-24.7-90-79.2C40,192.33,78.67,168.58,114.61,162.85Z" 
-    style={{ fill: "none", stroke: "#000", strokeLinejoin: "round", strokeWidth: 32 }}
-  />
-  <line 
-    x1="480" 
-    y1="140" 
-    x2="32" 
-    y2="300" 
-    style={{ fill: "none", stroke: "#e00", strokeLinecap: "round", strokeWidth: 24 }}
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <defs>
+    {/* Маска: облако минус полоса по линии (справа налево) */}
+    <mask id="cloudCut">
+      <rect width="24" height="24" fill="black" />
+      {/* само облако — белым (видимо) */}
+      <path fill="white" d="
+        M5 20.5
+        A5 5 0 0 1 5 10.5
+        A5.5 5.5 0 0 1 16 7
+        A4.5 4.5 0 0 1 21.5 15
+        A4.5 4.5 0 0 1 19 20.5
+        Z
+      " />
+      {/* дырка справа налево */}
+      <line x1="23" y1="1" x2="1" y2="23"
+        stroke="black" 
+        style={{ strokeWidth: 4.5, strokeLinecap: "round" }} 
+      />
+    </mask>
+  </defs>
+
+  {/* Прозрачное облако с жирным чёрным контуром и вырезанной дыркой */}
+  <g mask="url(#cloudCut)">
+    <path fill="none"
+      stroke="#000000"
+      style={{ strokeWidth: 2.8, strokeLinejoin: "round" }}
+      d="
+      M5 20.5
+      A5 5 0 0 1 5 10.5
+      A5.5 5.5 0 0 1 16 7
+      A4.5 4.5 0 0 1 21.5 15
+      A4.5 4.5 0 0 1 19 20.5
+      Z
+    " />
+  </g>
+
+  {/* Тонкая красная линия поверх, справа налево */}
+  <line x1="23" y1="1" x2="1" y2="23"
+    stroke="#e02020" 
+    style={{ strokeWidth: 1.6, strokeLinecap: "round" }} 
   />
 </svg>
 );
