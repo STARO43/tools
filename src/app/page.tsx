@@ -108,7 +108,6 @@ const IconLock = () => (
   </svg>
 );
 
-/* Оригинальный пиксельный сканер — для лого. Ч/б: лазер стал чернильным. */
 const IconScanner = () => (
   <svg
     width="100%"
@@ -169,7 +168,6 @@ const IconScanner = () => (
   </svg>
 );
 
-/* Folding cube — адаптация codepen.io/oddtito/pen/MKOwXb, цвет — чернила */
 const FoldingCube = ({ size = 96 }: { size?: number }) => (
   <div className="cube" style={{ width: size, height: size }} aria-hidden>
     <i /><i /><i /><i />
@@ -194,6 +192,7 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [isPdfFile, setIsPdfFile] = useState(false);
   const [now, setNow] = useState<Date | null>(null);
+  const [unsupported, setUnsupported] = useState(false);
 
   const workerRef = useRef<Worker | null>(null);
   const engineRef = useRef<{ modelId: ModelId } | null>(null);
@@ -212,6 +211,18 @@ export default function Page() {
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
   }, []);
+
+  /* проверка поддержки: onnxruntime-web требует WASM SIMD */
+useEffect(() => {
+  const simdOk =
+    typeof WebAssembly === "object" &&
+    WebAssembly.validate(
+      new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]),
+    );
+  const workersOk = typeof Worker !== "undefined";
+  const bitmapOk = typeof createImageBitmap === "function";
+  if (!simdOk || !workersOk || !bitmapOk) setUnsupported(true);
+}, []);
 
   const p2 = (n: number) => String(n).padStart(2, "0");
   const timeStr = now ? `${p2(now.getHours())}:${p2(now.getMinutes())}:${p2(now.getSeconds())}` : "--:--:--";
@@ -540,7 +551,21 @@ export default function Page() {
   const percent = progress && progress.total > 0 ? Math.min(100, Math.floor((progress.received / progress.total) * 100)) : null;
   const pill = result ? qualityPill(result.confidence) : null;
   const showZone = !image || isPdfFile;
-
+if (unsupported) {
+  return (
+    <div className="unsupported">
+      <div className="unsupported__card">
+        <div className="unsupported__logo">Сканериньо</div>
+        <h1 className="unsupported__title">Устройство не подходит</h1>
+        <p className="unsupported__text">
+          Ваше устройство не поддерживает распознавание текста в браузере.
+        </p>
+        <p className="unsupported__text">Откройте сайт с планшета/ноута/компа</p>
+      </div>
+    </div>
+  );
+}
+  
   return (
     <div className="page">
       {/* ─── шапка: время · день · дата, затем лого и языки ─── */}
