@@ -471,3 +471,42 @@ textarea { font: inherit; color: inherit; }
 @media (max-height: 560px) and (orientation: landscape) {
   .zone { min-height: 180px; }
 }
+
+/* ─── заглушка для неподдерживаемых устройств ─── */
+.unsupported {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.unsupported__card {
+  max-width: 480px;
+  width: 100%;
+  padding: 36px 32px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-surface);
+  background: var(--paper-2);
+  text-align: center;
+}
+.unsupported__logo {
+  font-family: var(--fd);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--ink-50);
+  margin-bottom: 20px;
+}
+.unsupported__title {
+  font-family: var(--fd);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+.unsupported__text {
+  font-family: var(--fm);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-70);
+  margin: 0 0 8px;
+}
+.unsupported__text:last-child { margin-bottom: 0; }
