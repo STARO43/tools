@@ -1,44 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 28 24" fill="none">
   <defs>
-    <linearGradient id="cloudFill" x1="12" y1="16" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+    <linearGradient id="cloudFill" x1="2" y1="4" x2="24" y2="20" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#e0f2fe"/>
       <stop offset="0.5" stop-color="#cbeafd"/>
       <stop offset="1" stop-color="#b3e0f8"/>
     </linearGradient>
 
     <mask id="cloudCut">
-      <rect width="48" height="48" fill="black"/>
-      <!-- Увеличенное облако -->
+      <rect width="28" height="24" fill="black"/>
+      <!-- Облако прижато к краям -->
       <path fill="white" d="
-        M13 35
-        H35
-        A9 9 0 0 0 35 17
-        A11 11 0 0 0 14 17
-        A9 9 0 0 0 13 35
+        M3.5 19
+        H22
+        A5.5 5.5 0 0 0 22 8
+        A6.5 6.5 0 0 0 5 8
+        A5.5 5.5 0 0 0 3.5 19
         Z
       "/>
-      <!-- Широкая дырка справа налево -->
-      <line x1="46" y1="2" x2="2" y2="46"
-            stroke="black" stroke-width="9" stroke-linecap="round"/>
+      <!-- Дырка справа налево -->
+      <line x1="26" y1="2" x2="2" y2="22"
+            stroke="black" stroke-width="5.5" stroke-linecap="round"/>
     </mask>
   </defs>
 
   <g mask="url(#cloudCut)">
+    <!-- Контур толще, заливка светлее -->
     <path fill="url(#cloudFill)"
           stroke="#000000"
-          stroke-width="5"
+          stroke-width="3.2"
           stroke-linejoin="round"
           stroke-linecap="round"
           d="
-        M13 35
-        H35
-        A9 9 0 0 0 35 17
-        A11 11 0 0 0 14 17
-        A9 9 0 0 0 13 35
+        M3.5 19
+        H22
+        A5.5 5.5 0 0 0 22 8
+        A6.5 6.5 0 0 0 5 8
+        A5.5 5.5 0 0 0 3.5 19
         Z
       "/>
   </g>
 
-  <line x1="46" y1="2" x2="2" y2="46"
-        stroke="#e02020" stroke-width="3.2" stroke-linecap="round"/>
+  <!-- Красная линия поверх, справа налево -->
+  <line x1="26" y1="2" x2="2" y2="22"
+        stroke="#e02020" stroke-width="2.2" stroke-linecap="round"/>
 </svg>
